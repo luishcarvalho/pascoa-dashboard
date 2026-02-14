@@ -81,6 +81,70 @@ function startOrRefreshTimeAgoTimer() {
   }, 10 * 1000); // atualiza a cada 10s
 }
 
+/* ------------------------------------------------------------------ */
+/* Botão elegante: loading + bloqueio + mensagens                      */
+/* ------------------------------------------------------------------ */
+function setButtonLoading(isLoading, label) {
+  const btn = document.getElementById("btnRefresh");
+  if (!btn) return;
+
+  // guarda o texto original do botão
+  if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent;
+
+  btn.disabled = isLoading;
+  btn.classList.toggle("is-loading", isLoading);
+  btn.textContent = label || (isLoading ? "Atualizando…" : btn.dataset.originalText);
+  btn.setAttribute("aria-busy", isLoading ? "true" : "false");
+}
+
+function sleep(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+async function runUpdateFlow() {
+  const previous = lastUpdatedIso;
+
+  // 1) Dispara workflow via Cloudflare Worker
+  setStatus("Disparando atualização no servidor…");
+  setButtonLoading(true, "Disparando…");
+
+  const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, {
+    method: "POST",
+    mode: "cors",
+    cache: "no-store",
+  });
+
+  const txt = await r.text();
+  if (!r.ok) throw new Error(txt || `HTTP ${r.status}`);
+
+  // 2) Aguarda alguns segundos para o Actions iniciar
+  setStatus("Workflow iniciado. Aguardando processamento…");
+  setButtonLoading(true, "Aguardando…");
+  await sleep(15000);
+
+  // 3) Poll no metrics.json até mudar last_updated_utc
+  const start = Date.now();
+  const timeoutMs = 3 * 60 * 1000; // 3 min
+  const intervalMs = 8000; // 8s
+
+  while (Date.now() - start < timeoutMs) {
+    setStatus("Buscando novas métricas publicadas…");
+    setButtonLoading(true, "Atualizando…");
+
+    await loadMetrics(true); // força buscar JSON novo
+
+    if (lastUpdatedIso && lastUpdatedIso !== previous) {
+      setStatus("Atualizado ✔");
+      return;
+    }
+
+    await sleep(intervalMs);
+  }
+
+  throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
+}
+/* ------------------------------------------------------------------ */
+
 async function loadMetrics(bustCache = false) {
   try {
     setStatus("Carregando...");
@@ -157,43 +221,15 @@ async function loadMetrics(bustCache = false) {
   }
 }
 
-// ✅ Botão agora DISPARA o workflow e espera publicar um metrics.json novo
+// ✅ Botão elegante: dispara workflow + bloqueia + mostra status
 document.getElementById("btnRefresh").addEventListener("click", async () => {
-  const btn = document.getElementById("btnRefresh");
-  const previous = lastUpdatedIso;
-
   try {
-    btn.disabled = true;
-    setStatus("Disparando atualização…");
-
-    // 1) Dispara workflow via Cloudflare Worker
-    const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-store",
-    });
-    const txt = await r.text();
-    if (!r.ok) throw new Error(txt);
-
-    setStatus("Workflow iniciado. Aguardando publicar…");
-
-    // 2) Poll no metrics.json até mudar last_updated_utc (timeout 2 min)
-    const start = Date.now();
-    while (Date.now() - start < 2 * 60 * 1000) {
-      await loadMetrics(true); // força buscar JSON novo
-      if (lastUpdatedIso && lastUpdatedIso !== previous) {
-        setStatus("Atualizado ✔");
-        return;
-      }
-      await new Promise(res => setTimeout(res, 5000)); // espera 5s
-    }
-
-    setStatus("Workflow disparado, mas ainda não publicou. Tente em instantes.");
+    await runUpdateFlow();
   } catch (e) {
     console.error(e);
     setStatus(`Erro: ${e.message}`);
   } finally {
-    btn.disabled = false;
+    setButtonLoading(false);
   }
 });
 
