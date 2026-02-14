@@ -167,8 +167,13 @@ document.getElementById("btnRefresh").addEventListener("click", async () => {
     setStatus("Disparando atualização…");
 
     // 1) Dispara workflow via Cloudflare Worker
-    const r = await fetch(DISPATCH_URL, { method: "POST" });
-    if (!r.ok) throw new Error(await r.text());
+    const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-store",
+    });
+    const txt = await r.text();
+    if (!r.ok) throw new Error(txt);
 
     setStatus("Workflow iniciado. Aguardando publicar…");
 
