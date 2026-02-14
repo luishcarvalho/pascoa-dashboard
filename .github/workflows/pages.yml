@@ -3,7 +3,7 @@ name: Build & Deploy (hourly)
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *"  # a cada hora, no minuto 0
+    - cron: "0 * * * *" # a cada hora, no minuto 0
 
 permissions:
   contents: read
@@ -28,11 +28,27 @@ jobs:
       - name: Prepare dist with static site
         run: |
           rm -rf dist
-          mkdir -p dist
+          mkdir -p dist/data
           cp -R site/* dist/
 
       - name: Build metrics.json
         run: python scripts/build_metrics.py
+
+      - name: Debug dist/data (fail if NaN)
+        run: |
+          echo "== dist =="
+          ls -lah dist
+          echo "== dist/data =="
+          ls -lah dist/data
+          echo "== head metrics.json =="
+          head -n 40 dist/data/metrics.json
+          echo "== check NaN =="
+          if grep -R "NaN" -n dist/data/metrics.json; then
+            echo "ERROR: metrics.json contains NaN (invalid JSON for browser)."
+            exit 1
+          else
+            echo "OK: no NaN found."
+          fi
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
