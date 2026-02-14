@@ -1,9 +1,9 @@
-name: Build & Deploy (hourly)
+name: Build & Deploy (every 10 minutes)
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "0 * * * *" # a cada hora, no minuto 0
+    - cron: "*/10 * * * *"   # a cada 10 minutos
 
 permissions:
   contents: read
