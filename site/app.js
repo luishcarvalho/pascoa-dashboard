@@ -1,3 +1,7 @@
+const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+let lastUpdatedIso = null;
+let timeAgoIntervalId = null;
+
 const statusEl = document.getElementById("status");
 
 function setStatus(msg) {
@@ -69,6 +73,14 @@ function timeAgo(isoString) {
   return `Atualizado há ${dia} dia${dia === 1 ? "" : "s"}`;
 }
 
+function startOrRefreshTimeAgoTimer() {
+  if (timeAgoIntervalId) clearInterval(timeAgoIntervalId);
+  timeAgoIntervalId = setInterval(() => {
+    const el = document.getElementById("timeAgo");
+    if (el && lastUpdatedIso) el.textContent = timeAgo(lastUpdatedIso);
+  }, 10 * 1000); // atualiza a cada 10s
+}
+
 async function loadMetrics(bustCache = false) {
   try {
     setStatus("Carregando...");
@@ -81,6 +93,7 @@ async function loadMetrics(bustCache = false) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
+    lastUpdatedIso = data.last_updated_utc || null;
 
     const last = data.last_updated_utc;
 
@@ -94,9 +107,12 @@ async function loadMetrics(bustCache = false) {
       <div class="kpi">
         <div class="label">Última atualização (Brasil - UTC-3)</div>
         <div class="value" style="font-size:14px">${formatDateBR_UTCminus3(last)}</div>
-        <div class="label" style="margin-top:6px">${timeAgo(last)}</div>
+        <div id="timeAgo" class="label" style="margin-top:6px">${timeAgo(last)}</div>
       </div>
     `;
+
+    // inicia/renova o timer do "Atualizado há..."
+    startOrRefreshTimeAgoTimer();
 
     // Contagens
     const counts = data.counts || {};
@@ -141,11 +157,43 @@ async function loadMetrics(bustCache = false) {
   }
 }
 
-document.getElementById("btnRefresh").addEventListener("click", () => loadMetrics(true));
+// ✅ Botão agora DISPARA o workflow e espera publicar um metrics.json novo
+document.getElementById("btnRefresh").addEventListener("click", async () => {
+  const btn = document.getElementById("btnRefresh");
+  const previous = lastUpdatedIso;
+
+  try {
+    btn.disabled = true;
+    setStatus("Disparando atualização…");
+
+    // 1) Dispara workflow via Cloudflare Worker
+    const r = await fetch(DISPATCH_URL, { method: "POST" });
+    if (!r.ok) throw new Error(await r.text());
+
+    setStatus("Workflow iniciado. Aguardando publicar…");
+
+    // 2) Poll no metrics.json até mudar last_updated_utc (timeout 2 min)
+    const start = Date.now();
+    while (Date.now() - start < 2 * 60 * 1000) {
+      await loadMetrics(true); // força buscar JSON novo
+      if (lastUpdatedIso && lastUpdatedIso !== previous) {
+        setStatus("Atualizado ✔");
+        return;
+      }
+      await new Promise(res => setTimeout(res, 5000)); // espera 5s
+    }
+
+    setStatus("Workflow disparado, mas ainda não publicou. Tente em instantes.");
+  } catch (e) {
+    console.error(e);
+    setStatus(`Erro: ${e.message}`);
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 // carrega ao abrir
 loadMetrics(true);
 
 // auto-refresh a cada 10 minutos (no navegador)
 setInterval(() => loadMetrics(true), 10 * 60 * 1000);
-
