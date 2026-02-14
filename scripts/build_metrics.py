@@ -179,7 +179,7 @@ def main():
     out_path = os.path.join(output_dir, "metrics.json")
 
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(metrics, f, ensure_ascii=False, indent=2)
+        json.dump(metrics, f, ensure_ascii=False, indent=2, allow_nan=False)
 
     print(f"OK: gerado {out_path}")
 
