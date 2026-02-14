@@ -25,11 +25,25 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
+      # ✅ Copia o conteúdo do site/ para dist/ de forma "limpa" (sem sobras)
       - name: Prepare dist with static site
         run: |
           rm -rf dist
+          mkdir -p dist
+          rsync -av --delete site/ dist/
           mkdir -p dist/data
-          cp -R site/* dist/
+
+      # ✅ Debug: garante que o app.js publicado é o que você editou
+      - name: Debug published JS (ensure Brasil is present)
+        run: |
+          echo "== site/app.js (first 30 lines) =="
+          sed -n '1,30p' site/app.js
+          echo "== dist/app.js (first 30 lines) =="
+          sed -n '1,30p' dist/app.js
+          echo "== grep Brasil (site/app.js) =="
+          (grep -n "Brasil" site/app.js || true)
+          echo "== grep Brasil (dist/app.js) =="
+          (grep -n "Brasil" dist/app.js || true)
 
       - name: Build metrics.json
         run: python scripts/build_metrics.py
