@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Páscoa • Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>Dashboard • Encomendas</h1>
+      <div class="actions">
+        <button id="btnRefresh">Atualizar agora</button>
+        <span id="status"></span>
+      </div>
+      <p class="small">Atualiza automaticamente a cada 1 hora (no navegador) e o site é republicado a cada 1 hora via GitHub Actions.</p>
+    </header>
+
+    <section class="card">
+      <h2>Resumo</h2>
+      <div id="summary" class="grid"></div>
+    </section>
+
+    <section class="card">
+      <h2>Contagens (value_counts)</h2>
+      <div id="counts"></div>
+    </section>
+
+    <section class="card">
+      <h2>Cascas por combinação (Casca × Chocolate)</h2>
+      <div id="cascas"></div>
+    </section>
+
+    <section class="card">
+      <h2>Tipo × Recheio</h2>
+      <div id="tipoRecheio"></div>
+    </section>
+
+    <section class="card">
+      <h2>Tipo × Chocolate</h2>
+      <div id="tipoChocolate"></div>
+    </section>
+
+    <section class="card">
+      <h2>Gasto por Chocolate (gramas)</h2>
+      <div id="gasto"></div>
+    </section>
+
+    <section class="card">
+      <h2>Docinhos (regras do ipynb)</h2>
+      <div id="docinhos"></div>
+      <h3>Ingredientes totais</h3>
+      <div id="ingredientes"></div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
