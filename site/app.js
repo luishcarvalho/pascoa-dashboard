@@ -19,6 +19,10 @@ function toKeyValueTable(obj) {
 async function loadMetrics(bustCache=false) {
   try {
     setStatus("Carregando...");
+
+    // garante que funciona em GitHub Pages /<repo>/
+    const base = window.location.pathname.replace(/\/[^\/]*$/, "/"); 
+    
     const url = `data/metrics.json${bustCache ? `?t=${Date.now()}` : ""}`;
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
