@@ -61,8 +61,8 @@ async function loadMetrics(bustCache=false) {
 
     setStatus("OK ✔");
   } catch (e) {
-    console.error(e);
-    setStatus("Erro ao carregar métricas.");
+  console.error(e);
+  setStatus(`Erro: ${e.message}`);
   }
 }
 
