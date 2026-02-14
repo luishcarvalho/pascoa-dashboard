@@ -1,5 +1,8 @@
 import json
+import math
+import os
 from datetime import datetime, timezone
+
 import pandas as pd
 
 SHEET_ID = "14d8qkw1bD1m2k1M6IMZudDQ63dLhoxqhPUJy2qdxXLE"
@@ -38,10 +41,34 @@ RECEITAS_DOCINHOS = {
 DOCINHOS_POR_RECEITA = 20
 
 
+def json_sanitize(x):
+    """
+    Converte NaN/Inf -> None e garante estruturas serializáveis em JSON.
+    Também converte chaves para string (JSON exige chaves string).
+    """
+    if isinstance(x, dict):
+        return {str(k): json_sanitize(v) for k, v in x.items()}
+    if isinstance(x, (list, tuple)):
+        return [json_sanitize(v) for v in x]
+    if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+        return None
+    return x
+
+
 def safe_value_counts(df: pd.DataFrame, col: str):
+    """
+    value_counts seguro:
+    - remove NaN
+    - normaliza strings
+    - converte contagens para int (evita numpy.int64 no JSON)
+    """
     if col not in df.columns:
         return {}
-    return df[col].fillna("").astype(str).replace("nan", "").value_counts().to_dict()
+
+    s = df[col].fillna("").astype(str).str.strip()
+    s = s.replace({"nan": "", "None": ""})
+    vc = s.value_counts()
+    return {str(k): int(v) for k, v in vc.items()}
 
 
 def main():
@@ -65,12 +92,14 @@ def main():
     }
 
     # Tipo x Recheio (como no ipynb)
-    if "Tipo" in df.columns and "Recheio" in df.columns:
+    if {"Tipo", "Recheio"}.issubset(df.columns):
         tipo_recheio = (
             df[["Tipo", "Recheio"]]
+            .fillna("")  # evita NaN indo para JSON
             .value_counts(dropna=False)
             .reset_index(name="quantidade")
         )
+        tipo_recheio["quantidade"] = tipo_recheio["quantidade"].astype(int)
         metrics["tipo_recheio"] = tipo_recheio.to_dict(orient="records")
     else:
         metrics["tipo_recheio"] = []
@@ -78,7 +107,7 @@ def main():
     # Cascas por combinação (Casca, Chocolate) com regra do Trufado=2
     if {"Tipo", "Casca", "Chocolate"}.issubset(df.columns):
         tmp = df.copy()
-        tmp["cascas_ajustadas"] = tmp["Tipo"].fillna("").astype(str).str.lower().apply(
+        tmp["cascas_ajustadas"] = tmp["Tipo"].fillna("").astype(str).str.strip().str.lower().apply(
             lambda x: 2 if x == "trufado" else 1
         )
         cascas_por = (
@@ -87,6 +116,8 @@ def main():
             .reset_index(name="Quantidade de cascas")
             .sort_values(by="Quantidade de cascas", ascending=False)
         )
+        cascas_por[["Casca", "Chocolate"]] = cascas_por[["Casca", "Chocolate"]].fillna("")
+        cascas_por["Quantidade de cascas"] = cascas_por["Quantidade de cascas"].astype(int)
         metrics["cascas_por_combinacao"] = cascas_por.to_dict(orient="records")
     else:
         metrics["cascas_por_combinacao"] = []
@@ -95,31 +126,34 @@ def main():
     if {"Tipo", "Chocolate"}.issubset(df.columns):
         tipo_choc = (
             df[["Tipo", "Chocolate"]]
+            .fillna("")
             .value_counts(dropna=False)
             .reset_index(name="quantidade")
         )
+        tipo_choc["quantidade"] = tipo_choc["quantidade"].astype(int)
         metrics["tipo_chocolate"] = tipo_choc.to_dict(orient="records")
     else:
         metrics["tipo_chocolate"] = []
 
     # Gasto por chocolate (peso total por Chocolate)
     if {"Tipo", "Chocolate"}.issubset(df.columns):
+
         def peso_tipo(t):
-            t = str(t)
+            t = str(t).strip()
             return PESOS.get(t, 0)
 
         gasto = df.groupby("Chocolate")["Tipo"].apply(lambda s: int(sum(peso_tipo(x) for x in s)))
-        metrics["gasto_por_chocolate_gramas"] = gasto.to_dict()
+        metrics["gasto_por_chocolate_gramas"] = {str(k): int(v) for k, v in gasto.to_dict().items()}
     else:
         metrics["gasto_por_chocolate_gramas"] = {}
 
     # Contagem de docinhos por topping (igual seu ipynb)
     docinhos = {"Morango": 0, "Brigadeiro": 0, "Ninho": 0, "Ferrero": 0}
     if "Docinho" in df.columns:
-        for valor in df["Docinho"].fillna("").astype(str):
+        for valor in df["Docinho"].fillna("").astype(str).str.strip():
             if valor in TOPPINGS:
                 for tipo, qtd in TOPPINGS[valor].items():
-                    docinhos[tipo] += qtd
+                    docinhos[tipo] += int(qtd)
     metrics["docinhos_totais"] = docinhos
 
     # Ingredientes totais (Brigadeiro/Ninho)
@@ -131,15 +165,18 @@ def main():
     }
     for tipo, qtd in docinhos.items():
         if tipo in RECEITAS_DOCINHOS:
-            proporcao = qtd / DOCINHOS_POR_RECEITA
+            proporcao = float(qtd) / float(DOCINHOS_POR_RECEITA)
             for ing, base in RECEITAS_DOCINHOS[tipo].items():
-                ingredientes[ing] += base * proporcao
+                ingredientes[ing] += float(base) * proporcao
     metrics["ingredientes_docinhos_total"] = {k: round(v, 2) for k, v in ingredientes.items()}
 
+    # 🔥 SANITIZA TUDO (NaN/Inf -> null) antes de salvar
+    metrics = json_sanitize(metrics)
+
     # Salvar no site
-    out_path = "dist/data/metrics.json"
-    import os
-    os.makedirs("dist/data", exist_ok=True)
+    output_dir = os.path.join("dist", "data")
+    os.makedirs(output_dir, exist_ok=True)
+    out_path = os.path.join(output_dir, "metrics.json")
 
     with open(out_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, ensure_ascii=False, indent=2)
