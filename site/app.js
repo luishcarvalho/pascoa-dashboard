@@ -146,5 +146,6 @@ document.getElementById("btnRefresh").addEventListener("click", () => loadMetric
 // carrega ao abrir
 loadMetrics(true);
 
-// auto-refresh a cada 1h (no navegador)
-setInterval(() => loadMetrics(true), 60 * 60 * 1000);
+// auto-refresh a cada 10 minutos (no navegador)
+setInterval(() => loadMetrics(true), 10 * 60 * 1000);
+
