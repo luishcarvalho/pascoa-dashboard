@@ -12,3 +12,33 @@ button { padding: 10px 14px; border: 0; border-radius: 10px; cursor: pointer; fo
 table { width: 100%; border-collapse: collapse; }
 th, td { padding: 8px; border-bottom: 1px solid #24243a; text-align: left; vertical-align: top; }
 th { opacity: .85; }
+
+/* Botão elegante com loading */
+#btnRefresh {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+#btnRefresh:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* spinner */
+#btnRefresh.is-loading::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  border: 2px solid rgba(0,0,0,0.25);
+  border-top-color: rgba(0,0,0,0.75);
+  animation: spin .8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
