@@ -42,17 +42,28 @@ DOCINHOS_POR_RECEITA = 20
 
 
 def json_sanitize(x):
-    """
-    Converte NaN/Inf -> None e garante estruturas serializáveis em JSON.
-    Também converte chaves para string (JSON exige chaves string).
-    """
+    # pandas/numpy: NaN/NaT
+    if x is None:
+        return None
+
+    # pega NaN/NaT de pandas/numpy
+    try:
+        if pd.isna(x):
+            return None
+    except Exception:
+        pass
+
     if isinstance(x, dict):
         return {str(k): json_sanitize(v) for k, v in x.items()}
     if isinstance(x, (list, tuple)):
         return [json_sanitize(v) for v in x]
-    if isinstance(x, float) and (math.isnan(x) or math.isinf(x)):
+
+    # inf/-inf
+    if isinstance(x, (float, int)) and isinstance(x, float) and (math.isinf(x) or math.isnan(x)):
         return None
+
     return x
+
 
 
 def safe_value_counts(df: pd.DataFrame, col: str):
