@@ -81,16 +81,12 @@ def safe_value_counts(df: pd.DataFrame, col: str):
     vc = s.value_counts()
     return {str(k): int(v) for k, v in vc.items()}
 
-
-def main():
-    df = pd.read_csv(CSV_URL)
-
+def compute_metrics(df: pd.DataFrame) -> dict:
     # Normalizar nomes (evita dor de cabeça com espaços)
+    df = df.copy()
     df.columns = [c.strip() for c in df.columns]
 
-    # Métricas simples
     metrics = {}
-    metrics["last_updated_utc"] = datetime.now(timezone.utc).isoformat()
     metrics["n_rows"] = int(len(df))
     metrics["counts"] = {
         "Tipo": safe_value_counts(df, "Tipo"),
@@ -99,14 +95,14 @@ def main():
         "Recheio": safe_value_counts(df, "Recheio"),
         "Docinho": safe_value_counts(df, "Docinho"),
         "Criança?": safe_value_counts(df, "Criança?"),
-        "Dia Entrega": safe_value_counts(df, "Dia Entrega"),  # se existir
+        "Dia Entrega": safe_value_counts(df, "Dia Entrega"),
     }
 
-    # Tipo x Recheio (como no ipynb)
+    # Tipo x Recheio
     if {"Tipo", "Recheio"}.issubset(df.columns):
         tipo_recheio = (
             df[["Tipo", "Recheio"]]
-            .fillna("")  # evita NaN indo para JSON
+            .fillna("")
             .value_counts(dropna=False)
             .reset_index(name="quantidade")
         )
@@ -133,7 +129,7 @@ def main():
     else:
         metrics["cascas_por_combinacao"] = []
 
-    # Tipo x Chocolate (contagem)
+    # Tipo x Chocolate
     if {"Tipo", "Chocolate"}.issubset(df.columns):
         tipo_choc = (
             df[["Tipo", "Chocolate"]]
@@ -148,7 +144,6 @@ def main():
 
     # Gasto por chocolate (peso total por Chocolate)
     if {"Tipo", "Chocolate"}.issubset(df.columns):
-
         def peso_tipo(t):
             t = str(t).strip()
             return PESOS.get(t, 0)
@@ -158,7 +153,7 @@ def main():
     else:
         metrics["gasto_por_chocolate_gramas"] = {}
 
-    # Contagem de docinhos por topping (igual seu ipynb)
+    # Docinhos
     docinhos = {"Morango": 0, "Brigadeiro": 0, "Ninho": 0, "Ferrero": 0}
     if "Docinho" in df.columns:
         for valor in df["Docinho"].fillna("").astype(str).str.strip():
@@ -167,7 +162,7 @@ def main():
                     docinhos[tipo] += int(qtd)
     metrics["docinhos_totais"] = docinhos
 
-    # Ingredientes totais (Brigadeiro/Ninho)
+    # Ingredientes totais
     ingredientes = {
         "Leite Condensado": 0.0,
         "Leite em Pó (Colher)": 0.0,
@@ -181,18 +176,51 @@ def main():
                 ingredientes[ing] += float(base) * proporcao
     metrics["ingredientes_docinhos_total"] = {k: round(v, 2) for k, v in ingredientes.items()}
 
-    # 🔥 SANITIZA TUDO (NaN/Inf -> null) antes de salvar
-    metrics = json_sanitize(metrics)
+    return metrics
 
-    # Salvar no site
+
+def normalize_day_value(x) -> str:
+    # garante chave consistente: "19", "20", etc.
+    s = "" if pd.isna(x) else str(x).strip()
+    return s
+
+def main():
+    df = pd.read_csv(CSV_URL)
+    df.columns = [c.strip() for c in df.columns]
+
+    payload = {}
+    payload["last_updated_utc"] = datetime.now(timezone.utc).isoformat()
+
+    # ✅ Geral
+    payload["overall"] = compute_metrics(df)
+
+    # ✅ Por dia
+    per_day = {}
+    if "Dia Entrega" in df.columns:
+        tmp = df.copy()
+        tmp["_day"] = tmp["Dia Entrega"].apply(normalize_day_value)
+
+        # remove vazios
+        tmp = tmp[tmp["_day"] != ""]
+
+        for day_value, g in tmp.groupby("_day", dropna=False):
+            per_day[str(day_value)] = compute_metrics(g.drop(columns=["_day"]))
+
+    payload["per_day"] = per_day
+    payload["available_days"] = sorted(per_day.keys(), key=lambda x: (len(x), x))
+
+    # sanitize + salvar
+    payload = json_sanitize(payload)
+
     output_dir = os.path.join("dist", "data")
     os.makedirs(output_dir, exist_ok=True)
     out_path = os.path.join(output_dir, "metrics.json")
 
     with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(metrics, f, ensure_ascii=False, indent=2, allow_nan=False)
+        json.dump(payload, f, ensure_ascii=False, indent=2, allow_nan=False)
 
     print(f"OK: gerado {out_path}")
+
 
 
 if __name__ == "__main__":
