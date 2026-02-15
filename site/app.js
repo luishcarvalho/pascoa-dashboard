@@ -2,7 +2,7 @@ const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
 let lastUpdatedIso = null;
 let timeAgoIntervalId = null;
 
-// ✅ novo: guarda o JSON inteiro (overall + per_day)
+// guarda o JSON inteiro (novo: overall + per_day)
 let metricsPayload = null;
 
 const statusEl = document.getElementById("status");
@@ -15,7 +15,7 @@ function toTable(rows, cols) {
   if (!rows || rows.length === 0) return "<p class='small'>Sem dados.</p>";
   const head = `<tr>${cols.map(c => `<th>${c}</th>`).join("")}</tr>`;
   const body = rows
-    .map(r => `<tr>${cols.map(c => `<td>${(r[c] ?? "")}</td>`).join("")}</tr>`)
+    .map(r => `<tr>${cols.map(c => `<td>${(r?.[c] ?? "")}</td>`).join("")}</tr>`)
     .join("");
   return `<table>${head}${body}</table>`;
 }
@@ -27,7 +27,6 @@ function toKeyValueTable(obj) {
 
 /**
  * Helpers: data/hora Brasil (UTC-3 fixo) + "Atualizado há X ..."
- * (não depende do fuso do computador do usuário)
  */
 function pad2(n) {
   return String(n).padStart(2, "0");
@@ -83,17 +82,35 @@ function startOrRefreshTimeAgoTimer() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Dropdown: Geral vs Dia                                              */
+/* Dropdown: Geral vs Dia (com fallback)                               */
 /* ------------------------------------------------------------------ */
+function hasDayData() {
+  const days = metricsPayload?.available_days || Object.keys(metricsPayload?.per_day || {});
+  return Array.isArray(days) && days.length > 0;
+}
+
 function populateDaySelect() {
   const el = document.getElementById("daySelect");
-  if (!el || !metricsPayload) return;
+  if (!el) return;
+
+  // Sem dados por dia: esconde/desabilita e deixa só "Geral"
+  if (!metricsPayload || !hasDayData()) {
+    el.innerHTML = `<option value="overall">Geral (todos os dias)</option>`;
+    el.value = "overall";
+    el.disabled = true;       // ✅ evita dropdown “estranho”
+    el.style.display = "none"; // ✅ some da UI quando não tem por-dia
+    return;
+  }
+
+  el.disabled = false;
+  el.style.display = ""; // mostra
 
   const days =
     metricsPayload.available_days ||
     Object.keys(metricsPayload.per_day || {}).sort((a, b) => String(a).localeCompare(String(b), "pt-BR"));
 
   const current = el.value || "overall";
+
   el.innerHTML = `
     <option value="overall">Geral (todos os dias)</option>
     ${days.map(d => `<option value="${d}">Dia ${d}</option>`).join("")}
@@ -104,8 +121,10 @@ function populateDaySelect() {
 
 function getSelectedMetrics() {
   if (!metricsPayload) return null;
+
+  // fallback se dropdown não existir
   const el = document.getElementById("daySelect");
-  const sel = (el && el.value) ? el.value : "overall";
+  const sel = el?.value || "overall";
 
   if (sel === "overall") return metricsPayload.overall || null;
 
@@ -118,7 +137,6 @@ function renderView(m) {
 
   const last = lastUpdatedIso;
 
-  // Resumo
   document.getElementById("summary").innerHTML = `
     <div class="kpi">
       <div class="label">Total de linhas</div>
@@ -134,39 +152,28 @@ function renderView(m) {
 
   startOrRefreshTimeAgoTimer();
 
-  // Contagens
   const counts = m.counts || {};
   document.getElementById("counts").innerHTML = Object.keys(counts)
-    .map(
-      k => `
-      <h3>${k}</h3>
-      ${toKeyValueTable(counts[k])}
-    `
-    )
+    .map(k => `<h3>${k}</h3>${toKeyValueTable(counts[k])}`)
     .join("");
 
-  document.getElementById("cascas").innerHTML = toTable(
-    m.cascas_por_combinacao,
-    ["Casca", "Chocolate", "Quantidade de cascas"]
-  );
+  document.getElementById("cascas").innerHTML =
+    toTable(m.cascas_por_combinacao, ["Casca", "Chocolate", "Quantidade de cascas"]);
 
-  document.getElementById("tipoRecheio").innerHTML = toTable(m.tipo_recheio, [
-    "Tipo",
-    "Recheio",
-    "quantidade",
-  ]);
+  document.getElementById("tipoRecheio").innerHTML =
+    toTable(m.tipo_recheio, ["Tipo", "Recheio", "quantidade"]);
 
-  document.getElementById("tipoChocolate").innerHTML = toTable(m.tipo_chocolate, [
-    "Tipo",
-    "Chocolate",
-    "quantidade",
-  ]);
+  document.getElementById("tipoChocolate").innerHTML =
+    toTable(m.tipo_chocolate, ["Tipo", "Chocolate", "quantidade"]);
 
-  document.getElementById("gasto").innerHTML = toKeyValueTable(m.gasto_por_chocolate_gramas);
+  document.getElementById("gasto").innerHTML =
+    toKeyValueTable(m.gasto_por_chocolate_gramas);
 
-  document.getElementById("docinhos").innerHTML = toKeyValueTable(m.docinhos_totais);
+  document.getElementById("docinhos").innerHTML =
+    toKeyValueTable(m.docinhos_totais);
 
-  document.getElementById("ingredientes").innerHTML = toKeyValueTable(m.ingredientes_docinhos_total);
+  document.getElementById("ingredientes").innerHTML =
+    toKeyValueTable(m.ingredientes_docinhos_total);
 }
 /* ------------------------------------------------------------------ */
 
@@ -230,6 +237,19 @@ async function runUpdateFlow() {
 }
 /* ------------------------------------------------------------------ */
 
+function normalizePayload(data) {
+  // ✅ Se já veio no formato novo, beleza
+  if (data && typeof data === "object" && data.overall) return data;
+
+  // ✅ Fallback: formato antigo (sem overall/per_day)
+  return {
+    last_updated_utc: data?.last_updated_utc || null,
+    overall: data || {},
+    per_day: {},
+    available_days: [],
+  };
+}
+
 async function loadMetrics(bustCache = false) {
   try {
     setStatus("Carregando...");
@@ -240,17 +260,13 @@ async function loadMetrics(bustCache = false) {
     const res = await fetch(url, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
-    const data = await res.json();
+    const raw = await res.json();
 
-    // ✅ novo formato esperado:
-    // { last_updated_utc, overall, per_day, available_days }
-    metricsPayload = data;
-    lastUpdatedIso = data.last_updated_utc || null;
+    metricsPayload = normalizePayload(raw);
+    lastUpdatedIso = metricsPayload.last_updated_utc || null;
 
-    // atualiza dropdown e renderiza conforme seleção
     populateDaySelect();
-    const selected = getSelectedMetrics();
-    renderView(selected);
+    renderView(getSelectedMetrics());
 
     setStatus("OK ✔");
   } catch (e) {
@@ -259,13 +275,12 @@ async function loadMetrics(bustCache = false) {
   }
 }
 
-// ✅ dropdown troca a visão sem recarregar dados
+// dropdown troca a visão
 document.getElementById("daySelect")?.addEventListener("change", () => {
-  const selected = getSelectedMetrics();
-  renderView(selected);
+  renderView(getSelectedMetrics());
 });
 
-// ✅ Botão elegante: dispara workflow + bloqueia + mostra status
+// botão dispara workflow
 document.getElementById("btnRefresh").addEventListener("click", async () => {
   try {
     await runUpdateFlow();
