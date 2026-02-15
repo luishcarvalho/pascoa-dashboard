@@ -21,9 +21,13 @@ function toTable(rows, cols) {
 }
 
 function toKeyValueTable(obj) {
-  const rows = Object.entries(obj || {}).map(([k, v]) => ({ chave: k, valor: v }));
-  return toTable(rows, ["chave", "valor"]);
+  const rows = Object.entries(obj || {}).map(([k, v]) => ({
+    Item: k,
+    Quantidade: v,
+  }));
+  return toTable(rows, ["Item", "Quantidade"]);
 }
+
 
 /**
  * Helpers: data/hora Brasil (UTC-3 fixo) + "Atualizado há X ..."
