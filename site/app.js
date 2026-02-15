@@ -238,17 +238,34 @@ async function runUpdateFlow() {
 /* ------------------------------------------------------------------ */
 
 function normalizePayload(data) {
-  // ✅ Se já veio no formato novo, beleza
-  if (data && typeof data === "object" && data.overall) return data;
+  if (!data || typeof data !== "object") {
+    return {
+      last_updated_utc: null,
+      overall: {},
+      per_day: {},
+      available_days: []
+    };
+  }
 
-  // ✅ Fallback: formato antigo (sem overall/per_day)
+  // Formato novo correto
+  if (data.overall && typeof data.overall === "object") {
+    return {
+      last_updated_utc: data.last_updated_utc || null,
+      overall: data.overall,
+      per_day: data.per_day || {},
+      available_days: data.available_days || Object.keys(data.per_day || {})
+    };
+  }
+
+  // Formato antigo
   return {
-    last_updated_utc: data?.last_updated_utc || null,
-    overall: data || {},
+    last_updated_utc: data.last_updated_utc || null,
+    overall: data,
     per_day: {},
-    available_days: [],
+    available_days: []
   };
 }
+
 
 async function loadMetrics(bustCache = false) {
   try {
