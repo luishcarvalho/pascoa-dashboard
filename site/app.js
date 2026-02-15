@@ -2,6 +2,9 @@ const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
 let lastUpdatedIso = null;
 let timeAgoIntervalId = null;
 
+// ✅ novo: guarda o JSON inteiro (overall + per_day)
+let metricsPayload = null;
+
 const statusEl = document.getElementById("status");
 
 function setStatus(msg) {
@@ -33,7 +36,6 @@ function pad2(n) {
 function toBRDateUTCminus3(isoString) {
   if (!isoString) return null;
   const d = new Date(isoString);
-  // aplica offset fixo -03:00
   return new Date(d.getTime() - 3 * 60 * 60 * 1000);
 }
 
@@ -41,7 +43,6 @@ function formatDateBR_UTCminus3(isoString) {
   const br = toBRDateUTCminus3(isoString);
   if (!br) return "-";
 
-  // usar getters UTC porque já “deslocamos” o timestamp
   const dia = pad2(br.getUTCDate());
   const mes = pad2(br.getUTCMonth() + 1);
   const ano = br.getUTCFullYear();
@@ -78,8 +79,96 @@ function startOrRefreshTimeAgoTimer() {
   timeAgoIntervalId = setInterval(() => {
     const el = document.getElementById("timeAgo");
     if (el && lastUpdatedIso) el.textContent = timeAgo(lastUpdatedIso);
-  }, 10 * 1000); // atualiza a cada 10s
+  }, 10 * 1000);
 }
+
+/* ------------------------------------------------------------------ */
+/* Dropdown: Geral vs Dia                                              */
+/* ------------------------------------------------------------------ */
+function populateDaySelect() {
+  const el = document.getElementById("daySelect");
+  if (!el || !metricsPayload) return;
+
+  const days =
+    metricsPayload.available_days ||
+    Object.keys(metricsPayload.per_day || {}).sort((a, b) => String(a).localeCompare(String(b), "pt-BR"));
+
+  const current = el.value || "overall";
+  el.innerHTML = `
+    <option value="overall">Geral (todos os dias)</option>
+    ${days.map(d => `<option value="${d}">Dia ${d}</option>`).join("")}
+  `;
+
+  el.value = days.includes(current) ? current : "overall";
+}
+
+function getSelectedMetrics() {
+  if (!metricsPayload) return null;
+  const el = document.getElementById("daySelect");
+  const sel = (el && el.value) ? el.value : "overall";
+
+  if (sel === "overall") return metricsPayload.overall || null;
+
+  const byDay = metricsPayload.per_day || {};
+  return byDay[sel] || metricsPayload.overall || null;
+}
+
+function renderView(m) {
+  if (!m) return;
+
+  const last = lastUpdatedIso;
+
+  // Resumo
+  document.getElementById("summary").innerHTML = `
+    <div class="kpi">
+      <div class="label">Total de linhas</div>
+      <div class="value">${m.n_rows ?? "-"}</div>
+    </div>
+
+    <div class="kpi">
+      <div class="label">Última atualização (Brasil - UTC-3)</div>
+      <div class="value" style="font-size:14px">${formatDateBR_UTCminus3(last)}</div>
+      <div id="timeAgo" class="label" style="margin-top:6px">${timeAgo(last)}</div>
+    </div>
+  `;
+
+  startOrRefreshTimeAgoTimer();
+
+  // Contagens
+  const counts = m.counts || {};
+  document.getElementById("counts").innerHTML = Object.keys(counts)
+    .map(
+      k => `
+      <h3>${k}</h3>
+      ${toKeyValueTable(counts[k])}
+    `
+    )
+    .join("");
+
+  document.getElementById("cascas").innerHTML = toTable(
+    m.cascas_por_combinacao,
+    ["Casca", "Chocolate", "Quantidade de cascas"]
+  );
+
+  document.getElementById("tipoRecheio").innerHTML = toTable(m.tipo_recheio, [
+    "Tipo",
+    "Recheio",
+    "quantidade",
+  ]);
+
+  document.getElementById("tipoChocolate").innerHTML = toTable(m.tipo_chocolate, [
+    "Tipo",
+    "Chocolate",
+    "quantidade",
+  ]);
+
+  document.getElementById("gasto").innerHTML = toKeyValueTable(m.gasto_por_chocolate_gramas);
+
+  document.getElementById("docinhos").innerHTML = toKeyValueTable(m.docinhos_totais);
+
+  document.getElementById("ingredientes").innerHTML = toKeyValueTable(m.ingredientes_docinhos_total);
+}
+/* ------------------------------------------------------------------ */
 
 /* ------------------------------------------------------------------ */
 /* Botão elegante: loading + bloqueio + mensagens                      */
@@ -88,7 +177,6 @@ function setButtonLoading(isLoading, label) {
   const btn = document.getElementById("btnRefresh");
   if (!btn) return;
 
-  // guarda o texto original do botão
   if (!btn.dataset.originalText) btn.dataset.originalText = btn.textContent;
 
   btn.disabled = isLoading;
@@ -104,7 +192,6 @@ function sleep(ms) {
 async function runUpdateFlow() {
   const previous = lastUpdatedIso;
 
-  // 1) Dispara workflow via Cloudflare Worker
   setStatus("Disparando atualização no servidor…");
   setButtonLoading(true, "Disparando…");
 
@@ -117,12 +204,10 @@ async function runUpdateFlow() {
   const txt = await r.text();
   if (!r.ok) throw new Error(txt || `HTTP ${r.status}`);
 
-  // 2) Aguarda alguns segundos para o Actions iniciar
   setStatus("Workflow iniciado. Aguardando processamento…");
   setButtonLoading(true, "Aguardando…");
   await sleep(15000);
 
-  // 3) Poll no metrics.json até mudar last_updated_utc
   const start = Date.now();
   const timeoutMs = 3 * 60 * 1000; // 3 min
   const intervalMs = 8000; // 8s
@@ -131,7 +216,7 @@ async function runUpdateFlow() {
     setStatus("Buscando novas métricas publicadas…");
     setButtonLoading(true, "Atualizando…");
 
-    await loadMetrics(true); // força buscar JSON novo
+    await loadMetrics(true);
 
     if (lastUpdatedIso && lastUpdatedIso !== previous) {
       setStatus("Atualizado ✔");
@@ -149,7 +234,6 @@ async function loadMetrics(bustCache = false) {
   try {
     setStatus("Carregando...");
 
-    // garante que funciona em GitHub Pages /<repo>/
     const base = window.location.pathname.replace(/\/[^\/]*$/, "/");
     const url = `${base}data/metrics.json${bustCache ? `?t=${Date.now()}` : ""}`;
 
@@ -157,62 +241,16 @@ async function loadMetrics(bustCache = false) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
     const data = await res.json();
+
+    // ✅ novo formato esperado:
+    // { last_updated_utc, overall, per_day, available_days }
+    metricsPayload = data;
     lastUpdatedIso = data.last_updated_utc || null;
 
-    const last = data.last_updated_utc;
-
-    // Resumo
-    document.getElementById("summary").innerHTML = `
-      <div class="kpi">
-        <div class="label">Total de linhas</div>
-        <div class="value">${data.n_rows ?? "-"}</div>
-      </div>
-
-      <div class="kpi">
-        <div class="label">Última atualização (Brasil - UTC-3)</div>
-        <div class="value" style="font-size:14px">${formatDateBR_UTCminus3(last)}</div>
-        <div id="timeAgo" class="label" style="margin-top:6px">${timeAgo(last)}</div>
-      </div>
-    `;
-
-    // inicia/renova o timer do "Atualizado há..."
-    startOrRefreshTimeAgoTimer();
-
-    // Contagens
-    const counts = data.counts || {};
-    document.getElementById("counts").innerHTML = Object.keys(counts)
-      .map(
-        k => `
-      <h3>${k}</h3>
-      ${toKeyValueTable(counts[k])}
-    `
-      )
-      .join("");
-
-    document.getElementById("cascas").innerHTML = toTable(
-      data.cascas_por_combinacao,
-      ["Casca", "Chocolate", "Quantidade de cascas"]
-    );
-
-    document.getElementById("tipoRecheio").innerHTML = toTable(data.tipo_recheio, [
-      "Tipo",
-      "Recheio",
-      "quantidade",
-    ]);
-
-    document.getElementById("tipoChocolate").innerHTML = toTable(data.tipo_chocolate, [
-      "Tipo",
-      "Chocolate",
-      "quantidade",
-    ]);
-
-    document.getElementById("gasto").innerHTML = toKeyValueTable(data.gasto_por_chocolate_gramas);
-
-    document.getElementById("docinhos").innerHTML = toKeyValueTable(data.docinhos_totais);
-
-    document.getElementById("ingredientes").innerHTML = toKeyValueTable(
-      data.ingredientes_docinhos_total
-    );
+    // atualiza dropdown e renderiza conforme seleção
+    populateDaySelect();
+    const selected = getSelectedMetrics();
+    renderView(selected);
 
     setStatus("OK ✔");
   } catch (e) {
@@ -220,6 +258,12 @@ async function loadMetrics(bustCache = false) {
     setStatus(`Erro: ${e.message}`);
   }
 }
+
+// ✅ dropdown troca a visão sem recarregar dados
+document.getElementById("daySelect")?.addEventListener("change", () => {
+  const selected = getSelectedMetrics();
+  renderView(selected);
+});
 
 // ✅ Botão elegante: dispara workflow + bloqueia + mostra status
 document.getElementById("btnRefresh").addEventListener("click", async () => {
