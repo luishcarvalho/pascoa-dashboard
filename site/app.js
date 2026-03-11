@@ -161,8 +161,8 @@ function renderView(m) {
     .map(k => `<h3>${k}</h3>${toKeyValueTable(counts[k])}`)
     .join("");
 
-  document.getElementById("cascas").innerHTML =
-    toTable(m.cascas_por_combinacao, ["Casca", "Chocolate", "Quantidade de cascas"]);
+  document.getElementById("cascas").innerHTML = 
+    toTable(m.cascas_por_combinacao,["Chocolate", "Quantidade de cascas"]);
 
   document.getElementById("tipoRecheio").innerHTML =
     toTable(m.tipo_recheio, ["Tipo", "Recheio", "quantidade"]);
