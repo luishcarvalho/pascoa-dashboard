@@ -157,8 +157,18 @@ function renderView(m) {
   startOrRefreshTimeAgoTimer();
 
   const counts = m.counts || {};
-  document.getElementById("counts").innerHTML = Object.keys(counts)
-    .map(k => `<h3>${k}</h3>${toKeyValueTable(counts[k])}`)
+  
+  // seções que queremos mostrar
+  const allowedSections = ["Tipo", "Infantil", "Dia Entrega", "Turno"];
+  
+  document.getElementById("counts").innerHTML = allowedSections
+    .filter(k => counts[k]) // garante que existe no JSON
+    .map(
+      k => `
+        <h3>${k}</h3>
+        ${toKeyValueTable(counts[k])}
+      `
+    )
     .join("");
 
   document.getElementById("cascas").innerHTML = 
