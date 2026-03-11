@@ -91,11 +91,11 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     metrics["counts"] = {
         "Tipo": safe_value_counts(df, "Tipo"),
         "Chocolate": safe_value_counts(df, "Chocolate"),
-        "Casca": safe_value_counts(df, "Casca"),
         "Recheio": safe_value_counts(df, "Recheio"),
         "Docinho": safe_value_counts(df, "Docinho"),
-        "Criança?": safe_value_counts(df, "Criança?"),
+        "Infantil": safe_value_counts(df, "Infantil"),
         "Dia Entrega": safe_value_counts(df, "Dia Entrega"),
+        "Turno": safe_value_counts(df, "Turno"),
     }
 
     # Tipo x Recheio
@@ -111,23 +111,7 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     else:
         metrics["tipo_recheio"] = []
 
-    # Cascas por combinação (Casca, Chocolate) com regra do Trufado=2
-    if {"Tipo", "Casca", "Chocolate"}.issubset(df.columns):
-        tmp = df.copy()
-        tmp["cascas_ajustadas"] = tmp["Tipo"].fillna("").astype(str).str.strip().str.lower().apply(
-            lambda x: 2 if x == "trufado" else 1
-        )
-        cascas_por = (
-            tmp.groupby(["Casca", "Chocolate"], dropna=False)["cascas_ajustadas"]
-            .sum()
-            .reset_index(name="Quantidade de cascas")
-            .sort_values(by="Quantidade de cascas", ascending=False)
-        )
-        cascas_por[["Casca", "Chocolate"]] = cascas_por[["Casca", "Chocolate"]].fillna("")
-        cascas_por["Quantidade de cascas"] = cascas_por["Quantidade de cascas"].astype(int)
-        metrics["cascas_por_combinacao"] = cascas_por.to_dict(orient="records")
-    else:
-        metrics["cascas_por_combinacao"] = []
+    metrics["cascas_por_combinacao"] = []
 
     # Tipo x Chocolate
     if {"Tipo", "Chocolate"}.issubset(df.columns):
