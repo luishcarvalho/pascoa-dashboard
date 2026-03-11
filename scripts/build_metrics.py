@@ -98,10 +98,12 @@ def compute_metrics(df: pd.DataFrame) -> dict:
 
     # Tipo x Recheio
     if {"Tipo", "Recheio"}.issubset(df.columns):
+        tmp = df[["Tipo", "Recheio"]].fillna("").astype(str).apply(lambda x: x.str.strip())
+        
+        tmp = tmp[(tmp["Tipo"] != "") & (tmp["Recheio"] != "")]
+        
         tipo_recheio = (
-            df[["Tipo", "Recheio"]]
-            .fillna("")
-            .value_counts(dropna=False)
+            tmp.value_counts()
             .reset_index(name="quantidade")
         )
         tipo_recheio["quantidade"] = tipo_recheio["quantidade"].astype(int)
@@ -140,10 +142,12 @@ def compute_metrics(df: pd.DataFrame) -> dict:
 
     # Tipo x Chocolate
     if {"Tipo", "Chocolate"}.issubset(df.columns):
+        tmp = df[["Tipo", "Chocolate"]].fillna("").astype(str).apply(lambda x: x.str.strip())
+        
+        tmp = tmp[(tmp["Tipo"] != "") & (tmp["Chocolate"] != "")]
+        
         tipo_choc = (
-            df[["Tipo", "Chocolate"]]
-            .fillna("")
-            .value_counts(dropna=False)
+            tmp.value_counts()
             .reset_index(name="quantidade")
         )
         tipo_choc["quantidade"] = tipo_choc["quantidade"].astype(int)
