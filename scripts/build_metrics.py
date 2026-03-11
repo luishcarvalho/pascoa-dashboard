@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 
 import pandas as pd
 
-SHEET_ID = "14d8qkw1bD1m2k1M6IMZudDQ63dLhoxqhPUJy2qdxXLE"
+SHEET_ID = "1UqiFtW_E0OFiLaoInoEa-UQeR6iswc2Zs0Bg-IR8RA0"
 SHEET_NAME = "Encomendas"
 
 CSV_URL = f"https://docs.google.com/spreadsheets/d/{SHEET_ID}/gviz/tq?tqx=out:csv&sheet={SHEET_NAME}"
