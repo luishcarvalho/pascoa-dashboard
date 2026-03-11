@@ -16,10 +16,10 @@ TOPPINGS = {
     "Ferrero Rocher": {"Brigadeiro": 4, "Ferrero": 2},
     "Brigadeiro e morangos": {"Brigadeiro": 6, "Morango": 3},
     "Brigadeiro": {"Brigadeiro": 7},
-    "Kids": {"Brigadeiro": 2},
+    "Kids": {"Brigadeiro": 2, "Tortuguita": 1, "Fini": 2, "Marshmallow": 2},
+    "Ninho e morangos": {"Ninho": 4, "Morango": 2},
     "Ninho e Brigadeiros": {"Brigadeiro": 3, "Ninho": 4},
     "Morangos": {"Morango": 5},
-    "Ninho e morangos": {"Ninho": 4, "Morango": 3},
     "Ninho e Confeti": {"Ninho": 5},
     "Brigadeiros e Confeti": {"Brigadeiro": 5},
 }
