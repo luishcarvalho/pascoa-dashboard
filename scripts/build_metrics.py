@@ -163,12 +163,12 @@ def compute_metrics(df: pd.DataFrame) -> dict:
         metrics["gasto_por_chocolate_gramas"] = {}
 
     # Docinhos
-    docinhos = {"Morango": 0, "Brigadeiro": 0, "Ninho": 0, "Ferrero": 0}
+    docinhos = {}
     if "Docinho" in df.columns:
         for valor in df["Docinho"].fillna("").astype(str).str.strip():
             if valor in TOPPINGS:
                 for tipo, qtd in TOPPINGS[valor].items():
-                    docinhos[tipo] += int(qtd)
+                    docinhos[tipo] = docinhos.get(tipo, 0) + int(qtd)
     metrics["docinhos_totais"] = docinhos
 
     # Ingredientes totais
