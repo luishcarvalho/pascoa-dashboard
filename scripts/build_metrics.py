@@ -67,17 +67,15 @@ def json_sanitize(x):
 
 
 def safe_value_counts(df: pd.DataFrame, col: str):
-    """
-    value_counts seguro:
-    - remove NaN
-    - normaliza strings
-    - converte contagens para int (evita numpy.int64 no JSON)
-    """
     if col not in df.columns:
         return {}
 
     s = df[col].fillna("").astype(str).str.strip()
     s = s.replace({"nan": "", "None": ""})
+
+    # remove valores vazios
+    s = s[s != ""]
+
     vc = s.value_counts()
     return {str(k): int(v) for k, v in vc.items()}
 
@@ -111,7 +109,34 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     else:
         metrics["tipo_recheio"] = []
 
-    metrics["cascas_por_combinacao"] = []
+    # Quantidade de cascas por chocolate
+    if {"Tipo", "Chocolate"}.issubset(df.columns):
+        tmp = df.copy()
+    
+        tmp["qtd_cascas"] = tmp["Tipo"].fillna("").astype(str).str.strip().str.lower().apply(
+            lambda x: 2 if x == "trufado" else 1 if x == "colher" else 0
+        )
+    
+        cascas_por_chocolate = (
+            tmp.groupby("Chocolate", dropna=False)["qtd_cascas"]
+            .sum()
+            .reset_index(name="Quantidade de cascas")
+            .sort_values(by="Quantidade de cascas", ascending=False)
+        )
+    
+        cascas_por_chocolate["Chocolate"] = cascas_por_chocolate["Chocolate"].fillna("").astype(str).str.strip()
+    
+        # remove chocolates vazios e quantidades zeradas
+        cascas_por_chocolate = cascas_por_chocolate[
+            (cascas_por_chocolate["Chocolate"] != "") &
+            (cascas_por_chocolate["Quantidade de cascas"] > 0)
+        ]
+    
+        cascas_por_chocolate["Quantidade de cascas"] = cascas_por_chocolate["Quantidade de cascas"].astype(int)
+    
+        metrics["cascas_por_combinacao"] = cascas_por_chocolate.to_dict(orient="records")
+    else:
+        metrics["cascas_por_combinacao"] = []
 
     # Tipo x Chocolate
     if {"Tipo", "Chocolate"}.issubset(df.columns):
