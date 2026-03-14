@@ -101,13 +101,13 @@ function populateDaySelect() {
   if (!metricsPayload || !hasDayData()) {
     el.innerHTML = `<option value="overall">Geral (todos os dias)</option>`;
     el.value = "overall";
-    el.disabled = true;       // ✅ evita dropdown “estranho”
-    el.style.display = "none"; // ✅ some da UI quando não tem por-dia
+    el.disabled = true;
+    el.style.display = "none";
     return;
   }
 
   el.disabled = false;
-  el.style.display = ""; // mostra
+  el.style.display = "";
 
   const days =
     metricsPayload.available_days ||
@@ -126,7 +126,6 @@ function populateDaySelect() {
 function getSelectedMetrics() {
   if (!metricsPayload) return null;
 
-  // fallback se dropdown não existir
   const el = document.getElementById("daySelect");
   const sel = el?.value || "overall";
 
@@ -157,12 +156,11 @@ function renderView(m) {
   startOrRefreshTimeAgoTimer();
 
   const counts = m.counts || {};
-  
-  // seções que queremos mostrar
+
   const allowedSections = ["Tipo", "Infantil", "Dia Entrega", "Turno"];
-  
+
   document.getElementById("counts").innerHTML = allowedSections
-    .filter(k => counts[k]) // garante que existe no JSON
+    .filter(k => counts[k])
     .map(
       k => `
         <h3>${k}</h3>
@@ -171,8 +169,8 @@ function renderView(m) {
     )
     .join("");
 
-  document.getElementById("cascas").innerHTML = 
-    toTable(m.cascas_por_combinacao,["Chocolate", "Quantidade de cascas"]);
+  document.getElementById("cascas").innerHTML =
+    toTable(m.cascas_por_combinacao, ["Chocolate", "Quantidade de cascas"]);
 
   document.getElementById("tipoRecheio").innerHTML =
     toTable(m.tipo_recheio, ["Tipo", "Recheio", "quantidade"]);
@@ -188,6 +186,12 @@ function renderView(m) {
 
   document.getElementById("ingredientes").innerHTML =
     toKeyValueTable(m.ingredientes_docinhos_total);
+
+  document.getElementById("receitasRecheios").innerHTML =
+    toKeyValueTable(m.receitas_recheios_total);
+
+  document.getElementById("ingredientesRecheios").innerHTML =
+    toKeyValueTable(m.ingredientes_recheios_total);
 }
 /* ------------------------------------------------------------------ */
 
@@ -230,8 +234,8 @@ async function runUpdateFlow() {
   await sleep(15000);
 
   const start = Date.now();
-  const timeoutMs = 3 * 60 * 1000; // 3 min
-  const intervalMs = 8000; // 8s
+  const timeoutMs = 3 * 60 * 1000;
+  const intervalMs = 8000;
 
   while (Date.now() - start < timeoutMs) {
     setStatus("Buscando novas métricas publicadas…");
@@ -261,7 +265,6 @@ function normalizePayload(data) {
     };
   }
 
-  // Formato novo correto
   if (data.overall && typeof data.overall === "object") {
     return {
       last_updated_utc: data.last_updated_utc || null,
@@ -271,7 +274,6 @@ function normalizePayload(data) {
     };
   }
 
-  // Formato antigo
   return {
     last_updated_utc: data.last_updated_utc || null,
     overall: data,
