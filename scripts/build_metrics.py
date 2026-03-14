@@ -166,17 +166,20 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     df = df.copy()
     df.columns = [c.strip() for c in df.columns]
 
-    metrics = {}
-    if "Nome" in df.columns:
-        nomes_validos = (
-            df["Nome"]
-            .fillna("")
-            .astype(str)
-            .str.strip()
-        )
-        metrics["total_pedidos"] = int((nomes_validos != "").sum())
-    else:
-        metrics["total_pedidos"] = int(len(df))
+# mantém compatibilidade com o front antigo
+metrics["n_rows"] = int(len(df))
+
+    # total de pedidos = linhas com algum nome preenchido
+    nomes_validos = (
+        df["Nome"]
+        .fillna("")
+        .astype(str)
+        .str.strip()
+    )
+    
+    metrics["n_rows"] = int(len(df))  # compatibilidade
+    metrics["total_pedidos"] = int((nomes_validos != "").sum())
+    
     metrics["counts"] = {
         "Tipo": safe_value_counts(df, "Tipo"),
         "Chocolate": safe_value_counts(df, "Chocolate"),
