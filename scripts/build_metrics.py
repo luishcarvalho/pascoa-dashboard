@@ -40,6 +40,73 @@ RECEITAS_DOCINHOS = {
 }
 DOCINHOS_POR_RECEITA = 20
 
+# Ingredientes por 1 receita de recheio
+RECEITAS_RECHEIOS = {
+    "Brigadeiro": {
+        "Leite Condensado": 1,
+        "Creme de Leite": 2,
+        "Chocolate em Pó (Colher)": 3,
+    },
+    "Ninho": {
+        "Leite Condensado": 1,
+        "Creme de Leite": 2,
+        "Leite em Pó (Colher)": 3,
+    },
+    "Maracujá": {
+        "Leite Condensado": 1,
+        "Creme de Leite": 2,
+        "Pó de Sobremesa de Maracujá (Colher)": 1,
+        "Suco Concentrado (ml)": 60,
+    },
+    "Coco": {
+        "Leite Condensado": 1,
+        "Creme de Leite": 2,
+        "Coco Ralado Menina (Pacote)": 1,
+    },
+}
+
+# Quantos ovos 1 receita recheia, por tipo/recheio
+# Observação prática usada no código:
+# - brigadeiro de colher: Ferrero Rocher, Kids e Brigadeiro -> 3 ovos/receita
+# - ninho de colher: Ninho com Nutella, Ninho com morango e Ninho Kids -> 3 ovos/receita
+# - maracujá de colher -> 4 ovos/receita
+# - brigadeiro trufado: Brigadeiro e Ferrero Rocher -> 4 ovos/receita
+# - ninho trufado: Ninho com Nutella -> 4 ovos/receita
+# - maracujá trufado -> 4 ovos/receita
+# - coco trufado: Prestígio -> 4 ovos/receita
+RECHEIO_RULES = [
+    # colher
+    {"tipo": "colher", "recheio": "ferrero rocher", "receita": "Brigadeiro", "ovos_por_receita": 3},
+    {"tipo": "colher", "recheio": "kids", "receita": "Brigadeiro", "ovos_por_receita": 3},
+    {"tipo": "colher", "recheio": "brigadeiro", "receita": "Brigadeiro", "ovos_por_receita": 3},
+
+    {"tipo": "colher", "recheio": "ninho com nutella", "receita": "Ninho", "ovos_por_receita": 3},
+    {"tipo": "colher", "recheio": "ninho com morango", "receita": "Ninho", "ovos_por_receita": 3},
+    {"tipo": "colher", "recheio": "ninho kids", "receita": "Ninho", "ovos_por_receita": 3},
+
+    {"tipo": "colher", "recheio": "maracujá", "receita": "Maracujá", "ovos_por_receita": 4},
+    {"tipo": "colher", "recheio": "maracuja", "receita": "Maracujá", "ovos_por_receita": 4},
+
+    # trufado
+    {"tipo": "trufado", "recheio": "brigadeiro", "receita": "Brigadeiro", "ovos_por_receita": 4},
+    {"tipo": "trufado", "recheio": "ferrero rocher", "receita": "Brigadeiro", "ovos_por_receita": 4},
+
+    {"tipo": "trufado", "recheio": "maracujá", "receita": "Maracujá", "ovos_por_receita": 4},
+    {"tipo": "trufado", "recheio": "maracuja", "receita": "Maracujá", "ovos_por_receita": 4},
+
+    {"tipo": "trufado", "recheio": "ninho com nutella", "receita": "Ninho", "ovos_por_receita": 4},
+
+    {"tipo": "trufado", "recheio": "prestígio", "receita": "Coco", "ovos_por_receita": 4},
+    {"tipo": "trufado", "recheio": "prestigio", "receita": "Coco", "ovos_por_receita": 4},
+]
+
+# recheios que usam nutella
+RECHEIOS_COM_NUTELLA = {
+    "ninho com nutella",
+    "ferrero rocher",
+}
+NUTELLA_GRAMAS_POR_OVO = 60
+
 
 def json_sanitize(x):
     # pandas/numpy: NaN/NaT
@@ -65,7 +132,6 @@ def json_sanitize(x):
     return x
 
 
-
 def safe_value_counts(df: pd.DataFrame, col: str):
     if col not in df.columns:
         return {}
@@ -78,6 +144,22 @@ def safe_value_counts(df: pd.DataFrame, col: str):
 
     vc = s.value_counts()
     return {str(k): int(v) for k, v in vc.items()}
+
+
+def normalize_text(s: str) -> str:
+    return str(s).strip().lower()
+
+
+def get_recheio_rule(tipo: str, recheio: str):
+    tipo_n = normalize_text(tipo)
+    recheio_n = normalize_text(recheio)
+
+    for rule in RECHEIO_RULES:
+        if rule["tipo"] == tipo_n and rule["recheio"] == recheio_n:
+            return rule
+
+    return None
+
 
 def compute_metrics(df: pd.DataFrame) -> dict:
     # Normalizar nomes (evita dor de cabeça com espaços)
@@ -99,9 +181,9 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     # Tipo x Recheio
     if {"Tipo", "Recheio"}.issubset(df.columns):
         tmp = df[["Tipo", "Recheio"]].fillna("").astype(str).apply(lambda x: x.str.strip())
-        
+
         tmp = tmp[(tmp["Tipo"] != "") & (tmp["Recheio"] != "")]
-        
+
         tipo_recheio = (
             tmp.value_counts()
             .reset_index(name="quantidade")
@@ -114,28 +196,28 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     # Quantidade de cascas por chocolate
     if {"Tipo", "Chocolate"}.issubset(df.columns):
         tmp = df.copy()
-    
+
         tmp["qtd_cascas"] = tmp["Tipo"].fillna("").astype(str).str.strip().str.lower().apply(
             lambda x: 2 if x == "trufado" else 1 if x == "colher" else 0
         )
-    
+
         cascas_por_chocolate = (
             tmp.groupby("Chocolate", dropna=False)["qtd_cascas"]
             .sum()
             .reset_index(name="Quantidade de cascas")
             .sort_values(by="Quantidade de cascas", ascending=False)
         )
-    
+
         cascas_por_chocolate["Chocolate"] = cascas_por_chocolate["Chocolate"].fillna("").astype(str).str.strip()
-    
+
         # remove chocolates vazios e quantidades zeradas
         cascas_por_chocolate = cascas_por_chocolate[
             (cascas_por_chocolate["Chocolate"] != "") &
             (cascas_por_chocolate["Quantidade de cascas"] > 0)
         ]
-    
+
         cascas_por_chocolate["Quantidade de cascas"] = cascas_por_chocolate["Quantidade de cascas"].astype(int)
-    
+
         metrics["cascas_por_combinacao"] = cascas_por_chocolate.to_dict(orient="records")
     else:
         metrics["cascas_por_combinacao"] = []
@@ -143,9 +225,9 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     # Tipo x Chocolate
     if {"Tipo", "Chocolate"}.issubset(df.columns):
         tmp = df[["Tipo", "Chocolate"]].fillna("").astype(str).apply(lambda x: x.str.strip())
-        
+
         tmp = tmp[(tmp["Tipo"] != "") & (tmp["Chocolate"] != "")]
-        
+
         tipo_choc = (
             tmp.value_counts()
             .reset_index(name="quantidade")
@@ -175,7 +257,7 @@ def compute_metrics(df: pd.DataFrame) -> dict:
                     docinhos[tipo] = docinhos.get(tipo, 0) + int(qtd)
     metrics["docinhos_totais"] = docinhos
 
-    # Ingredientes totais
+    # Ingredientes totais dos docinhos
     ingredientes = {
         "Leite Condensado": 0.0,
         "Leite em Pó (Colher)": 0.0,
@@ -189,6 +271,58 @@ def compute_metrics(df: pd.DataFrame) -> dict:
                 ingredientes[ing] += float(base) * proporcao
     metrics["ingredientes_docinhos_total"] = {k: round(v, 2) for k, v in ingredientes.items()}
 
+    # Recheios
+    receitas_recheios = {
+        "Brigadeiro": 0.0,
+        "Ninho": 0.0,
+        "Maracujá": 0.0,
+        "Coco": 0.0,
+    }
+
+    ingredientes_recheios = {
+        "Leite Condensado": 0.0,
+        "Creme de Leite": 0.0,
+        "Chocolate em Pó (Colher)": 0.0,
+        "Leite em Pó (Colher)": 0.0,
+        "Pó de Sobremesa de Maracujá (Colher)": 0.0,
+        "Suco Concentrado (ml)": 0.0,
+        "Coco Ralado Menina (Pacote)": 0.0,
+        "Nutella (g)": 0.0,
+    }
+
+    if {"Tipo", "Recheio"}.issubset(df.columns):
+        for _, row in df.iterrows():
+            tipo = row.get("Tipo", "")
+            recheio = row.get("Recheio", "")
+
+            if pd.isna(tipo) or pd.isna(recheio):
+                continue
+
+            tipo = str(tipo).strip()
+            recheio = str(recheio).strip()
+
+            if not tipo or not recheio:
+                continue
+
+            rule = get_recheio_rule(tipo, recheio)
+            if not rule:
+                continue
+
+            receita_nome = rule["receita"]
+            ovos_por_receita = float(rule["ovos_por_receita"])
+            proporcao = 1.0 / ovos_por_receita
+
+            receitas_recheios[receita_nome] += proporcao
+
+            for ing, base in RECEITAS_RECHEIOS[receita_nome].items():
+                ingredientes_recheios[ing] += float(base) * proporcao
+
+            if normalize_text(recheio) in RECHEIOS_COM_NUTELLA:
+                ingredientes_recheios["Nutella (g)"] += NUTELLA_GRAMAS_POR_OVO
+
+    metrics["receitas_recheios_total"] = {k: round(v, 2) for k, v in receitas_recheios.items() if v > 0}
+    metrics["ingredientes_recheios_total"] = {k: round(v, 2) for k, v in ingredientes_recheios.items() if v > 0}
+
     return metrics
 
 
@@ -196,6 +330,7 @@ def normalize_day_value(x) -> str:
     # garante chave consistente: "19", "20", etc.
     s = "" if pd.isna(x) else str(x).strip()
     return s
+
 
 def main():
     df = pd.read_csv(CSV_URL)
@@ -233,7 +368,6 @@ def main():
         json.dump(payload, f, ensure_ascii=False, indent=2, allow_nan=False)
 
     print(f"OK: gerado {out_path}")
-
 
 
 if __name__ == "__main__":
