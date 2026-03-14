@@ -184,6 +184,9 @@ function renderView(m) {
   document.getElementById("docinhos").innerHTML =
     toKeyValueTable(m.docinhos_totais);
 
+  document.getElementById("receitasDocinhos").innerHTML =
+  toKeyValueTable(m.receitas_docinhos_total);
+
   document.getElementById("ingredientes").innerHTML =
     toKeyValueTable(m.ingredientes_docinhos_total);
 
