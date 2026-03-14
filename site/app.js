@@ -143,7 +143,7 @@ function renderView(m) {
   document.getElementById("summary").innerHTML = `
     <div class="kpi">
       <div class="label">Total de pedidos</div>
-      <div class="value">${m.total_pedidos ?? "-"}</div>
+      <div class="value">${m.total_pedidos ?? m.n_rows ?? "-"}</div>
     </div>
 
     <div class="kpi">
