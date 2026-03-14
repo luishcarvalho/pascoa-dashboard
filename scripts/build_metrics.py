@@ -257,6 +257,16 @@ def compute_metrics(df: pd.DataFrame) -> dict:
                     docinhos[tipo] = docinhos.get(tipo, 0) + int(qtd)
     metrics["docinhos_totais"] = docinhos
 
+    # Quantidade de receitas de docinhos
+    receitas_docinhos = {}
+    
+    for tipo, qtd in docinhos.items():
+        if tipo in RECEITAS_DOCINHOS:
+            receitas = float(qtd) / float(DOCINHOS_POR_RECEITA)
+            receitas_docinhos[tipo] = round(receitas, 2)
+    
+    metrics["receitas_docinhos_total"] = receitas_docinhos
+
     # Ingredientes totais dos docinhos
     ingredientes = {
         "Leite Condensado": 0.0,
