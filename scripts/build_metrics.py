@@ -167,7 +167,16 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     df.columns = [c.strip() for c in df.columns]
 
     metrics = {}
-    metrics["n_rows"] = int(len(df))
+    if "Nome" in df.columns:
+        nomes_validos = (
+            df["Nome"]
+            .fillna("")
+            .astype(str)
+            .str.strip()
+        )
+        metrics["total_pedidos"] = int((nomes_validos != "").sum())
+    else:
+        metrics["total_pedidos"] = int(len(df))
     metrics["counts"] = {
         "Tipo": safe_value_counts(df, "Tipo"),
         "Chocolate": safe_value_counts(df, "Chocolate"),
