@@ -166,9 +166,6 @@ def compute_metrics(df: pd.DataFrame) -> dict:
     df = df.copy()
     df.columns = [c.strip() for c in df.columns]
 
-# mantém compatibilidade com o front antigo
-metrics["n_rows"] = int(len(df))
-
     # total de pedidos = linhas com algum nome preenchido
     nomes_validos = (
         df["Nome"]
