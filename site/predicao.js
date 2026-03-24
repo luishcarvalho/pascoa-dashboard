@@ -233,7 +233,18 @@ async function init() {
 document.getElementById("slider-n").addEventListener("input", render);
 document.getElementById("select-pct").addEventListener("change", render);
 
-document.getElementById("btnRefresh")?.addEventListener("click", () => {
+document.getElementById("btnRefresh")?.addEventListener("click", async () => {
+  const btn = document.getElementById("btnRefresh");
+  btn.disabled = true;
+  btn.classList.add("is-loading");
+  btn.textContent = "Atualizando…";
+  try {
+    await fetch(`https://pascoa-dispatch.luis-h-carvalho.workers.dev/?t=${Date.now()}`, {
+      method: "POST", mode: "cors", cache: "no-store",
+    });
+  } catch (e) {
+    console.error(e);
+  }
   window.location.reload();
 });
 

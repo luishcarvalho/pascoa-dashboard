@@ -273,7 +273,7 @@ async function runUpdateFlow() {
     await loadMetrics(true);
 
     if (lastUpdatedIso && lastUpdatedIso !== previous) {
-      setStatus("Atualizado ✔");
+      window.location.reload();
       return;
     }
 
@@ -342,9 +342,15 @@ document.getElementById("daySelect")?.addEventListener("change", () => {
   renderView(getSelectedMetrics());
 });
 
-// botão recarrega a página limpando cache
-document.getElementById("btnRefresh").addEventListener("click", () => {
-  window.location.reload();
+// botão dispara workflow e recarrega a página quando os dados novos chegarem
+document.getElementById("btnRefresh").addEventListener("click", async () => {
+  try {
+    await runUpdateFlow();
+  } catch (e) {
+    console.error(e);
+    setStatus(`Erro: ${e.message}`);
+    setButtonLoading(false);
+  }
 });
 
 // carrega ao abrir
