@@ -377,10 +377,10 @@ def main():
 
     payload["per_day"] = per_day
     DAY_ORDER = ["qua", "qui", "sex", "sab", "dom", "seg"]
-    payload["available_days"] = sorted(
-        per_day.keys(),
-        key=lambda x: DAY_ORDER.index(x.lower()) if x.lower() in DAY_ORDER else len(DAY_ORDER)
-    )
+    def _day_sort_key(x):
+        prefix = str(x).split()[0].lower()
+        return DAY_ORDER.index(prefix) if prefix in DAY_ORDER else len(DAY_ORDER)
+    payload["available_days"] = sorted(per_day.keys(), key=_day_sort_key)
 
     # sanitize + salvar
     payload = json_sanitize(payload)

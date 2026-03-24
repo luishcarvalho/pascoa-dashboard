@@ -129,9 +129,9 @@ function populateDaySelect() {
   el.style.display = "";
 
   const DAY_ORDER = ["qua", "qui", "sex", "sab", "dom", "seg"];
+  const dayKey = s => DAY_ORDER.indexOf(String(s).split(/[\s\-]/)[0].toLowerCase());
   const sortByDay = (a, b) => {
-    const ia = DAY_ORDER.indexOf(String(a).toLowerCase());
-    const ib = DAY_ORDER.indexOf(String(b).toLowerCase());
+    const ia = dayKey(a), ib = dayKey(b);
     return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
   };
 
