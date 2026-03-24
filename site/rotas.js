@@ -65,7 +65,7 @@ function makeIcon(label, color) {
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
-function renderDay(dia) {
+async function renderDay(dia) {
   if (!routesData || !map) return;
 
   const day = routesData[dia];
@@ -117,36 +117,76 @@ function renderDay(dia) {
     }
   });
 
-  // Fecha o loop: última parada → origem
-  if (latlngs.length > 1) {
-    latlngs.push([origin.lat, origin.lon]);
+  const routeType = day.route_type || "loop";
+
+  // Waypoints para OSRM:
+  //   loop → origin;s1;s2;...;origin
+  //   star → origin;s1;origin;s2;origin;...
+  const geocodedPedidos = pedidos.filter(p => p.geocoded);
+  let osrmWaypoints;
+  if (routeType === "star") {
+    osrmWaypoints = [];
+    geocodedPedidos.forEach(p => {
+      osrmWaypoints.push([origin.lat, origin.lon]);
+      osrmWaypoints.push([p.lat, p.lon]);
+    });
+    osrmWaypoints.push([origin.lat, origin.lon]);
+  } else {
+    osrmWaypoints = [...latlngs];
+    if (latlngs.length > 1) osrmWaypoints.push([origin.lat, origin.lon]);
   }
 
-  // Polyline da rota
-  if (latlngs.length > 1) {
-    L.polyline(latlngs, {
-      color:   getAccentColor(),
-      weight:  3,
-      opacity: 0.75,
-      dashArray: "6, 4",
-    }).addTo(layerGroup);
-  }
-
-  // Ajusta zoom para mostrar todos os pontos
+  // Ajusta zoom para mostrar todos os pontos (usa apenas coords únicas dos stops)
   if (latlngs.length > 0) {
     map.fitBounds(L.latLngBounds(latlngs), { padding: [32, 32] });
   }
 
-  // Stats
+  // Stats (distância provisória enquanto OSRM carrega)
   document.getElementById("stat-stops").textContent   = `${day.total_paradas} paradas · ${day.total_ordens} ovos`;
   document.getElementById("stat-dist").textContent    = `~${day.dist_km_est} km (c/ retorno)`;
   document.getElementById("stat-missing").textContent = day.geocoded_falhou || "0";
 
+  // Rota pelas ruas via OSRM
+  if (osrmWaypoints.length > 1) {
+    const color = getAccentColor();
+    const lineStyle = { color, weight: 3, opacity: 0.85, dashArray: "6, 4" };
+    const osrmCoords = osrmWaypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
+    const statusEl = document.getElementById("status-rotas");
+    statusEl.textContent = "Calculando rota pelas ruas…";
+    try {
+      const res = await fetch(
+        `https://routing.openstreetmap.de/routed-foot/route/v1/driving/${osrmCoords}?overview=full&geometries=geojson`,
+        { cache: "no-store" }
+      );
+      if (!res.ok) throw new Error(`OSRM HTTP ${res.status}`);
+      const data = await res.json();
+      if (data.code !== "Ok") throw new Error(`OSRM: ${data.code}`);
+      const route = data.routes?.[0];
+      if (!route?.geometry) throw new Error("sem geometria");
+      L.geoJSON(route.geometry, { style: lineStyle }).addTo(layerGroup);
+      const km = (route.distance / 1000).toFixed(1);
+      document.getElementById("stat-dist").textContent = `${km} km (c/ retorno)`;
+      statusEl.textContent = "";
+    } catch (e) {
+      statusEl.textContent = `Rota estimada (linha reta) — ${e.message}`;
+      L.polyline(latlngs, lineStyle).addTo(layerGroup);
+    }
+  }
+
   // Lista lateral
-  renderSidebar(origin, pedidos);
+  renderSidebar(origin, pedidos, routeType);
 }
 
-function renderSidebar(origin, pedidos) {
+const RETURN_ROW = (addr) => `
+    <li class="stop-item stop-origin" style="opacity:0.7">
+      <div class="stop-num">⌂</div>
+      <div class="stop-info">
+        <div class="stop-name">Retorno ao ponto de partida</div>
+        <div class="stop-addr">${addr}</div>
+      </div>
+    </li>`;
+
+function renderSidebar(origin, pedidos, routeType = "loop") {
   const ul = document.getElementById("stop-list");
   const rows = [];
 
@@ -178,17 +218,17 @@ function renderSidebar(origin, pedidos) {
           ${ordensHtml}
         </div>
       </li>`);
+
+    // No modo star, mostra retorno após cada parada geocodificada
+    if (routeType === "star" && !noCoord) {
+      rows.push(RETURN_ROW(origin.endereco));
+    }
   });
 
-  // Retorno à origem
-  rows.push(`
-    <li class="stop-item stop-origin" style="opacity:0.7">
-      <div class="stop-num">⌂</div>
-      <div class="stop-info">
-        <div class="stop-name">Retorno ao ponto de partida</div>
-        <div class="stop-addr">${origin.endereco}</div>
-      </div>
-    </li>`);
+  // No modo loop, mostra retorno apenas no final
+  if (routeType !== "star") {
+    rows.push(RETURN_ROW(origin.endereco));
+  }
 
   ul.innerHTML = rows.join("");
 

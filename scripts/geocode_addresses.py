@@ -144,6 +144,10 @@ def geocode(address: str, cache: dict) -> dict | None:
 
 # ── OTIMIZAÇÃO DE ROTA ────────────────────────────────────────────────────────
 
+OSRM_TABLE_URL = "https://routing.openstreetmap.de/routed-foot/table/v1/driving/{coords}?annotations=distance"
+OSRM_RATE_S    = 0.5
+
+
 def haversine(a: dict, b: dict) -> float:
     """Distância em km entre dois pontos {lat, lon}."""
     R = 6371.0
@@ -155,15 +159,93 @@ def haversine(a: dict, b: dict) -> float:
     return R * 2 * math.asin(math.sqrt(h))
 
 
-def total_distance(points: list, order: list) -> float:
-    return sum(haversine(points[order[i]], points[order[i + 1]]) for i in range(len(order) - 1))
+def osrm_distance_matrix(points: list) -> list | None:
+    """
+    Chama OSRM Table API e retorna matriz de distâncias em km.
+    points: lista de dicts {'lat', 'lon'} — origem no índice 0.
+    Retorna None se falhar.
+    """
+    coords = ";".join(f"{p['lon']},{p['lat']}" for p in points)
+    url = OSRM_TABLE_URL.format(coords=coords)
+    try:
+        resp = requests.get(url, headers={"User-Agent": USER_AGENT}, timeout=15)
+        resp.raise_for_status()
+        data = resp.json()
+        if data.get("code") != "Ok":
+            print(f"  OSRM Table: code={data.get('code')}")
+            return None
+        return [[d / 1000.0 for d in row] for row in data["distances"]]
+    except Exception as e:
+        print(f"  OSRM Table falhou: {e}")
+        return None
 
 
-def nearest_neighbor(points: list, origin: dict) -> list:
-    """Retorna índices de `points` na ordem pelo vizinho mais próximo."""
+def _total_dist_matrix(order: list, matrix: list) -> float:
+    """Distância total (com retorno à origem=0) usando matriz."""
+    full = [0] + order + [0]
+    return sum(matrix[full[i]][full[i + 1]] for i in range(len(full) - 1))
+
+
+def _nn_from(start: int, n: int, matrix: list) -> list:
+    """Nearest neighbor partindo de `start`. Retorna índices dos stops (1..n-1)."""
+    unvisited = list(range(1, n))
+    if start != 0:
+        unvisited.remove(start)
+    route, current = ([] if start == 0 else [start]), start
+    while unvisited:
+        nxt = min(unvisited, key=lambda i: matrix[current][i])
+        route.append(nxt)
+        current = nxt
+        unvisited.remove(nxt)
+    return route
+
+
+def _two_opt_matrix(order: list, matrix: list) -> list:
+    best, improved = order[:], True
+    while improved:
+        improved = False
+        for i in range(len(best) - 1):
+            for j in range(i + 2, len(best)):
+                candidate = best[:i + 1] + best[i + 1:j + 1][::-1] + best[j + 1:]
+                if _total_dist_matrix(candidate, matrix) < _total_dist_matrix(best, matrix):
+                    best, improved = candidate, True
+    return best
+
+
+def _or_opt_matrix(order: list, matrix: list) -> list:
+    """Tenta reposicionar cada nó na posição mais vantajosa (elimina desvios)."""
+    best, improved = order[:], True
+    while improved:
+        improved = False
+        for i in range(len(best)):
+            node = best[i]
+            rest = best[:i] + best[i + 1:]
+            for j in range(len(rest) + 1):
+                candidate = rest[:j] + [node] + rest[j:]
+                if _total_dist_matrix(candidate, matrix) < _total_dist_matrix(best, matrix):
+                    best, improved = candidate, True
+                    break
+            if improved:
+                break
+    return best
+
+
+def _best_nn_matrix(n: int, matrix: list) -> list:
+    """Testa NN a partir de todos os pontos e retorna o melhor resultado após 2-opt + Or-opt."""
+    best_order, best_dist = None, float("inf")
+    for start in range(n):
+        order = _nn_from(start, n, matrix)
+        order = _two_opt_matrix(order, matrix)
+        order = _or_opt_matrix(order, matrix)
+        d = _total_dist_matrix(order, matrix)
+        if d < best_dist:
+            best_dist, best_order = d, order
+    return best_order
+
+
+def _nearest_neighbor_haversine(points: list, origin: dict) -> list:
     unvisited = list(range(len(points)))
-    route = []
-    current = origin
+    route, current = [], origin
     while unvisited:
         nearest = min(unvisited, key=lambda i: haversine(current, points[i]))
         route.append(nearest)
@@ -172,34 +254,81 @@ def nearest_neighbor(points: list, origin: dict) -> list:
     return route
 
 
-def two_opt(points: list, order: list) -> list:
-    """Melhora a rota com trocas 2-opt."""
-    best = order[:]
-    improved = True
+def _two_opt_haversine(points: list, order: list) -> list:
+    def total(o):
+        return sum(haversine(points[o[i]], points[o[i + 1]]) for i in range(len(o) - 1))
+    best, improved = order[:], True
     while improved:
         improved = False
         for i in range(len(best) - 1):
             for j in range(i + 2, len(best)):
-                new_order = best[:i + 1] + best[i + 1:j + 1][::-1] + best[j + 1:]
-                if total_distance(points, new_order) < total_distance(points, best):
-                    best = new_order
-                    improved = True
+                candidate = best[:i + 1] + best[i + 1:j + 1][::-1] + best[j + 1:]
+                if total(candidate) < total(best):
+                    best, improved = candidate, True
     return best
 
 
-def optimize_route(origin: dict, pedidos: list) -> list:
-    """Retorna pedidos reordenados pelo trajeto otimizado. Pedidos sem coord ficam no final."""
+def optimize_route(origin: dict, pedidos: list) -> tuple[list, float, str]:
+    """
+    Retorna (pedidos_otimizados, dist_km_total, route_type).
+    route_type = "loop"  → rota circular (origin→...→origin)
+    route_type = "star"  → ida-e-volta por parada (origin→s1→origin→s2→origin)
+    Usa OSRM Table para distâncias reais; fallback para Haversine.
+    """
     with_coord = [p for p in pedidos if p["geocoded"]]
     without    = [p for p in pedidos if not p["geocoded"]]
 
-    if len(with_coord) <= 1:
-        return with_coord + without
+    if len(with_coord) == 0:
+        return without, 0.0, "loop"
+    if len(with_coord) == 1:
+        p = with_coord[0]
+        d = 2 * haversine(origin, {"lat": p["lat"], "lon": p["lon"]})
+        return with_coord + without, round(d, 2), "loop"
 
-    points = [{"lat": p["lat"], "lon": p["lon"]} for p in with_coord]
-    order  = nearest_neighbor(points, origin)
-    order  = two_opt(points, order)
+    all_points = [origin] + [{"lat": p["lat"], "lon": p["lon"]} for p in with_coord]
+    matrix = osrm_distance_matrix(all_points)
+    time.sleep(OSRM_RATE_S)
 
-    return [with_coord[i] for i in order] + without
+    if matrix:
+        n = len(all_points)
+
+        # Opção A: loop otimizado
+        loop_order = _best_nn_matrix(n, matrix)
+        loop_dist  = _total_dist_matrix(loop_order, matrix)
+
+        # Opção B: star (ida-e-volta independente por parada)
+        star_dist  = sum(matrix[0][i] + matrix[i][0] for i in range(1, n))
+        star_order = sorted(range(1, n), key=lambda i: matrix[0][i])  # mais próximo primeiro
+
+        if star_dist < loop_dist:
+            optimized = [with_coord[i - 1] for i in star_order]
+            dist = round(star_dist, 2)
+            route_type = "star"
+            print(f"    [OSRM star]   distância real: {dist:.1f} km  (loop seria {loop_dist:.1f} km)")
+        else:
+            # Rotaciona o tour para começar pela parada mais próxima da origem
+            closest = min(range(len(loop_order)), key=lambda i: matrix[0][loop_order[i]])
+            loop_order = loop_order[closest:] + loop_order[:closest]
+            optimized = [with_coord[i - 1] for i in loop_order]
+            dist = round(loop_dist, 2)
+            route_type = "loop"
+            print(f"    [OSRM loop]   distância real: {dist:.1f} km  (star seria {star_dist:.1f} km)")
+    else:
+        points = [{"lat": p["lat"], "lon": p["lon"]} for p in with_coord]
+        order  = _nearest_neighbor_haversine(points, origin)
+        order  = _two_opt_haversine(points, order)
+        optimized = [with_coord[i] for i in order]
+        pts = [{"lat": p["lat"], "lon": p["lon"]} for p in optimized]
+        dist = round(
+            haversine(origin, pts[0]) +
+            sum(haversine(pts[i], pts[i + 1]) for i in range(len(pts) - 1)) +
+            haversine(pts[-1], origin),
+            2,
+        )
+        route_type = "loop"
+        print(f"    [Haversine fallback] distância estimada: {dist:.1f} km")
+
+    return optimized + without, dist, route_type
 
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
@@ -310,19 +439,8 @@ def main() -> None:
         ok     = sum(1 for p in pedidos if p["geocoded"])
         falhou = sum(1 for p in pedidos if not p["geocoded"])
 
-        # Otimiza a rota
-        pedidos_otimizados = optimize_route(origin_coord, pedidos)
-
-        # Distância total incluindo retorno à origem
-        pts_coord = [{"lat": p["lat"], "lon": p["lon"]} for p in pedidos_otimizados if p["geocoded"]]
-        if pts_coord:
-            dist_total = (
-                haversine(origin_coord, pts_coord[0]) +
-                sum(haversine(pts_coord[i], pts_coord[i + 1]) for i in range(len(pts_coord) - 1)) +
-                haversine(pts_coord[-1], origin_coord)   # retorno
-            )
-        else:
-            dist_total = 0.0
+        # Otimiza a rota (retorna pedidos + distância + tipo de rota)
+        pedidos_otimizados, dist_total, route_type = optimize_route(origin_coord, pedidos)
 
         total_ordens = sum(len(p["ordens"]) for p in pedidos_otimizados)
 
@@ -334,9 +452,10 @@ def main() -> None:
             "geocoded_ok":     ok,
             "geocoded_falhou": falhou,
             "dist_km_est":     round(dist_total, 2),
+            "route_type":      route_type,
         }
 
-        status = f"{ok} OK, ~{dist_total:.1f} km (ida+volta)" + (f", {falhou} sem coord" if falhou else "")
+        status = f"{ok} OK, {dist_total:.1f} km (ida+volta)" + (f", {falhou} sem coord" if falhou else "")
         print(f"  {chave:<28} {len(pedidos)} entrega(s) ({status})")
 
     # ── Salva ─────────────────────────────────────────────────────────────────
