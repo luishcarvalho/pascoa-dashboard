@@ -31,7 +31,7 @@ USER_AGENT   = "pascoa-dashboard/1.0 (luishenriquescarvalho@gmail.com)"
 RATE_LIMIT_S = 1.1   # Nominatim exige >= 1s entre requisições
 
 OUT_DIR      = os.path.join("dist", "data")
-CACHE_PATH   = os.path.join(OUT_DIR, "geocache.json")
+CACHE_PATH   = os.path.join("data", "geocache.json")
 ROUTES_PATH  = os.path.join(OUT_DIR, "routes.json")
 
 DAY_ORDER    = ["qua", "qui", "sex", "sab", "dom", "seg"]
