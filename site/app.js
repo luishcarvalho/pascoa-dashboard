@@ -330,7 +330,7 @@ async function loadMetrics(bustCache = false) {
     populateDaySelect();
     renderView(getSelectedMetrics());
 
-    setStatus("OK ✔");
+    setStatus("Atualizado ✔"); 
   } catch (e) {
     console.error(e);
     setStatus(`Erro: ${e.message}`);

@@ -487,6 +487,45 @@ input[type="range"] {
 
 p.small { margin-top: 4px; }
 
+/* ── FOOTER ─────────────────────────────────────────────────────────── */
+.site-footer {
+  margin-top: 3rem;
+  padding: 1.5rem 0 2rem;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.site-footer .footer-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.03em;
+}
+
+.site-footer .footer-links {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.site-footer .footer-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--text3);
+  text-decoration: none;
+  transition: color 0.15s;
+}
+
+.site-footer .footer-links a:hover {
+  color: var(--accent);
+}
+
 @media (max-width: 600px) {
   .header { flex-direction: column; }
   .card-grid, .card-grid.three-col { grid-template-columns: 1fr; }
