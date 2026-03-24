@@ -342,16 +342,9 @@ document.getElementById("daySelect")?.addEventListener("change", () => {
   renderView(getSelectedMetrics());
 });
 
-// botão dispara workflow
-document.getElementById("btnRefresh").addEventListener("click", async () => {
-  try {
-    await runUpdateFlow();
-  } catch (e) {
-    console.error(e);
-    setStatus(`Erro: ${e.message}`);
-  } finally {
-    setButtonLoading(false);
-  }
+// botão recarrega a página limpando cache
+document.getElementById("btnRefresh").addEventListener("click", () => {
+  window.location.reload();
 });
 
 // carrega ao abrir
