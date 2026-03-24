@@ -14,6 +14,18 @@
   --r:        12px;
 }
 
+[data-theme="dark"] {
+  --bg:       #1a1814;
+  --surface:  #242018;
+  --surface2: #2e2a22;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text:     #f0ede6;
+  --text2:    #a09c96;
+  --text3:    #6b6660;
+  --accent:   #e0622d;
+}
+
 html, body {
   font-family: 'DM Sans', sans-serif;
   background: var(--bg);
@@ -22,6 +34,7 @@ html, body {
   font-size: 15px;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  transition: background 0.2s, color 0.2s;
 }
 
 /* ── LAYOUT ───────────────────────────────────────────────────────────── */
@@ -110,6 +123,16 @@ button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+}
+
+#btnTheme {
+  background: transparent;
+  color: var(--text2);
+  border-color: var(--border2);
+  padding: 0;
+  width: 38px;
+  justify-content: center;
+  font-size: 16px;
 }
 
 #btnRefresh.is-loading::before {

@@ -2,6 +2,25 @@ const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
 let lastUpdatedIso = null;
 let timeAgoIntervalId = null;
 
+// ── TEMA ──────────────────────────────────────────────────────────────────
+(function initTheme() {
+  const btn = document.getElementById("btnTheme");
+  const saved = localStorage.getItem("theme") || "light";
+
+  function applyTheme(theme) {
+    document.documentElement.setAttribute("data-theme", theme);
+    btn.textContent = theme === "dark" ? "☾" : "☀";
+    localStorage.setItem("theme", theme);
+  }
+
+  applyTheme(saved);
+
+  btn.addEventListener("click", () => {
+    const current = document.documentElement.getAttribute("data-theme");
+    applyTheme(current === "dark" ? "light" : "dark");
+  });
+})();
+
 // guarda o JSON inteiro (novo: overall + per_day)
 let metricsPayload = null;
 
