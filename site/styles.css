@@ -1,117 +1,286 @@
-html, body {
-  font-family: system-ui, Arial, sans-serif;
-  margin: 0;
-  background: #0b0b10;
-  color: #f2f2f2;
+/* ── RESET & BASE ─────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f7f5f0;
+  --surface:  #ffffff;
+  --surface2: #f0ede6;
+  --border:   rgba(0,0,0,0.08);
+  --border2:  rgba(0,0,0,0.14);
+  --text:     #1c1a16;
+  --text2:    #6b6660;
+  --text3:    #a09c96;
+  --accent:   #c84b1e;
+  --r:        12px;
 }
 
-.container { max-width: 1100px; margin: 0 auto; padding: 24px; }
-.header { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
-.actions { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+html, body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
 
-/* ✅ padroniza tamanho de botão e dropdown */
-button,
-#daySelect {
-  height: 42px;
-  padding: 0 16px;
-  border-radius: 10px;
-  font: inherit;
+/* ── LAYOUT ───────────────────────────────────────────────────────────── */
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 4rem;
+}
+
+/* ── HEADER ───────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.header h1 {
+  font-size: 24px;
   font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--text);
+}
+
+.header-sub {
+  font-size: 13px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* ── STATUS BAR ───────────────────────────────────────────────────────── */
+.status-bar {
+  margin-bottom: 0.5rem;
+  min-height: 20px;
+}
+
+#status {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+}
+
+/* ── SECTION LABELS ───────────────────────────────────────────────────── */
+.section-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin: 2rem 0 0.75rem;
+}
+
+/* ── BUTTON ───────────────────────────────────────────────────────────── */
+button {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  height: 38px;
+  padding: 0 16px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border2);
+  background: var(--text);
+  color: var(--bg);
+  cursor: pointer;
   display: inline-flex;
   align-items: center;
+  gap: 8px;
+  transition: opacity 0.15s, transform 0.15s;
+  white-space: nowrap;
 }
 
-/* Botão base (garante visual consistente) */
-button {
-  border: 0;
-  cursor: pointer;
-  background: #f2f2f2;
-  color: #0b0b10;
-}
+button:hover { opacity: 0.85; }
+button:active { transform: scale(0.98); }
 
-.card { background: #141420; border: 1px solid #24243a; border-radius: 14px; padding: 16px; margin: 12px 0; }
-.small { opacity: .8; font-size: 13px; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 10px; }
-.kpi { background: #0f0f18; border: 1px solid #24243a; border-radius: 12px; padding: 12px; }
-.kpi .label { opacity: .75; font-size: 12px; }
-.kpi .value { font-size: 22px; font-weight: 800; margin-top: 4px; }
-
-table { width: 100%; border-collapse: collapse; }
-th, td { padding: 10px 12px; border-bottom: 1px solid #24243a; vertical-align: middle; }
-th { opacity: .85; text-align: left; }
-
-/* ✅ Coluna numérica (última) alinhada + números tabulares */
-td:last-child,
-th:last-child {
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Botão elegante com loading */
-#btnRefresh {
-  position: relative;
-  gap: 10px;
-  transition: opacity .2s ease, transform .2s ease;
-}
-
-#btnRefresh:disabled {
-  opacity: 0.65;
+button:disabled {
+  opacity: 0.5;
   cursor: not-allowed;
   transform: none;
 }
 
-/* spinner */
 #btnRefresh.is-loading::before {
   content: "";
-  width: 14px;
-  height: 14px;
-  border-radius: 999px;
-  border: 2px solid rgba(0,0,0,0.25);
-  border-top-color: rgba(0,0,0,0.75);
-  animation: spin .8s linear infinite;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid rgba(247,245,240,0.3);
+  border-top-color: rgba(247,245,240,0.9);
+  animation: spin 0.8s linear infinite;
+  flex-shrink: 0;
 }
 
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-/* ✅ Dropdown no estilo do site + seta que NÃO some no hover */
+/* ── SELECT ───────────────────────────────────────────────────────────── */
 #daySelect {
-  appearance: none;
-  -webkit-appearance: none;
-  -moz-appearance: none;
-
-  border: 1px solid #24243a;
-  background-color: #141420;
-  color: #f2f2f2;
-
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  height: 38px;
+  padding: 0 36px 0 14px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border2);
+  background-color: var(--surface);
+  color: var(--text2);
   cursor: pointer;
   outline: none;
-
-  padding-right: 42px; /* espaço para a seta */
-  transition: background-color .2s ease, border-color .2s ease, transform .2s ease;
-
-  /* setinha fixa */
+  appearance: none;
+  -webkit-appearance: none;
   background-image:
-    linear-gradient(45deg, transparent 50%, rgba(242,242,242,0.85) 50%),
-    linear-gradient(135deg, rgba(242,242,242,0.85) 50%, transparent 50%);
-  background-position:
-    calc(100% - 20px) 50%,
-    calc(100% - 14px) 50%;
-  background-size: 6px 6px, 6px 6px;
+    linear-gradient(45deg, transparent 50%, var(--text3) 50%),
+    linear-gradient(135deg, var(--text3) 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 10px) 50%;
+  background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
+  transition: border-color 0.15s;
 }
 
-#daySelect:hover {
-  background-color: #1a1a2a; /* ✅ não apaga a seta */
-  border-color: #2d2d4a;
+#daySelect:hover { border-color: var(--border2); }
+#daySelect:focus { border-color: rgba(0,0,0,0.3); outline: none; }
+#daySelect:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ── KPI GRID ─────────────────────────────────────────────────────────── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+  margin-bottom: 0.5rem;
 }
 
-#daySelect:focus {
-  border-color: #3a3a66;
+.kpi {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 1rem 1.25rem;
 }
 
-#daySelect:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
+.kpi .label {
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 4px;
+}
+
+.kpi .value {
+  font-family: 'DM Mono', monospace;
+  font-size: 28px;
+  font-weight: 400;
+  color: var(--text);
+  line-height: 1.1;
+}
+
+#timeAgo {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ── CARDS ────────────────────────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 0.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 1.25rem 1.5rem;
+}
+
+.card-title {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  margin-bottom: 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 0.5px solid var(--border);
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
+  margin-bottom: 0.5rem;
+}
+
+.card-grid.three-col {
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.half-card {
+  max-width: 420px;
+  margin-bottom: 0.5rem;
+}
+
+/* ── TABLES ───────────────────────────────────────────────────────────── */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+th {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  font-weight: 400;
+  text-align: left;
+  padding: 6px 8px;
+  border-bottom: 0.5px solid var(--border);
+}
+
+td {
+  padding: 9px 8px;
+  border-bottom: 0.5px solid var(--border);
+  color: var(--text);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+
+td:last-child,
+th:last-child {
+  text-align: right;
+  font-family: 'DM Mono', monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 13px;
+}
+
+/* ── SUBTÍTULOS DENTRO DE CARDS ───────────────────────────────────────── */
+h3 {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-family: 'DM Mono', monospace;
+  margin: 1.25rem 0 0.6rem;
+}
+
+h3:first-child { margin-top: 0; }
+
+/* ── MISC ─────────────────────────────────────────────────────────────── */
+.small {
+  font-size: 12px;
+  color: var(--text3);
+}
+
+p.small { margin-top: 4px; }
+
+@media (max-width: 600px) {
+  .header { flex-direction: column; }
+  .card-grid, .card-grid.three-col { grid-template-columns: 1fr; }
+  .half-card { max-width: 100%; }
+  .kpi .value { font-size: 22px; }
 }
