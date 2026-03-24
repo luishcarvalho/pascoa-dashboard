@@ -79,6 +79,10 @@ html, body {
 .status-bar {
   margin-bottom: 0.5rem;
   min-height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 #status {

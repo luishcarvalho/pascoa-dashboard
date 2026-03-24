@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Páscoa 2026 · Dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
+  <base href="../">
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <h1>Dashboard · Encomendas</h1>
+        <p class="header-sub">Atualiza automaticamente a cada hora via GitHub Actions</p>
+      </div>
+      <div class="actions">
+        <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+        <button id="btnRefresh">Atualizar agora</button>
+      </div>
+    </header>
+
+    <nav class="tab-nav">
+      <a href="metricas/" class="tab-link tab-active">Métricas</a>
+      <a href="predicao/" class="tab-link">Predição</a>
+      <a href="rotas/" class="tab-link">Rotas</a>
+    </nav>
+
+    <div class="status-bar">
+      <span id="status"></span>
+      <select id="daySelect"></select>
+    </div>
+
+    <!-- RESUMO -->
+    <p class="section-label">Resumo</p>
+    <div id="summary" class="kpi-grid"></div>
+
+    <!-- CONTAGENS -->
+    <p class="section-label">Distribuição</p>
+    <div class="card-grid" id="counts-grid">
+      <div class="card" id="counts"></div>
+    </div>
+
+    <!-- CASCAS + TIPO×RECHEIO + TIPO×CHOCOLATE -->
+    <p class="section-label">Produção</p>
+    <div class="card-grid three-col">
+      <div class="card">
+        <h2 class="card-title">Cascas por chocolate</h2>
+        <div id="cascas"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Tipo × Recheio</h2>
+        <div id="tipoRecheio"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Tipo × Chocolate</h2>
+        <div id="tipoChocolate"></div>
+      </div>
+    </div>
+
+    <!-- GASTO CHOCOLATE -->
+    <p class="section-label">Gasto de chocolate</p>
+    <div class="card-grid">
+      <div class="card">
+        <h2 class="card-title">Gramas por tipo de chocolate</h2>
+        <div id="gasto"></div>
+      </div>
+    </div>
+
+    <!-- DOCINHOS -->
+    <p class="section-label">Docinhos</p>
+    <div class="card-grid three-col">
+      <div class="card">
+        <h2 class="card-title">Quantidades</h2>
+        <div id="docinhos"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Receitas necessárias</h2>
+        <div id="receitasDocinhos"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Ingredientes totais</h2>
+        <div id="ingredientes"></div>
+      </div>
+    </div>
+
+    <!-- RECHEIOS -->
+    <p class="section-label">Recheios</p>
+    <div class="card-grid">
+      <div class="card">
+        <h2 class="card-title">Receitas totais</h2>
+        <div id="receitasRecheios"></div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Ingredientes totais</h2>
+        <div id="ingredientesRecheios"></div>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <span class="footer-name">Luís Henrique S. de Carvalho</span>
+      <div class="footer-links">
+        <a href="mailto:luishenriquescarvalho@gmail.com" title="E-mail">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          luishenriquescarvalho@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/luishcarvalho/" target="_blank" rel="noopener" title="LinkedIn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          luishcarvalho
+        </a>
+        <a href="https://github.com/luishcarvalho" target="_blank" rel="noopener" title="GitHub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          luishcarvalho
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

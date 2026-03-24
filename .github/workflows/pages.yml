@@ -25,13 +25,17 @@ jobs:
       - name: Install deps
         run: pip install -r requirements.txt
 
-      # ✅ Copia o conteúdo do site/ para dist/ de forma "limpa" (sem sobras)
+      # ✅ Copia o conteúdo do site/ para dist/ e cria estrutura de URLs limpas
       - name: Prepare dist with static site
         run: |
           rm -rf dist
           mkdir -p dist
           rsync -av --delete site/ dist/
           mkdir -p dist/data
+          mkdir -p dist/metricas dist/predicao dist/rotas
+          cp dist/metricas.html dist/metricas/index.html
+          cp dist/predicao.html dist/predicao/index.html
+          cp dist/rotas.html dist/rotas/index.html
 
       # ✅ Debug: garante que o app.js publicado é o que você editou
       - name: Debug published JS (ensure Brasil is present)

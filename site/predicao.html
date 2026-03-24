@@ -4,10 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Páscoa 2026 · Predição</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥚</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
+  <base href="../">
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -20,13 +22,14 @@
       </div>
       <div class="actions">
         <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+        <button id="btnRefresh">Atualizar agora</button>
       </div>
     </header>
 
     <nav class="tab-nav">
-      <a href="index.html" class="tab-link">Métricas</a>
-      <a href="predicao.html" class="tab-link tab-active">Predição</a>
-      <a href="rotas.html" class="tab-link">Rotas</a>
+      <a href="metricas/" class="tab-link">Métricas</a>
+      <a href="predicao/" class="tab-link tab-active">Predição</a>
+      <a href="rotas/" class="tab-link">Rotas</a>
     </nav>
 
     <div class="status-bar">

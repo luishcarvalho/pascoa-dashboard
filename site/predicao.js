@@ -216,7 +216,7 @@ async function init() {
   statusEl.textContent = "Carregando…";
 
   try {
-    const base = window.location.pathname.replace(/\/[^/]*$/, "/");
+    const base = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
     const res  = await fetch(`${base}data/prediction.json?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     predData = await res.json();
@@ -232,5 +232,17 @@ async function init() {
 
 document.getElementById("slider-n").addEventListener("input", render);
 document.getElementById("select-pct").addEventListener("change", render);
+
+document.getElementById("btnRefresh")?.addEventListener("click", async () => {
+  const btn = document.getElementById("btnRefresh");
+  btn.disabled = true;
+  btn.classList.add("is-loading");
+  btn.textContent = "Atualizando…";
+  predData = null;
+  await init();
+  btn.disabled = false;
+  btn.classList.remove("is-loading");
+  btn.textContent = "Atualizar agora";
+});
 
 init();

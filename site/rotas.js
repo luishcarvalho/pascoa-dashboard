@@ -210,7 +210,7 @@ async function init() {
   statusEl.textContent = "Carregando…";
 
   try {
-    const base = window.location.pathname.replace(/\/[^/]*$/, "/");
+    const base = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
     const res  = await fetch(`${base}data/routes.json?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     routesData = await res.json();
@@ -242,5 +242,18 @@ async function init() {
     renderDay(dias[0]);
   }
 }
+
+document.getElementById("btnRefresh")?.addEventListener("click", async () => {
+  const btn = document.getElementById("btnRefresh");
+  btn.disabled = true;
+  btn.classList.add("is-loading");
+  btn.textContent = "Atualizando…";
+  routesData = null;
+  document.getElementById("daySelectRoutes").innerHTML = "";
+  await init();
+  btn.disabled = false;
+  btn.classList.remove("is-loading");
+  btn.textContent = "Atualizar agora";
+});
 
 init();

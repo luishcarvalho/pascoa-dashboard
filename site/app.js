@@ -316,7 +316,7 @@ async function loadMetrics(bustCache = false) {
   try {
     setStatus("Carregando...");
 
-    const base = window.location.pathname.replace(/\/[^\/]*$/, "/");
+    const base = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
     const url = `${base}data/metrics.json${bustCache ? `?t=${Date.now()}` : ""}`;
 
     const res = await fetch(url, { cache: "no-store" });
