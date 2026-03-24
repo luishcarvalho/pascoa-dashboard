@@ -61,7 +61,7 @@ const RECHEIO_COR = {
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function snap(N) {
-  return Math.max(85, Math.min(300, Math.round(N / 5) * 5));
+  return Math.max(0, Math.min(300, Math.round(N / 10) * 10));
 }
 
 function getScenario(N) {

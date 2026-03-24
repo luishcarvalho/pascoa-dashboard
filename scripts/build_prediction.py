@@ -18,7 +18,7 @@ CSV_2024 = os.path.join("data", "historico", "pascoa_2024.csv")
 CSV_2025 = os.path.join("data", "historico", "pascoa_2025.csv")
 
 N_SIM   = 10_000
-TARGETS = list(range(85, 305, 5))   # 85, 90, …, 300
+TARGETS = list(range(0, 310, 10))   # 0, 10, …, 300
 
 # ── ALIASES DE RECHEIO ────────────────────────────────────────────────────────
 # Normaliza variações históricas para nomes canônicos

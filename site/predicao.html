@@ -7,6 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -37,7 +38,7 @@
       <div class="control-row">
         <label class="control-label" for="slider-n">Meta de ovos</label>
         <div class="slider-wrap">
-          <input type="range" id="slider-n" min="85" max="300" step="5" value="150" />
+          <input type="range" id="slider-n" min="0" max="300" step="10" value="150" />
           <span class="slider-value"><span id="label-n">150</span> ovos</span>
         </div>
       </div>
