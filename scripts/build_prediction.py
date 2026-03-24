@@ -25,7 +25,7 @@ TARGETS = list(range(0, 310, 10))   # 0, 10, …, 300
 RECHEIO_ALIASES: dict[str, str | None] = {
     # 2024
     "ninho c/ nutella":              "Ninho com Nutella",
-    "brigadeiro c/ nutella":         "Ferrero Rocher",
+    "brigadeiro c/ nutella":         "Brigadeiro",
     # 2025
     "brigadeiro 70%":                "Brigadeiro",
     "ninho com brigadeiro":          "Ninho",

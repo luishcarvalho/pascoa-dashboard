@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import json; d=json.load\\(open\\(''c:/UFV/pascoa-dashboard/dist/data/prediction.json''\\)\\); print\\(json.dumps\\(d.get\\(''model'',{}\\).get\\(''historico'',{}\\), indent=2\\)\\)\")"
+    ]
+  }
+}

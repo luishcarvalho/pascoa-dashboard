@@ -80,17 +80,15 @@ function fmt(v, decimals = 1) {
 
 // ── RENDER: KPI CARDS ─────────────────────────────────────────────────────────
 function renderKpis(sc, pct) {
-  const lc         = sc["Leite Condensado"]?.[pct];
-  const cl         = sc["Creme de Leite"]?.[pct];
-  const nutellaG   = sc["Nutella (g)"]?.[pct] ?? 0;
-  const nutellaPot = nutellaG ? (nutellaG / 650).toFixed(1) : "—";
-  const chocPo     = sc["Chocolate em Pó"]?.[pct];
+  const lc       = sc["Leite Condensado"]?.[pct];
+  const cl       = sc["Creme de Leite"]?.[pct];
+  const nutellaG = sc["Nutella (g)"]?.[pct] ?? 0;
+  const chocPo   = sc["Chocolate em Pó"]?.[pct];
 
-  document.getElementById("kpi-lc").textContent        = fmt(lc);
-  document.getElementById("kpi-cl").textContent        = fmt(cl);
-  document.getElementById("kpi-nutella").textContent   = nutellaPot;
-  document.getElementById("kpi-nutella-g").textContent = nutellaG ? `${nutellaG.toFixed(0)} g` : "—";
-  document.getElementById("kpi-chocpo").textContent    = fmt(chocPo);
+  document.getElementById("kpi-lc").textContent      = fmt(lc);
+  document.getElementById("kpi-cl").textContent      = fmt(cl);
+  document.getElementById("kpi-nutella").textContent = nutellaG ? nutellaG.toFixed(0) : "—";
+  document.getElementById("kpi-chocpo").textContent  = fmt(chocPo);
 }
 
 // ── RENDER: TABELA DE INGREDIENTES ────────────────────────────────────────────
@@ -145,12 +143,11 @@ function renderHistorico() {
 
   const rows = entries.map(([recheio, byYear]) => {
     const cor  = RECHEIO_COR[recheio] || "var(--accent)";
-    // Largura relativa ao máximo global desse recheio
     const max  = Math.max(...years.map(y => byYear[y] ?? 0), 0.1);
 
     const cells = years.map(y => {
       const v   = byYear[y] ?? 0;
-      const w   = ((v / max) * 72).toFixed(0);   // px, max 72px
+      const w   = ((v / max) * 72).toFixed(0);
       const val = v > 0 ? `${v.toFixed(1)}%` : "—";
       return `<td>
         <div class="trend-bar">
@@ -160,17 +157,41 @@ function renderHistorico() {
       </td>`;
     });
 
+    // Tendência: compara 2026 vs 2025 (ou 2024 se 2025=0)
+    const v24 = byYear["2024"] ?? 0;
+    const v25 = byYear["2025"] ?? 0;
+    const v26 = byYear["2026"] ?? 0;
+    let tendLabel, tendColor;
+    if (v24 === 0 && v25 === 0) {
+      tendLabel = "✦ Novo";
+      tendColor = "var(--accent)";
+    } else {
+      const prev  = v25 > 0 ? v25 : v24;
+      const delta = v26 - prev;
+      if (delta > 3) {
+        tendLabel = "↑ Crescendo";
+        tendColor = "#4ade80";
+      } else if (delta < -3) {
+        tendLabel = "↓ Caindo";
+        tendColor = "#f87171";
+      } else {
+        tendLabel = "→ Estável";
+        tendColor = "var(--text3)";
+      }
+    }
+
     return `<tr>
       <td style="font-weight:500">
         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${cor};margin-right:6px;flex-shrink:0;vertical-align:middle"></span>${recheio}
       </td>
       ${cells.join("")}
+      <td style="color:${tendColor};white-space:nowrap;font-size:0.82rem">${tendLabel}</td>
     </tr>`;
   });
 
   tbody.innerHTML = rows.length
     ? rows.join("")
-    : `<tr><td colspan="4" class="small">Sem dados.</td></tr>`;
+    : `<tr><td colspan="5" class="small">Sem dados.</td></tr>`;
 }
 
 // ── RENDER PRINCIPAL ──────────────────────────────────────────────────────────
