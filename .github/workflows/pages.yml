@@ -48,6 +48,9 @@ jobs:
       - name: Build metrics.json
         run: python scripts/build_metrics.py
 
+      - name: Build prediction.json
+        run: python scripts/build_prediction.py
+
       - name: Debug dist/data (fail if NaN)
         run: |
           echo "== dist =="

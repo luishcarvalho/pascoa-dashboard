@@ -293,6 +293,134 @@ h3 {
 
 h3:first-child { margin-top: 0; }
 
+/* ── TAB NAV ──────────────────────────────────────────────────────────── */
+.tab-nav {
+  display: flex;
+  gap: 2px;
+  border-bottom: 0.5px solid var(--border2);
+  margin-bottom: 1.5rem;
+  margin-top: 0.25rem;
+}
+
+.tab-link {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.5rem 1.1rem;
+  color: var(--text3);
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.tab-link:hover { color: var(--text2); }
+
+.tab-active {
+  color: var(--text);
+  border-bottom-color: var(--accent);
+}
+
+/* ── CONTROLES (slider + select) ──────────────────────────────────────── */
+.controls-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.control-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.control-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  min-width: 90px;
+}
+
+.slider-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+}
+
+input[type="range"] {
+  flex: 1;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+.slider-value {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px;
+  color: var(--text);
+  white-space: nowrap;
+  min-width: 72px;
+}
+
+/* ── KPI UNIT ──────────────────────────────────────────────────────────── */
+.kpi-unit {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+}
+
+/* ── BADGES DE INCERTEZA ──────────────────────────────────────────────── */
+.badge {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px;
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-weight: 500;
+}
+
+.badge-low  { background: rgba(34,197,94,0.12);  color: #16a34a; }
+.badge-med  { background: rgba(234,179,8,0.12);  color: #ca8a04; }
+.badge-high { background: rgba(239,68,68,0.12);  color: #dc2626; }
+
+[data-theme="dark"] .badge-low  { color: #4ade80; }
+[data-theme="dark"] .badge-med  { color: #fbbf24; }
+[data-theme="dark"] .badge-high { color: #f87171; }
+
+/* ── TABELA INGREDIENTES (colunas especiais) ───────────────────────────── */
+.ingr-unit  { color: var(--text3); font-size: 11px; }
+.ingr-faixa { font-family: 'DM Mono', monospace; font-size: 12px; color: var(--text2); }
+
+/* ── HISTOGRAMA SVG ────────────────────────────────────────────────────── */
+.histogram { display: block; width: 100%; overflow: visible; }
+
+.hist-bar   { fill: var(--accent); opacity: 0.65; }
+.hist-label { font-family: 'DM Mono', monospace; font-size: 10px; fill: var(--text3); }
+
+/* ── MINI BARRAS DE TENDÊNCIA ─────────────────────────────────────────── */
+.trend-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 100px;
+}
+
+.trend-fill {
+  height: 5px;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 0.6;
+  flex-shrink: 0;
+  min-width: 2px;
+}
+
+.trend-bar span {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  color: var(--text2);
+  white-space: nowrap;
+}
+
 /* ── MISC ─────────────────────────────────────────────────────────────── */
 .small {
   font-size: 12px;
