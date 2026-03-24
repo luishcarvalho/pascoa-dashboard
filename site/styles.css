@@ -149,7 +149,8 @@ button:disabled {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* ── SELECT ───────────────────────────────────────────────────────────── */
-#daySelect {
+#daySelect,
+#daySelectRoutes {
   font-family: 'DM Mono', monospace;
   font-size: 12px;
   height: 38px;
@@ -171,8 +172,10 @@ button:disabled {
   transition: border-color 0.15s;
 }
 
-#daySelect:hover { border-color: var(--border2); }
-#daySelect:focus { border-color: rgba(0,0,0,0.3); outline: none; }
+#daySelect:hover,
+#daySelectRoutes:hover { border-color: var(--border2); }
+#daySelect:focus,
+#daySelectRoutes:focus { border-color: rgba(0,0,0,0.3); outline: none; }
 
 #select-pct {
   font-family: 'DM Mono', monospace;

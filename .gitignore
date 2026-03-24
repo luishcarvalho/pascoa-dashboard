@@ -1,1 +1,7 @@
 .claude/settings.local.json
+
+# dist/ é reconstruído pelo GitHub Actions — não commitar duplicatas
+dist/*
+!dist/data/
+dist/data/*
+!dist/data/geocache.json

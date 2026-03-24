@@ -1,0 +1,122 @@
+{
+  "Posto Indaiá Rua Padre Luís, 341": {
+    "lat": -19.45836,
+    "lon": -45.5981912,
+    "display": "Rua Padre Luís, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Padre Luís, 341"
+  },
+  "Rua Capitão Amaro - 204A": {
+    "lat": -19.4583635,
+    "lon": -45.5983365,
+    "display": "Rua Capitão Amaro, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Capitão Amaro - 204A"
+  },
+  "Rua Paulino de Souza 185 (fundo)": {
+    "lat": -19.45869,
+    "lon": -45.6010071,
+    "display": "Rua Paulino de Souza, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Paulino de Souza 185"
+  },
+  "Frangol Rua Godofredo Araújo, 22": {
+    "lat": -19.468419,
+    "lon": -45.6036676,
+    "display": "Rua Godofredo Araújo, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Godofredo Araújo, 22"
+  },
+  "Rua Ayrton Sena 55": {
+    "lat": -19.47440017041065,
+    "lon": -45.599467908446556,
+    "display": "Rua Ayrton Sena, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Pará 59": {
+    "lat": -19.4616754,
+    "lon": -45.5976333,
+    "display": "Rua Pará, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Pará 59"
+  },
+  "Rua Abaeté 132": {
+    "lat": -19.4556336,
+    "lon": -45.5857845,
+    "display": "Rua Abaeté, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Abaeté 132"
+  },
+  "Rua Irmã Inês 1086": {
+    "lat": -19.4621288,
+    "lon": -45.5980302,
+    "display": "Rua Irmã Inês, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Irmã Inês 1086"
+  },
+  "Rua Tupis 149": {
+    "lat": -19.4554198,
+    "lon": -45.5901664,
+    "display": "Rua Tupis, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Tupis 149"
+  },
+  "Rua Xavantes 641": {
+    "lat": -19.4557674,
+    "lon": -45.5897292,
+    "display": "Rua Xavantes, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Xavantes 641"
+  },
+  "Rua João Paulo Ribeiro, 96": {
+    "lat": -19.473885,
+    "lon": -45.6073084,
+    "display": "Rua João Paulo Ribeiro, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua João Paulo Ribeiro, 96"
+  },
+  "Rua São José 655, perto da rodoviária": {
+    "lat": -19.4713988,
+    "lon": -45.605097,
+    "display": "Rua São José, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua São José 655"
+  },
+  "Beco João Venâncio 75": {
+    "lat": -19.46426377805942,
+    "lon": -45.59531574598559,
+    "display": "Beco João Venâncio, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Hugo de Souza 140": {
+    "lat": -19.4737746,
+    "lon": -45.5970345,
+    "display": "Rua Hugo de Souza Araújo, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Hugo de Souza 140"
+  },
+  "Mozart José dos Santos 206": {
+    "lat": -19.47642,
+    "lon": -45.59217,
+    "display": "Rua Mozart José dos Santos, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Cornélio Caetano, 361": {
+    "lat": -19.4731895,
+    "lon": -45.6072195,
+    "display": "Rua Cornélio Caetano, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Cornélio Caetano, 361"
+  },
+  "Rua Airton Sena 55": {
+    "lat": -19.4745738,
+    "lon": -45.5995513,
+    "display": "Rua Aírton Sena, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Airton Sena 55"
+  },
+  "Beco J Venâncio, 75": {
+    "lat": -19.4643278,
+    "lon": -45.5953827,
+    "display": "Beco J Venâncio, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Beco J Venâncio, 75"
+  },
+  "__origin__": {
+    "lat": -19.470587152636245,
+    "lon": -45.59867200365528,
+    "display": "Rua Espirito Santo 811, Dores do Indaia, MG",
+    "query_used": "manual"
+  },
+  "José Barbosa Ferola 86": {
+    "lat": -19.472028,
+    "lon": -45.59675,
+    "display": "Rua José Barbosa Ferola, 86, Dores do Indaía, MG",
+    "query_used": "manual"
+  }
+}

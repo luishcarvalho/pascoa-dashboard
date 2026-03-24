@@ -51,6 +51,9 @@ jobs:
       - name: Build prediction.json
         run: python scripts/build_prediction.py
 
+      - name: Build routes.json
+        run: python scripts/geocode_addresses.py
+
       - name: Debug dist/data (fail if NaN)
         run: |
           echo "== dist =="

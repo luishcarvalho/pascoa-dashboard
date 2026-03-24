@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Páscoa 2026 · Rotas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .route-layout {
+      display: grid;
+      grid-template-columns: 1fr 320px;
+      gap: 1rem;
+      align-items: start;
+    }
+    @media (max-width: 700px) {
+      .route-layout { grid-template-columns: 1fr; }
+      #map { height: 320px !important; }
+    }
+    #map {
+      height: 480px;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      z-index: 0;
+    }
+    .route-sidebar {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    .route-stat {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.6rem 0.9rem;
+      background: var(--surface2);
+      border-radius: var(--r);
+      font-size: 0.82rem;
+      color: var(--text2);
+    }
+    .route-stat strong { color: var(--text); font-family: 'DM Mono', monospace; }
+    .stop-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+    .stop-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.6rem;
+      padding: 0.6rem 0.75rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .stop-item:hover { border-color: var(--accent); }
+    .stop-item.stop-origin { background: var(--surface2); }
+    .stop-num {
+      flex-shrink: 0;
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #fff;
+      font-size: 0.7rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+    }
+    .stop-origin .stop-num { background: var(--text3); }
+    .stop-no-coord .stop-num { background: var(--text3); }
+    .stop-info { flex: 1; min-width: 0; }
+    .stop-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stop-addr { color: var(--text2); font-size: 0.75rem; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .stop-recheio { color: var(--accent); font-size: 0.72rem; }
+    .stop-ordem { margin-top: 3px; display: flex; flex-direction: column; gap: 1px; }
+    .stop-ordem + .stop-ordem { border-top: 1px solid var(--border); padding-top: 3px; margin-top: 3px; }
+    /* Leaflet popup dark mode */
+    [data-theme="dark"] .leaflet-popup-content-wrapper,
+    [data-theme="dark"] .leaflet-popup-tip { background: #2e2a22; color: #f0ede6; }
+    [data-theme="dark"] .leaflet-popup-content-wrapper { border: 1px solid rgba(255,255,255,0.1); }
+  </style>
+</head>
+<body>
+  <div class="page">
+
+    <header class="header">
+      <div class="header-left">
+        <h1>Dashboard · Rotas</h1>
+        <p class="header-sub">Trajeto otimizado para entregas de 2026</p>
+      </div>
+      <div class="actions">
+        <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+      </div>
+    </header>
+
+    <nav class="tab-nav">
+      <a href="index.html" class="tab-link">Métricas</a>
+      <a href="predicao.html" class="tab-link">Predição</a>
+      <a href="rotas.html" class="tab-link tab-active">Rotas</a>
+    </nav>
+
+    <div class="status-bar"><span id="status-rotas"></span></div>
+    <div class="card controls-card" style="margin-bottom:1rem">
+      <div class="control-row">
+        <label class="control-label" for="daySelectRoutes">Dia</label>
+        <select id="daySelectRoutes"></select>
+      </div>
+    </div>
+
+    <div class="route-layout">
+      <div id="map"></div>
+      <div class="route-sidebar">
+        <div class="route-stat">
+          <span>Paradas</span>
+          <strong id="stat-stops">—</strong>
+        </div>
+        <div class="route-stat">
+          <span>Distância estimada</span>
+          <strong id="stat-dist">—</strong>
+        </div>
+        <div class="route-stat">
+          <span>Sem coordenada</span>
+          <strong id="stat-missing">—</strong>
+        </div>
+        <ul class="stop-list" id="stop-list"></ul>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="rotas.js"></script>
+</body>
+</html>
