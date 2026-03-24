@@ -376,7 +376,11 @@ def main():
             per_day[str(day_value)] = compute_metrics(g.drop(columns=["_day"]))
 
     payload["per_day"] = per_day
-    payload["available_days"] = sorted(per_day.keys(), key=lambda x: (len(x), x))
+    DAY_ORDER = ["qua", "qui", "sex", "sab", "dom", "seg"]
+    payload["available_days"] = sorted(
+        per_day.keys(),
+        key=lambda x: DAY_ORDER.index(x.lower()) if x.lower() in DAY_ORDER else len(DAY_ORDER)
+    )
 
     # sanitize + salvar
     payload = json_sanitize(payload)

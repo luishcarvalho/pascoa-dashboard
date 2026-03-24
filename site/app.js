@@ -5,7 +5,7 @@ let timeAgoIntervalId = null;
 // ── TEMA ──────────────────────────────────────────────────────────────────
 (function initTheme() {
   const btn = document.getElementById("btnTheme");
-  const saved = localStorage.getItem("theme") || "light";
+  const saved = localStorage.getItem("theme") || "dark";
 
   function applyTheme(theme) {
     document.documentElement.setAttribute("data-theme", theme);
@@ -128,9 +128,16 @@ function populateDaySelect() {
   el.disabled = false;
   el.style.display = "";
 
+  const DAY_ORDER = ["qua", "qui", "sex", "sab", "dom", "seg"];
+  const sortByDay = (a, b) => {
+    const ia = DAY_ORDER.indexOf(String(a).toLowerCase());
+    const ib = DAY_ORDER.indexOf(String(b).toLowerCase());
+    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib);
+  };
+
   const days =
-    metricsPayload.available_days ||
-    Object.keys(metricsPayload.per_day || {}).sort((a, b) => String(a).localeCompare(String(b), "pt-BR"));
+    (metricsPayload.available_days?.length ? [...metricsPayload.available_days].sort(sortByDay) : null) ||
+    Object.keys(metricsPayload.per_day || {}).sort(sortByDay);
 
   const current = el.value || "overall";
 
