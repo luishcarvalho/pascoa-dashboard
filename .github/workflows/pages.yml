@@ -5,10 +5,15 @@ on:
   schedule:
     - cron: "*/10 * * * *"   # a cada 10 minutos
 
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write
   id-token: write
+  actions: write
 
 jobs:
   build:
@@ -89,3 +94,11 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+      - name: Limpar runs antigos (manter últimos 5)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh run list --repo ${{ github.repository }} --limit 100 --json databaseId,status \
+            -q '[.[] | select(.status == "completed")] | .[5:] | .[].databaseId' \
+            | xargs -r -I {} gh run delete {} --repo ${{ github.repository }}
