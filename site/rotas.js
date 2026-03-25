@@ -19,7 +19,7 @@ const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
 const AUTH_HASH = "HASH_PLACEHOLDER";
 
 // ── AUTENTICAÇÃO ──────────────────────────────────────────────────────────────
-let isAuthenticated = sessionStorage.getItem("rotas_auth") === AUTH_HASH;
+let isAuthenticated = false; // sempre inicia privado
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -38,6 +38,7 @@ function setAuthUI(authenticated) {
     bar.classList.add("unlocked");
     icon.textContent  = "🔓";
     label.textContent = "Dados completos visíveis";
+    const btnWidth = btn.offsetWidth;
     input.style.display  = "none";
     btn.style.display    = "none";
     msg.textContent      = "";
@@ -45,7 +46,8 @@ function setAuthUI(authenticated) {
     if (!logoutBtn) {
       logoutBtn = document.createElement("button");
       logoutBtn.id          = "auth-logout";
-      logoutBtn.textContent = "Sair";
+      logoutBtn.textContent = "Ocultar";
+      logoutBtn.style.width = `${btnWidth}px`;
       logoutBtn.addEventListener("click", async () => {
         sessionStorage.removeItem("rotas_auth");
         isAuthenticated = false;
@@ -89,7 +91,7 @@ document.getElementById("auth-btn").addEventListener("click", async () => {
     return;
   }
 
-  sessionStorage.setItem("rotas_auth", hash);
+  sessionStorage.setItem("rotas_auth", hash); // mantém durante a sessão atual
   isAuthenticated = true;
   setAuthUI(true);
   msg.textContent = "";
@@ -383,18 +385,7 @@ async function init() {
 
   statusEl.textContent = "";
 
-  // Se já autenticado, substitui pelos dados completos
-  if (isAuthenticated) {
-    try {
-      const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
-      const res  = await fetch(`${base}data/routes_full.json?t=${Date.now()}`);
-      if (res.ok) {
-        const payload = await res.json();
-        routesData = payload.routes ?? payload;
-      }
-    } catch (_) {}
-  }
-  setAuthUI(isAuthenticated);
+  setAuthUI(false);
 
   const sel  = document.getElementById("daySelectRoutes");
   const dias = Object.keys(routesData);
