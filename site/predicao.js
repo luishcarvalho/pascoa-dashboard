@@ -233,61 +233,39 @@ async function init() {
 document.getElementById("slider-n").addEventListener("input", render);
 document.getElementById("select-pct").addEventListener("change", render);
 
-async function runUpdateFlow() {
-  const DISPATCH_URL  = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
-  const statusEl      = document.getElementById("status-pred");
-  const btn           = document.getElementById("btnRefresh");
-  const previousTs    = predData?.last_updated_utc ?? null;
-
-  const setLoading = (label) => {
-    btn.disabled = true;
-    btn.classList.add("is-loading");
-    btn.textContent = label;
-  };
-
-  setLoading("Disparando…");
-  statusEl.textContent = "Disparando atualização no servidor…";
-
-  const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, {
-    method: "POST", mode: "cors", cache: "no-store",
-  });
-  if (!r.ok) throw new Error(`Dispatch HTTP ${r.status}`);
-
-  setLoading("Aguardando…");
-  statusEl.textContent = "Workflow iniciado. Aguardando processamento…";
-  await new Promise(res => setTimeout(res, 15000));
-
-  const base       = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
-  const start      = Date.now();
-  const timeoutMs  = 3 * 60 * 1000;
-  const intervalMs = 8000;
-
-  while (Date.now() - start < timeoutMs) {
-    setLoading("Atualizando…");
-    statusEl.textContent = "Buscando dados publicados…";
-
-    try {
-      const res = await fetch(`${base}data/prediction.json?t=${Date.now()}`, { cache: "no-store" });
-      if (res.ok) {
-        const data = await res.json();
-        if (data.last_updated_utc && data.last_updated_utc !== previousTs) {
-          window.location.reload();
-          return;
-        }
-      }
-    } catch (_) {}
-
-    await new Promise(res => setTimeout(res, intervalMs));
-  }
-
-  throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
-}
-
 document.getElementById("btnRefresh")?.addEventListener("click", async () => {
-  const btn     = document.getElementById("btnRefresh");
-  const statusEl = document.getElementById("status-pred");
+  const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+  const statusEl     = document.getElementById("status-pred");
+  const btn          = document.getElementById("btnRefresh");
+  const previousTs   = predData?.last_updated_utc ?? null;
+
+  const setLoading = (label) => { btn.disabled = true; btn.classList.add("is-loading"); btn.textContent = label; };
+
   try {
-    await runUpdateFlow();
+    setLoading("Disparando…");
+    statusEl.textContent = "Disparando atualização no servidor…";
+    const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, { method: "POST", mode: "cors", cache: "no-store" });
+    if (!r.ok) throw new Error(`Dispatch HTTP ${r.status}`);
+
+    setLoading("Aguardando…");
+    statusEl.textContent = "Workflow iniciado. Aguardando processamento…";
+    await new Promise(res => setTimeout(res, 15000));
+
+    const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+    const start = Date.now();
+    while (Date.now() - start < 3 * 60 * 1000) {
+      setLoading("Atualizando…");
+      statusEl.textContent = "Buscando dados publicados…";
+      try {
+        const res = await fetch(`${base}data/prediction.json?t=${Date.now()}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.last_updated_utc && data.last_updated_utc !== previousTs) { window.location.reload(); return; }
+        }
+      } catch (_) {}
+      await new Promise(res => setTimeout(res, 8000));
+    }
+    throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
   } catch (e) {
     console.error(e);
     statusEl.textContent = `Erro: ${e.message}`;

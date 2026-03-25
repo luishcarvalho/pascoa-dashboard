@@ -362,6 +362,7 @@ def main() -> None:
 
     # ── Geocodificação ────────────────────────────────────────────────────────
     cache = load_cache()
+
     novos = 0
 
     # Geocodifica também a origem
