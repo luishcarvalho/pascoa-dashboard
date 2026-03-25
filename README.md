@@ -2,7 +2,9 @@
 
 Dashboard de gestão de encomendas de ovos de Páscoa com **predição bayesiana de ingredientes** — construído para resolver um problema real de planejamento de produção artesanal.
 
-> Pipeline completo: Google Sheets → Python (pandas + numpy) → GitHub Actions → GitHub Pages. Zero banco de dados, zero servidor, zero custo.
+> Pipeline completo: Google Sheets → Python (pandas + numpy) → GitHub Actions → GitHub Pages.
+>
+> Zero banco de dados, zero servidor, zero custo.
 
 ---
 
