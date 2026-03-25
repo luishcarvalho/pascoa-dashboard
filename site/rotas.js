@@ -15,11 +15,37 @@
 
 // ── CONSTANTES ────────────────────────────────────────────────────────────────
 const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
-// Hash injetado pelo CI via GitHub Secret AUTH_HASH. Nunca coloque o hash real aqui.
-const AUTH_HASH = "HASH_PLACEHOLDER";
+const AUTH_HASH    = "HASH_PLACEHOLDER"; // injetado pelo CI (GitHub Secret AUTH_HASH)
+const ALL_DAYS     = "__all__";
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function getBaseUrl() {
+  return document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+}
+
+function fmtBRL(val) {
+  return Number(val).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+function updateStats(stops, missing, faltante) {
+  document.getElementById("stat-stops").textContent    = stops;
+  document.getElementById("stat-missing").textContent  = String(missing);
+  document.getElementById("stat-faltante").textContent = fmtBRL(faltante);
+}
+
+function popupOrdemHtml(o) {
+  return `<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(128,128,128,0.3)">
+    ${o.pedido ? `<small style="color:#999">#${o.pedido}</small> ` : ""}<b>${o.nome ?? "•••"}</b><br>
+    ${o.recheio ? `<span style="color:#e0622d">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span><br>` : ""}
+    ${o.faltante_num > 0
+      ? `<small style="color:#4caf50;font-weight:600">💰 ${o.faltante}</small><br>`
+      : `<small style="color:#999">Pago</small><br>`}
+    ${o.obs && o.obs !== "nan" ? `<small style="color:#999">${o.obs}</small>` : ""}
+  </div>`;
+}
 
 // ── AUTENTICAÇÃO ──────────────────────────────────────────────────────────────
-let isAuthenticated = false; // sempre inicia privado
+let isAuthenticated = false;
 
 async function sha256(str) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
@@ -39,9 +65,9 @@ function setAuthUI(authenticated) {
     icon.textContent  = "🔓";
     label.textContent = "Dados completos visíveis";
     const btnWidth = btn.offsetWidth;
-    input.style.display  = "none";
-    btn.style.display    = "none";
-    msg.textContent      = "";
+    input.style.display = "none";
+    btn.style.display   = "none";
+    msg.textContent     = "";
     let logoutBtn = document.getElementById("auth-logout");
     if (!logoutBtn) {
       logoutBtn = document.createElement("button");
@@ -52,15 +78,13 @@ function setAuthUI(authenticated) {
         sessionStorage.removeItem("rotas_auth");
         isAuthenticated = false;
         setAuthUI(false);
-        // Recarrega versão pública e re-renderiza
         try {
-          const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
-          const res  = await fetch(`${base}data/routes.json?t=${Date.now()}`);
+          const res = await fetch(`${getBaseUrl()}data/routes.json`, { cache: "no-store" });
           if (res.ok) {
             const payload = await res.json();
             routesData = payload.routes ?? payload;
             const sel = document.getElementById("daySelectRoutes");
-            if (sel.value === "__all__") renderAll();
+            if (sel.value === ALL_DAYS) renderAll();
             else renderDay(sel.value);
           }
         } catch (e) { console.error(e); }
@@ -86,25 +110,22 @@ document.getElementById("auth-btn").addEventListener("click", async () => {
 
   if (hash !== AUTH_HASH) {
     msg.textContent = "Senha incorreta";
-    msg.style.color = "#e05c5c";
     input.value = "";
     return;
   }
 
-  sessionStorage.setItem("rotas_auth", hash); // mantém durante a sessão atual
+  sessionStorage.setItem("rotas_auth", hash);
   isAuthenticated = true;
   setAuthUI(true);
   msg.textContent = "";
 
-  // Carrega dados completos e re-renderiza
   try {
-    const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
-    const res  = await fetch(`${base}data/routes_full.json?t=${Date.now()}`);
+    const res = await fetch(`${getBaseUrl()}data/routes_full.json`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const payload = await res.json();
     routesData = payload.routes ?? payload;
     const sel = document.getElementById("daySelectRoutes");
-    if (sel.value === "__all__") renderAll();
+    if (sel.value === ALL_DAYS) renderAll();
     else renderDay(sel.value);
   } catch (e) {
     console.error("Erro ao carregar dados completos:", e);
@@ -122,7 +143,6 @@ let map           = null;
 let tileLayer     = null;
 let layerGroup    = null;
 
-// Paleta de cores distintas para os pins
 const PIN_COLORS = [
   "#e05c5c", "#e07d1e", "#c9a800", "#4caf50", "#2196f3",
   "#9c27b0", "#00bcd4", "#e91e8c", "#795548", "#607d8b",
@@ -180,82 +200,11 @@ function makeIcon(label, color) {
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
-function renderDay(dia) {
-  if (!routesData || !map) return;
-
-  const day = routesData[dia];
-  if (!day) return;
-
-  layerGroup.clearLayers();
-
-  const origin  = day.origin;
-  const pedidos = day.pedidos;
-  const latlngs = [[origin.lat, origin.lon]];
-
-  // Marcador de origem
-  const oriIcon = makeIcon("⌂", "#6b6660");
-  L.marker([origin.lat, origin.lon], { icon: oriIcon })
-    .bindPopup(`<b>Ponto de partida</b><br><small>${origin.endereco}</small>`)
-    .addTo(layerGroup);
-
-  // Marcadores das paradas — uma cor por parada
-  pedidos.forEach((p, i) => {
-    if (!p.geocoded) return;
-
-    latlngs.push([p.lat, p.lon]);
-    const color  = pinColor(i);
-    const pinLabel = p.ordens.length > 1 ? `${p.ordens.length}x` : "";
-    const icon   = makeIcon(pinLabel, color);
-    const ordensHtml = p.ordens.map(o =>
-      `<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(128,128,128,0.3)">
-        ${o.pedido ? `<small style="color:#999">#${o.pedido}</small> ` : ""}<b>${o.nome}</b><br>
-        ${o.recheio ? `<span style="color:#e0622d">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span><br>` : ""}
-        ${o.faltante_num > 0 ? `<small style="color:#4caf50;font-weight:600">💰 ${o.faltante}</small><br>` : ""}
-        ${o.obs && o.obs !== "nan" ? `<small style="color:#999">${o.obs}</small>` : ""}
-      </div>`
-    ).join("");
-
-    const marker = L.marker([p.lat, p.lon], { icon })
-      .bindPopup(`
-        <div style="min-width:180px">
-          <small style="color:#999">${p.endereco}</small>
-          ${ordensHtml}
-        </div>
-      `);
-    layerGroup.addLayer(marker);
-
-    // Clique no item da lista abre o popup
-    const listItem = document.getElementById(`stop-${i}`);
-    if (listItem) {
-      listItem.addEventListener("click", () => {
-        map.setView([p.lat, p.lon], 16);
-        marker.openPopup();
-      });
-    }
-  });
-
-  // Ajusta zoom
-  if (latlngs.length > 1) {
-    map.fitBounds(L.latLngBounds(latlngs), { padding: [32, 32] });
-  } else {
-    map.setView([origin.lat, origin.lon], 14);
-  }
-
-  // Stats
-  document.getElementById("stat-stops").textContent    = `${day.total_paradas} paradas · ${day.total_ordens} ovos`;
-  document.getElementById("stat-missing").textContent  = day.geocoded_falhou || "0";
-  document.getElementById("stat-faltante").textContent = fmtBRL(day.faltante_total || 0);
-
-  // Grid de entregas
-  renderGrid(pedidos);
-}
-
 function stopCardHtml(p, i, color, idPrefix = "stop") {
-  const noCoord     = !p.geocoded;
-  const multi       = p.ordens.length > 1;
-  const faltantePar = p.faltante_parada;
-  const numStyle    = noCoord ? "" : `style="background:${color}"`;
-  const priv        = '<span style="color:var(--text3);font-style:italic">•••</span>';
+  const noCoord  = !p.geocoded;
+  const multi    = p.ordens.length > 1;
+  const numStyle = noCoord ? "" : `style="background:${color}"`;
+  const priv     = '<span style="color:var(--text3);font-style:italic">•••</span>';
 
   const ordensHtml = p.ordens.map(o => {
     const val = o.faltante_num ?? 0;
@@ -275,95 +224,100 @@ function stopCardHtml(p, i, color, idPrefix = "stop") {
       <div class="stop-info">
         <div class="stop-addr">${p.endereco ?? priv}</div>
         ${ordensHtml}
-        <div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar ?? 0)}</span></div>
+        <div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(p.faltante_parada ?? 0)}</span></div>
       </div>
     </li>`;
 }
 
 function renderGrid(pedidos) {
-  const ul   = document.getElementById("stop-list");
-  const rows = pedidos.map((p, i) => stopCardHtml(p, i, pinColor(i)));
-  ul.innerHTML = rows.join("");
+  document.getElementById("stop-list").innerHTML =
+    pedidos.map((p, i) => stopCardHtml(p, i, pinColor(i))).join("");
+}
 
-  pedidos.forEach((p, i) => {
+function renderDay(dia) {
+  if (!routesData || !map) return;
+  const day = routesData[dia];
+  if (!day) return;
+
+  layerGroup.clearLayers();
+  renderGrid(day.pedidos);
+
+  const origin  = day.origin;
+  const latlngs = [[origin.lat, origin.lon]];
+
+  L.marker([origin.lat, origin.lon], { icon: makeIcon("⌂", "#6b6660") })
+    .bindPopup(`<b>Ponto de partida</b><br><small>${origin.endereco}</small>`)
+    .addTo(layerGroup);
+
+  day.pedidos.forEach((p, i) => {
     if (!p.geocoded) return;
-    const item = document.getElementById(`stop-${i}`);
-    if (item) item.style.cursor = "pointer";
+    latlngs.push([p.lat, p.lon]);
+    const color  = pinColor(i);
+    const marker = L.marker([p.lat, p.lon], { icon: makeIcon(p.ordens.length > 1 ? `${p.ordens.length}x` : "", color) })
+      .bindPopup(`<div style="min-width:180px"><small style="color:#999">${p.endereco}</small>${p.ordens.map(popupOrdemHtml).join("")}</div>`);
+    layerGroup.addLayer(marker);
+
+    const listItem = document.getElementById(`stop-${i}`);
+    if (listItem) listItem.addEventListener("click", () => { map.setView([p.lat, p.lon], 16); marker.openPopup(); });
   });
+
+  if (latlngs.length > 1) map.fitBounds(L.latLngBounds(latlngs), { padding: [32, 32] });
+  else map.setView([origin.lat, origin.lon], 14);
+
+  updateStats(
+    `${day.total_paradas} paradas · ${day.total_ordens} ovos`,
+    day.geocoded_falhou ?? 0,
+    day.faltante_total  ?? 0,
+  );
 }
 
-function fmtBRL(val) {
-  return Number(val).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-// ── RENDER ALL ────────────────────────────────────────────────────────────────
 function renderAll() {
   if (!routesData || !map) return;
   layerGroup.clearLayers();
 
-  const latlngs = [];
+  const latlngs      = [];
+  const clickTargets = [];
   let totalParadas = 0, totalOrdens = 0, totalMissing = 0, totalFaltante = 0;
   let colorIdx = 0;
-  const ul = document.getElementById("stop-list");
   const rows = [];
 
   Object.entries(routesData).forEach(([chave, day]) => {
-    const pedidos = day.pedidos;
+    totalParadas  += day.total_paradas;
+    totalOrdens   += day.total_ordens;
+    totalMissing  += day.geocoded_falhou ?? 0;
+    totalFaltante += day.faltante_total  ?? 0;
 
-    totalParadas += day.total_paradas;
-    totalOrdens  += day.total_ordens;
-    totalMissing += day.geocoded_falhou || 0;
-    totalFaltante += day.faltante_total || 0;
-
-    // Separador de dia na sidebar
     const parts = chave.split(" · ");
     rows.push(`<li class="stop-item stop-day-label">${parts.length > 1 ? `${parts[0]} · ${parts[1]}` : chave}</li>`);
 
-    pedidos.forEach((p) => {
+    day.pedidos.forEach(p => {
       if (!p.geocoded) return;
       latlngs.push([p.lat, p.lon]);
-      const color    = pinColor(colorIdx);
-      const pinLabel = p.ordens.length > 1 ? `${p.ordens.length}x` : "";
-      const icon     = makeIcon(pinLabel, color);
-      const ordensHtml = p.ordens.map(o =>
-        `<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(128,128,128,0.3)">
-          ${o.pedido ? `<small style="color:#999">#${o.pedido}</small> ` : ""}<b>${o.nome}</b><br>
-          ${o.recheio ? `<span style="color:#e0622d">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span><br>` : ""}
-          ${o.faltante_num > 0 ? `<small style="color:#4caf50;font-weight:600">💰 ${o.faltante}</small><br>` : ""}
-        </div>`
-      ).join("");
-
-      const marker = L.marker([p.lat, p.lon], { icon })
-        .bindPopup(`<div style="min-width:180px"><small style="color:#999">${p.endereco}</small>${ordensHtml}</div>`);
-      layerGroup.addLayer(marker);
+      const color = pinColor(colorIdx);
+      L.marker([p.lat, p.lon], { icon: makeIcon(p.ordens.length > 1 ? `${p.ordens.length}x` : "", color) })
+        .bindPopup(`<div style="min-width:180px"><small style="color:#999">${p.endereco}</small>${p.ordens.map(popupOrdemHtml).join("")}</div>`)
+        .addTo(layerGroup);
 
       rows.push(stopCardHtml(p, colorIdx, color, "stop-all"));
-
+      clickTargets.push({ id: `stop-all-${colorIdx}`, lat: p.lat, lon: p.lon });
       colorIdx++;
     });
   });
 
-  ul.innerHTML = rows.join("");
+  document.getElementById("stop-list").innerHTML = rows.join("");
 
-  // bind cliques
-  let idx = 0;
-  Object.values(routesData).forEach(day => {
-    day.pedidos.forEach(p => {
-      if (!p.geocoded) { idx++; return; }
-      const el = document.getElementById(`stop-all-${idx}`);
-      if (el) {
-        const lat = p.lat, lon = p.lon;
-        el.addEventListener("click", () => map.setView([lat, lon], 16));
-      }
-      idx++;
-    });
+  clickTargets.forEach(({ id, lat, lon }) => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener("click", () => map.setView([lat, lon], 16));
   });
 
   if (latlngs.length > 0) map.fitBounds(L.latLngBounds(latlngs), { padding: [32, 32] });
 
-  document.getElementById("stat-stops").textContent    = `${totalParadas} paradas · ${totalOrdens} ovos`;
-  document.getElementById("stat-missing").textContent  = totalMissing || "0";
-  document.getElementById("stat-faltante").textContent = fmtBRL(totalFaltante);
+  updateStats(
+    `${totalParadas} paradas · ${totalOrdens} ovos`,
+    totalMissing,
+    totalFaltante,
+  );
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -372,41 +326,38 @@ async function init() {
   statusEl.textContent = "Carregando…";
 
   try {
-    const base = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
-    const res  = await fetch(`${base}data/routes.json?t=${Date.now()}`);
+    const res     = await fetch(`${getBaseUrl()}data/routes.json`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const payload  = await res.json();
     lastUpdatedTs  = payload.last_updated_utc ?? null;
-    routesData     = payload.routes ?? payload; // compatibilidade com formato antigo
+    routesData     = payload.routes ?? payload;
   } catch (e) {
     statusEl.textContent = `Erro ao carregar rotas: ${e.message}`;
     return;
   }
 
   statusEl.textContent = "";
-
   setAuthUI(false);
 
   const sel  = document.getElementById("daySelectRoutes");
   const dias = Object.keys(routesData);
   dias.forEach(chave => {
-    const opt = document.createElement("option");
-    opt.value = chave;
+    const opt   = document.createElement("option");
+    opt.value   = chave;
     const parts = chave.split(" · ");
     opt.textContent = parts.length > 1 ? `${parts[0]}  ·  ${parts[1]}` : chave;
     sel.appendChild(opt);
   });
 
-  // "Todos os dias" — última opção, não default
   const optAll = document.createElement("option");
-  optAll.value = "__all__";
+  optAll.value = ALL_DAYS;
   optAll.textContent = "Geral (todos os dias)";
   sel.appendChild(optAll);
 
   initMap();
 
   sel.addEventListener("change", () => {
-    if (sel.value === "__all__") renderAll();
+    if (sel.value === ALL_DAYS) renderAll();
     else renderDay(sel.value);
   });
 
@@ -417,8 +368,8 @@ async function init() {
 }
 
 document.getElementById("btnRefresh")?.addEventListener("click", async () => {
-  const btn      = document.getElementById("btnRefresh");
-  const statusEl = document.getElementById("status-rotas");
+  const btn        = document.getElementById("btnRefresh");
+  const statusEl   = document.getElementById("status-rotas");
   const previousTs = lastUpdatedTs;
 
   const setLoading = (label) => { btn.disabled = true; btn.classList.add("is-loading"); btn.textContent = label; };
@@ -426,20 +377,20 @@ document.getElementById("btnRefresh")?.addEventListener("click", async () => {
   try {
     setLoading("Disparando…");
     statusEl.textContent = "Disparando atualização no servidor…";
-    const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, { method: "POST", mode: "cors", cache: "no-store" });
+    const r = await fetch(DISPATCH_URL, { method: "POST", mode: "cors", cache: "no-store" });
     if (!r.ok) throw new Error(`Dispatch HTTP ${r.status}`);
 
     setLoading("Aguardando…");
     statusEl.textContent = "Workflow iniciado. Aguardando processamento…";
     await new Promise(res => setTimeout(res, 15000));
 
-    const base  = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+    const base  = getBaseUrl();
     const start = Date.now();
     while (Date.now() - start < 3 * 60 * 1000) {
       setLoading("Atualizando…");
       statusEl.textContent = "Buscando dados publicados…";
       try {
-        const res = await fetch(`${base}data/routes.json?t=${Date.now()}`, { cache: "no-store" });
+        const res = await fetch(`${base}data/routes.json`, { cache: "no-store" });
         if (res.ok) {
           const data = await res.json();
           if (data.last_updated_utc && data.last_updated_utc !== previousTs) { window.location.reload(); return; }

@@ -1,3 +1,9 @@
+"""
+build_prediction.py
+Gera dist/data/prediction.json com predição bayesiana de ingredientes para Páscoa 2026.
+Combina histórico de 2024/2025 com dados atuais via regressão beta ponderada + Monte Carlo.
+"""
+
 import json
 import math
 import os
@@ -125,7 +131,6 @@ def extract_counts(df: pd.DataFrame) -> tuple[int, dict, int]:
 def main() -> None:
     rng = np.random.default_rng(42)
 
-    # Carregar CSVs
     df24 = load_csv(CSV_2024)
     df25 = load_csv(CSV_2025)
     df26 = load_csv(CSV_URL_2026)
@@ -136,7 +141,6 @@ def main() -> None:
     # Pesos temporais: w(t) = exp(1.5*(t - 2026))
     weights = {y: float(np.exp(1.5 * (y - 2026))) for y in years_order}
 
-    # Contagens por ano
     year_stats = {}
     for y, df in dfs.items():
         total, counts, n_colher = extract_counts(df)
@@ -231,7 +235,6 @@ def main() -> None:
 
         scenarios[str(N)] = sc
 
-    # ── Payload ───────────────────────────────────────────────────────────────
     payload = {
         "last_updated_utc": datetime.now(timezone.utc).isoformat(),
         "model": {

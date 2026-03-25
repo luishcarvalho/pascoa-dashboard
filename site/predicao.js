@@ -13,10 +13,15 @@
   });
 })();
 
+// ── CONSTANTES ────────────────────────────────────────────────────────────────
+const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 let predData = null;
 
-// ── CONSTANTES ────────────────────────────────────────────────────────────────
+// ── CONFIG ────────────────────────────────────────────────────────────────────
+// Mapeamento de chave → rótulo de exibição. A maioria é identidade;
+// "Nutella (g)" é abreviado para evitar a unidade na UI.
 const INGREDIENTE_LABEL = {
   "Leite Condensado": "Leite Condensado",
   "Creme de Leite":   "Creme de Leite",
@@ -60,6 +65,10 @@ const RECHEIO_COR = {
 };
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
+function getBaseUrl() {
+  return document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+}
+
 function snap(N) {
   return Math.max(0, Math.min(300, Math.round(N / 10) * 10));
 }
@@ -216,8 +225,7 @@ async function init() {
   statusEl.textContent = "Carregando…";
 
   try {
-    const base = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
-    const res  = await fetch(`${base}data/prediction.json?t=${Date.now()}`);
+    const res  = await fetch(`${getBaseUrl()}data/prediction.json?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     predData = await res.json();
   } catch (e) {
@@ -234,24 +242,23 @@ document.getElementById("slider-n").addEventListener("input", render);
 document.getElementById("select-pct").addEventListener("change", render);
 
 document.getElementById("btnRefresh")?.addEventListener("click", async () => {
-  const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
-  const statusEl     = document.getElementById("status-pred");
-  const btn          = document.getElementById("btnRefresh");
-  const previousTs   = predData?.last_updated_utc ?? null;
+  const statusEl   = document.getElementById("status-pred");
+  const btn        = document.getElementById("btnRefresh");
+  const previousTs = predData?.last_updated_utc ?? null;
 
   const setLoading = (label) => { btn.disabled = true; btn.classList.add("is-loading"); btn.textContent = label; };
 
   try {
     setLoading("Disparando…");
     statusEl.textContent = "Disparando atualização no servidor…";
-    const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, { method: "POST", mode: "cors", cache: "no-store" });
+    const r = await fetch(DISPATCH_URL, { method: "POST", mode: "cors", cache: "no-store" });
     if (!r.ok) throw new Error(`Dispatch HTTP ${r.status}`);
 
     setLoading("Aguardando…");
     statusEl.textContent = "Workflow iniciado. Aguardando processamento…";
     await new Promise(res => setTimeout(res, 15000));
 
-    const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+    const base  = getBaseUrl();
     const start = Date.now();
     while (Date.now() - start < 3 * 60 * 1000) {
       setLoading("Atualizando…");

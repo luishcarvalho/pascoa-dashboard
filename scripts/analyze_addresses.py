@@ -60,7 +60,6 @@ def main() -> None:
 
     print(f"Total de linhas: {len(df)}\n")
 
-    # Normaliza campos
     df["_endereco"]    = df["Endereço"].fillna("").astype(str).str.strip()
     df["_dia"]         = df["Dia Entrega"].fillna("").astype(str).str.strip()
     df["_nome"]        = df["Nome"].fillna("").astype(str).str.strip()

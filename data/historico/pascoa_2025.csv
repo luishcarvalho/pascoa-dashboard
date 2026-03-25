@@ -1,133 +1,133 @@
-Dia Entrega,Feito,Pago,Entregue,Total,Recebido,Faltante,Nome,Tipo,Chocolate,Casca,Recheio,Docinho,Criança?,Endereço,Observação
-16/04,TRUE,FALSE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Lara Gil,Colher,Branco,Oreo,Ninho com Nutella,Ninho e Brigadeiros,Não,Retirada,Não pagou nada
-16/04,TRUE,FALSE,TRUE,"R$ 70,00","R$ 0,00","R$ 70,00",Lara Gil,Colher,Blend,Lisa,Ninho com Nutella,Ninho e Brigadeiros,Não,Retirada,Não pagou nada
-16/04,TRUE,FALSE,FALSE,"R$ 65,00","R$ 65,00","R$ 0,00",Yasmin Andrade,Trufado,Branco,Oreo,Ninho com Nutella,-,Não,Retirada,
-16/04,TRUE,FALSE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Jennifer,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Retirada,Não pagou nada
-16/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Hugo,Colher,Blend,Crocante,Ninho com Nutella,Ninho,Não,Retirada,
-16/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 60,00","R$ 0,00",Hugo,Colher,Blend,Lisa,Maracujá,Brigadeiro,Não,Retirada,Não pagou nada
-16/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Hugo,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Retirada,Não pagou nada
-16/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 60,00","R$ 0,00",Túlio,Colher,Branco,Confeti,Kids,Kids,Sim,Retirada,
-17/04,TRUE,FALSE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Luciana,Colher,Blend,Lisa,Brigadeiro 70%,Morangos,Não,Retirada,
-17/04,TRUE,TRUE,TRUE,"R$ 75,00","R$ 75,00","R$ 0,00",Daniela,Colher,Blend,Confeti,Ninho com Nutella,Ninho,Não,Carijós 193,Entrega
-17/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Daniela,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Carijós 193,Entrega
-17/04,TRUE,FALSE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Aparecida,Colher,Branco,Oreo,Ninho com Nutella,Ninho,"Sim, menino",Retirada,Quem vai retirar é a Camila Grasiele
-17/04,TRUE,FALSE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Aparecida,Colher,Blend,Oreo,Ferrero Rocher,Ferrero Rocher,"Sim, menina",Retirada,Quem vai retirar é a Camila Grasiele
-17/04,TRUE,FALSE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Aparecida,Colher,Blend,Oreo,Ninho com Nutella,Ninho,"Sim, menino",Retirada,Quem vai retirar é a Camila Grasiele
-17/04,TRUE,FALSE,TRUE,"R$ 60,00","R$ 60,00","R$ 0,00",Aparecida,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,Não pagou nada
-17/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Dayanna,Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Não,Retirada,retirar na quinta na parte da manhã
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 30,00","R$ 35,00",Kaike (nome Maysa),Colher,Blend,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Rua Abaeté 132,Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 60,00","R$ 0,00",Catia,Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Sim,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 5,00","R$ 65,00",Catia,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Retirada,Não pagou nada
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 0,00","R$ 60,00",Pamela ex baba,Colher,Blend,Oreo,Maracujá,Brigadeiro,Não,Retirada,Não pagou nada
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Luana,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Luana,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 75,00","R$ 75,00","R$ 0,00",Douglas,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,"Guararapes n50, ao lado da congregação batista",Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 35,00","R$ 30,00",Ketlyn,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Rua Guajajaras 673,Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 75,00","R$ 75,00","R$ 0,00",Guilherme Ribeiro,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,"Padre Luiz 341, entregar no posto",Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 65,00","R$ 0,00",Guilherme Ribeiro,Trufado,Branco,Crocante,Maracujá,-,Não,"Padre Luiz 341, entregar no posto",Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 65,00","R$ 0,00",Guilherme Ribeiro,Trufado,Branco,Confeti,Ninho com Nutella,-,Não,"Padre Luiz 341, entregar no posto",Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Carina,Colher,Blend,Lisa,Ninho com Nutella,Ninho,"Sim, menina",Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Carina,Colher,Blend,Lisa,Ninho com Nutella,Ninho,"Sim, menina",Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Carina,Colher,Blend,Lisa,Ninho com Nutella,Ninho,"Sim, menina",Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 32,50","R$ 32,50",Tayson,Trufado,Blend,Confeti,Prestígio,-,"Sim, menino",Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 32,50","R$ 32,50",Valentina,Colher,Blend,Crocante,Maracujá,Brigadeiro,Não,Rua Dr. Zacarias 171,
-18/04,TRUE,TRUE,TRUE,"R$ 75,00","R$ 37,50","R$ 37,50",Cadu,Colher,Branco,Confeti,Ferrero Rocher,Ferrero Rocher,Não,"Rua Xavantes 286, casa laranja na esquina",
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Angelica,Colher,Blend,Confeti,Kids,Kids,Sim,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Angelica,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 65,00","R$ 0,00",Luene mulher Tayson,Trufado,Blend,Confeti,Brigadeiro,-,Não,Retirada,Embalagem verde se der
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Rayane,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Ana Laura,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Dayanna,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 75,00","R$ 37,50","R$ 37,50",Letícia,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Fazenda Osvaldo Araujo rua cemitério,
-18/04,TRUE,TRUE,TRUE,"R$ 75,00","R$ 40,00","R$ 35,00",Claudio,Colher,Branco,Crocante,Ninho com Nutella,Ninho,Não,Praça Abaeté n30,Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Luiza França,Colher,Blend,Lisa,Kids,Kids,Sim,Retirada,Parte da manhã
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Luiza França,Colher,Blend,Lisa,Kids,Kids,Sim,Retirada,Parte da manhã
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Luiza França,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,Parte da manhã
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Itagina,Colher,Branco,Oreo,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Mariane,Colher,Branco,Confeti,Ninho com Nutella,Ninho,Não,Retirada,Parte da manhã
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Ana Clara Tamburete,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 32,50","R$ 32,50",Raphael,Trufado,Branco,Oreo,Prestígio e Ninho com Nutella,-,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 65,00","R$ 0,00",Flávia Gomes,Trufado,Branco,Confeti,Ninho com Nutella,-,"Sim, menino",Retirada,Embalagem do Estique
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Larissa,Trufado,Blend,Lisa,Prestígio e Ninho com Nutella,-,"Sim, menino",Rua Carijós 596,Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 60,00","R$ 0,00",Larissa,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Rua Carijós 596,Entrega
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 35,00","R$ 35,00",Joelma,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 65,00","R$ 32,50","R$ 32,50",Alice,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Rua Quartel Geral 337,
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 0,00","R$ 60,00",Leo,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,Não pagou nada
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 30,00","R$ 30,00",Ketlyn,Colher,Blend,Lisa,Kids,Kids,Sim,Rua Guajajaras 673,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Ellen,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 70,00","R$ 0,00",Cristiane Fiuza,Colher,Blend,Crocante,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 65,00","R$ 5,00",Isabely,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 60,00","R$ 0,00",Tiphanny,Colher,Blend,Confeti,Brigadeiro,Brigadeiro e morangos,Não,Retirada,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 0,00","R$ 70,00",Danilo Lacerda,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Casa Lacerda,
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 0,00","R$ 60,00",Danilo Lacerda,Colher,Blend,Lisa,Maracujá,Brigadeiro,Não,Casa Lacerda,
-18/04,TRUE,TRUE,TRUE,"R$ 60,00","R$ 0,00","R$ 60,00",Danilo Lacerda,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Casa Lacerda,
-18/04,TRUE,TRUE,TRUE,"R$ 70,00","R$ 0,00","R$ 70,00",Alessandro,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-18/04,TRUE,FALSE,TRUE,"R$ 30,00","R$ 0,00","R$ 30,00",Tia Fat,Trufado,Blend,,,,"Sim, menino",,
-18/04,TRUE,FALSE,TRUE,"R$ 30,00","R$ 0,00","R$ 30,00",Tia Fat,Trufado,Blend,,,,"Sim, menino",,
-18/04,TRUE,FALSE,TRUE,"R$ 30,00","R$ 0,00","R$ 30,00",Tia Fat,Trufado,Blend,,,,"Sim, menino",,
-18/04,TRUE,FALSE,TRUE,"R$ 30,00","R$ 0,00","R$ 30,00",Tia Fat,Trufado,Blend,,,,"Sim, menino",,
-19/04,TRUE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Mileide,Trufado,Blend,Oreo,Ninho com Nutella,-,"Sim, menino",Rua 13 de maio 93,Entrega
-19/04,TRUE,FALSE,FALSE,"R$ 65,00","R$ 30,00","R$ 35,00",Mileide,Trufado,Blend,Lisa,Ferrero Rocher,-,Não,Rua 13 de maio 93,Entrega
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Pamela,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,"Sim, menino",Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Matheus Cássia,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Bom Despacho,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Matheus Cássia,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Bom Despacho,
-19/04,FALSE,TRUE,FALSE,"R$ 65,00","R$ 65,00","R$ 0,00",Raisa (nome João Pedro),Colher,Blend,Crocante,Maracujá,Brigadeiro,Não,Jose Alves Salgado 33,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 30,00","R$ 40,00",Rodrigo,Colher,Branco,Oreo,Ferrero Rocher,Ferrero Rocher,Não,Retirada,Sorteio açaí
-19/04,FALSE,TRUE,FALSE,"R$ 65,00","R$ 65,00","R$ 0,00",Kel,Colher,Branco,Oreo,Maracujá,Brigadeiro,Não,Tupinambás 139 bairro São José,Entrega
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Kel,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Sim,Tupinambás 139 bairro São José,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 75,00","R$ 65,00","R$ 10,00",Juliana (nome Daniel),Colher,Blend,Oreo,Ferrero Rocher,Ferrero Rocher,Não,Rio Grande do Sul 875,
-19/04,FALSE,FALSE,FALSE,"R$ 75,00","R$ 0,00","R$ 75,00",Juliana (nome Daniela),Colher,Branco,Oreo,Ninho com Nutella,Ninho,Não,rua tapajos 327,Vai levar coelhinho
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Maria Clara,Colher,Branco,Oreo,Brigadeiro,Brigadeiro,Não,Casa do meu namorado,
-19/04,FALSE,TRUE,FALSE,"R$ 75,00","R$ 75,00","R$ 0,00",Samuell,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Casa Samuell Bizorro,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 0,00","R$ 60,00",Kaliny,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,Não pagou nada
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 35,00","R$ 30,00",Edna Maria,Trufado,Blend,Crocante,Ferrero Rocher,-,"Sim, menina",Retirada,Vai retirar as 9 da manhã
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Guilherme Salviano,Colher,Blend,Crocante,Maracujá,Brigadeiro,Não,Retirada,Não pagou nada
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Giovanna Cardoso,Colher,Blend,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Joyce,Colher,Branco,Confeti,Kids,Kids,Sim,Retirada junto com o Rodrigo do açaí,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 0,00","R$ 70,00",Luanna (nome Pedro),Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,"Cartão com taxa, não pagou"
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 0,00","R$ 60,00",Luanna (nome Giu),Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Retirada,"Cartão com taxa, não pagou"
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 0,00","R$ 60,00",Vanessa,Colher,Blend,Lisa,Kids,Brigadeiros e Confeti,Sim,Retirada?,Não pagou nada
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 0,00","R$ 60,00",Vanessa,Colher,Blend,Lisa,Kids,Brigadeiros e Confeti,Sim,Retirada?,Não pagou nada
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Elizangela,Colher,Blend,Oreo,Maracujá,Brigadeiro,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 50,00","R$ 20,00",Luana Elcio,Trufado,Blend,Confeti,Brigadeiro,-,"Sim, menino",Sete de Setembro 54,
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 0,00","R$ 65,00",Luana Elcio,Trufado,Blend,Confeti,Brigadeiro,-,"Sim, menino",Sete de Setembro 54,
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 32,50","R$ 32,50",Roselle,Trufado,Branco,Oreo,Ninho com Nutella,-,"Sim, menino",Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 32,50","R$ 32,50",Roselle,Trufado,Branco,Oreo,Ninho com Nutella,-,"Sim, menina",Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 32,50","R$ 32,50",Luzia (netinho),Trufado,Blend,Oreo,Ninho com Nutella,-,"Sim, menino",Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 30,00","R$ 30,00",Luzia (netinha),Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,"Sim, menina",Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 75,00","R$ 37,50","R$ 37,50",Cleci Angélica,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Rua Tiradentes 875 em frente mercearia Candidos,
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 32,50","R$ 32,50",Cleci Angélica,Trufado,Blend,Crocante,Prestígio,-,Não,Rua Tiradentes 875 em frente mercearia Candidos,
-19/04,FALSE,FALSE,FALSE,"R$ 75,00","R$ 37,50","R$ 37,50",Yasmin,Colher,Branco,Lisa,Ninho com Nutella,Ninho,Não,"Rua Carijós 151, bairro São José",Entrega
-19/04,FALSE,TRUE,FALSE,"R$ 70,00","R$ 70,00","R$ 0,00",Nicoly,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Marilia,Colher,Blend,Confeti,Maracujá,Brigadeiro,Não,Retirada,Noivo dela vai pegar
-19/04,FALSE,FALSE,FALSE,"R$ 75,00","R$ 35,00","R$ 40,00",Lauany,Colher,Blend,Confeti,Ninho com Nutella,Ninho,Não,José Barbosa Ferola 59,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Lauany,Colher,Blend,Oreo,Ferrero Rocher,Ferrero Rocher,Não,José Barbosa Ferola 59,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 75,00","R$ 37,50","R$ 37,50",Emilly,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Hugo de Souza Araujo 52,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Emilly,Colher,Blend,Crocante,Ninho com Nutella,Ninho e morangos,Não,Hugo de Souza Araujo 52,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 32,50","R$ 32,50",Camilly,Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Não,Hugo de Souza Araujo 52,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 30,00","R$ 30,00",Camilly,Colher,Blend,Crocante,Maracujá,Brigadeiro,Não,Hugo de Souza Araujo 52,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 32,50","R$ 32,50",Camilly,Trufado,Blend,Lisa,Brigadeiro,-,"Sim, menino",Hugo de Souza Araujo 52,Entrega
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 30,00","R$ 30,00",Jaqueline,Colher,Branco,Crocante,Brigadeiro,Brigadeiro e morangos,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 70,00","R$ 70,00","R$ 0,00",Pamela,Colher,Branco,Confeti,Ninho,Ninho e Confeti,Sim,Retirada,NÃO QUER CHOCOLATE PRETO NEM NUTELLA
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 0,00","R$ 60,00",Thais Guilherme,Colher,Blend,Crocante,Maracujá,Brigadeiro,Não,Retirada,Não pagou nada
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Claudia pelos e patas,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,"Sim, menino",Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 65,00","R$ 35,00","R$ 30,00",Yasmin Paulino,Trufado,Blend,Crocante,Maracujá,-,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 65,00","R$ 65,00","R$ 0,00",Higor Paulino,Trufado,Blend,Crocante,Ninho com Nutella,-,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Bianca,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 70,00","R$ 70,00","R$ 0,00",Edmar,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 65,00","R$ 65,00","R$ 0,00",Luciene,Trufado,Blend,Oreo,Prestígio e Ninho com Nutella,-,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 0,00","R$ 60,00",Maria Paula,Colher,Blend,Lisa,Brigadeiro,Brigadeiro,Não,Retirada,Vai pagar tudo sábado
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 30,00","R$ 30,00",Fábio,Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Não,Retirada,Não pagou nada
-19/04,FALSE,FALSE,FALSE,"R$ 60,00","R$ 30,00","R$ 30,00",Ivaci,Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Ivaci,Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Carol Veloso,Colher,Blend,Crocante,Ninho com brigadeiro,Ninho e morangos,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 35,00","R$ 35,00",Vitor Alves,Colher,Blend,Lisa,Ninho com brigadeiro,Ninho e morangos,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 70,00","R$ 0,00",Gabriel,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-19/04,FALSE,FALSE,FALSE,"R$ 70,00","R$ 70,00","R$ 0,00",Pamela,Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 60,00","R$ 60,00","R$ 0,00",Dudu,Colher,Blend,Crocante,Maracujá,Brigadeiro,Não,Retirada,
-19/04,FALSE,TRUE,FALSE,"R$ 70,00","R$ 70,00","R$ 0,00",Dudu,Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não,Retirada,
-,FALSE,FALSE,FALSE,,,,Raisa,,,,,,,,
-,FALSE,FALSE,FALSE,,,,Raisa,,,,,,,,
-,FALSE,FALSE,FALSE,,,,Estefania,,,,,,,,
-,FALSE,FALSE,FALSE,,,,Valeria,,,,,,,,
-,FALSE,FALSE,FALSE,,,,Patrícia,,,,,,,,
+Dia Entrega,Feito,Pago,Entregue,Total,Recebido,Faltante,Tipo,Chocolate,Casca,Recheio,Docinho,Criança?
+16/04,True,False,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Branco,Oreo,Ninho com Nutella,Ninho e Brigadeiros,Não
+16/04,True,False,True,"R$ 70,00","R$ 0,00","R$ 70,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho e Brigadeiros,Não
+16/04,True,False,False,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Branco,Oreo,Ninho com Nutella,-,Não
+16/04,True,False,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+16/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ninho com Nutella,Ninho,Não
+16/04,True,True,True,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Maracujá,Brigadeiro,Não
+16/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+16/04,True,True,True,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Branco,Confeti,Kids,Kids,Sim
+17/04,True,False,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Brigadeiro 70%,Morangos,Não
+17/04,True,True,True,"R$ 75,00","R$ 75,00","R$ 0,00",Colher,Blend,Confeti,Ninho com Nutella,Ninho,Não
+17/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+17/04,True,False,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Branco,Oreo,Ninho com Nutella,Ninho,"Sim, menino"
+17/04,True,False,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Oreo,Ferrero Rocher,Ferrero Rocher,"Sim, menina"
+17/04,True,False,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Oreo,Ninho com Nutella,Ninho,"Sim, menino"
+17/04,True,False,True,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+17/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 65,00","R$ 30,00","R$ 35,00",Colher,Blend,Oreo,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Sim
+18/04,True,True,True,"R$ 70,00","R$ 5,00","R$ 65,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Oreo,Maracujá,Brigadeiro,Não
+18/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 75,00","R$ 75,00","R$ 0,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 65,00","R$ 35,00","R$ 30,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 75,00","R$ 75,00","R$ 0,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Branco,Crocante,Maracujá,-,Não
+18/04,True,True,True,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Branco,Confeti,Ninho com Nutella,-,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,"Sim, menina"
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,"Sim, menina"
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,"Sim, menina"
+18/04,True,True,True,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Blend,Confeti,Prestígio,-,"Sim, menino"
+18/04,True,True,True,"R$ 65,00","R$ 32,50","R$ 32,50",Colher,Blend,Crocante,Maracujá,Brigadeiro,Não
+18/04,True,True,True,"R$ 75,00","R$ 37,50","R$ 37,50",Colher,Branco,Confeti,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Confeti,Kids,Kids,Sim
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Blend,Confeti,Brigadeiro,-,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 75,00","R$ 37,50","R$ 37,50",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 75,00","R$ 40,00","R$ 35,00",Colher,Branco,Crocante,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Kids,Kids,Sim
+18/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Kids,Kids,Sim
+18/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Branco,Oreo,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Branco,Confeti,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Branco,Oreo,Prestígio e Ninho com Nutella,-,Não
+18/04,True,True,True,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Branco,Confeti,Ninho com Nutella,-,"Sim, menino"
+18/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Trufado,Blend,Lisa,Prestígio e Ninho com Nutella,-,"Sim, menino"
+18/04,True,True,True,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 65,00","R$ 32,50","R$ 32,50",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Kids,Kids,Sim
+18/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+18/04,True,True,True,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 70,00","R$ 65,00","R$ 5,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Confeti,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 70,00","R$ 0,00","R$ 70,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,True,True,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Maracujá,Brigadeiro,Não
+18/04,True,True,True,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+18/04,True,True,True,"R$ 70,00","R$ 0,00","R$ 70,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+18/04,True,False,True,"R$ 30,00","R$ 0,00","R$ 30,00",Trufado,Blend,,,,"Sim, menino"
+18/04,True,False,True,"R$ 30,00","R$ 0,00","R$ 30,00",Trufado,Blend,,,,"Sim, menino"
+18/04,True,False,True,"R$ 30,00","R$ 0,00","R$ 30,00",Trufado,Blend,,,,"Sim, menino"
+18/04,True,False,True,"R$ 30,00","R$ 0,00","R$ 30,00",Trufado,Blend,,,,"Sim, menino"
+19/04,True,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Trufado,Blend,Oreo,Ninho com Nutella,-,"Sim, menino"
+19/04,True,False,False,"R$ 65,00","R$ 30,00","R$ 35,00",Trufado,Blend,Lisa,Ferrero Rocher,-,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,"Sim, menino"
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,True,False,"R$ 65,00","R$ 65,00","R$ 0,00",Colher,Blend,Crocante,Maracujá,Brigadeiro,Não
+19/04,False,False,False,"R$ 70,00","R$ 30,00","R$ 40,00",Colher,Branco,Oreo,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,True,False,"R$ 65,00","R$ 65,00","R$ 0,00",Colher,Branco,Oreo,Maracujá,Brigadeiro,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Sim
+19/04,False,False,False,"R$ 75,00","R$ 65,00","R$ 10,00",Colher,Blend,Oreo,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 75,00","R$ 0,00","R$ 75,00",Colher,Branco,Oreo,Ninho com Nutella,Ninho,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Branco,Oreo,Brigadeiro,Brigadeiro,Não
+19/04,False,True,False,"R$ 75,00","R$ 75,00","R$ 0,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+19/04,False,False,False,"R$ 65,00","R$ 35,00","R$ 30,00",Trufado,Blend,Crocante,Ferrero Rocher,-,"Sim, menina"
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Crocante,Maracujá,Brigadeiro,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Oreo,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Branco,Confeti,Kids,Kids,Sim
+19/04,False,False,False,"R$ 70,00","R$ 0,00","R$ 70,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+19/04,False,False,False,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,False,False,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Kids,Brigadeiros e Confeti,Sim
+19/04,False,False,False,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Kids,Brigadeiros e Confeti,Sim
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Oreo,Maracujá,Brigadeiro,Não
+19/04,False,False,False,"R$ 70,00","R$ 50,00","R$ 20,00",Trufado,Blend,Confeti,Brigadeiro,-,"Sim, menino"
+19/04,False,False,False,"R$ 65,00","R$ 0,00","R$ 65,00",Trufado,Blend,Confeti,Brigadeiro,-,"Sim, menino"
+19/04,False,False,False,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Branco,Oreo,Ninho com Nutella,-,"Sim, menino"
+19/04,False,False,False,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Branco,Oreo,Ninho com Nutella,-,"Sim, menina"
+19/04,False,False,False,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Blend,Oreo,Ninho com Nutella,-,"Sim, menino"
+19/04,False,False,False,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,"Sim, menina"
+19/04,False,False,False,"R$ 75,00","R$ 37,50","R$ 37,50",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Blend,Crocante,Prestígio,-,Não
+19/04,False,False,False,"R$ 75,00","R$ 37,50","R$ 37,50",Colher,Branco,Lisa,Ninho com Nutella,Ninho,Não
+19/04,False,True,False,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Confeti,Maracujá,Brigadeiro,Não
+19/04,False,False,False,"R$ 75,00","R$ 35,00","R$ 40,00",Colher,Blend,Confeti,Ninho com Nutella,Ninho,Não
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Oreo,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 75,00","R$ 37,50","R$ 37,50",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Crocante,Ninho com Nutella,Ninho e morangos,Não
+19/04,False,False,False,"R$ 65,00","R$ 32,50","R$ 32,50",Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,False,False,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Crocante,Maracujá,Brigadeiro,Não
+19/04,False,False,False,"R$ 65,00","R$ 32,50","R$ 32,50",Trufado,Blend,Lisa,Brigadeiro,-,"Sim, menino"
+19/04,False,False,False,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Branco,Crocante,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,True,False,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Branco,Confeti,Ninho,Ninho e Confeti,Sim
+19/04,False,False,False,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Crocante,Maracujá,Brigadeiro,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,"Sim, menino"
+19/04,False,False,False,"R$ 65,00","R$ 35,00","R$ 30,00",Trufado,Blend,Crocante,Maracujá,-,Não
+19/04,False,True,False,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Blend,Crocante,Ninho com Nutella,-,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,True,False,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,True,False,"R$ 65,00","R$ 65,00","R$ 0,00",Trufado,Blend,Oreo,Prestígio e Ninho com Nutella,-,Não
+19/04,False,False,False,"R$ 60,00","R$ 0,00","R$ 60,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro,Não
+19/04,False,False,False,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Crocante,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,False,False,"R$ 60,00","R$ 30,00","R$ 30,00",Colher,Blend,Lisa,Brigadeiro,Brigadeiro e morangos,Não
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com Nutella,Ninho,Não
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Crocante,Ninho com brigadeiro,Ninho e morangos,Não
+19/04,False,False,False,"R$ 70,00","R$ 35,00","R$ 35,00",Colher,Blend,Lisa,Ninho com brigadeiro,Ninho e morangos,Não
+19/04,False,False,False,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,False,False,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Lisa,Ferrero Rocher,Ferrero Rocher,Não
+19/04,False,True,False,"R$ 60,00","R$ 60,00","R$ 0,00",Colher,Blend,Crocante,Maracujá,Brigadeiro,Não
+19/04,False,True,False,"R$ 70,00","R$ 70,00","R$ 0,00",Colher,Blend,Crocante,Ferrero Rocher,Ferrero Rocher,Não
+,False,False,False,,,,,,,,,
+,False,False,False,,,,,,,,,
+,False,False,False,,,,,,,,,
+,False,False,False,,,,,,,,,
+,False,False,False,,,,,,,,,

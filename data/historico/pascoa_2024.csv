@@ -1,91 +1,91 @@
-Dia Entrega,Entregue,Feito,Nome,Tipo,Chocolate,Casca,Recheio,Docinho,Criança?,Endereço,Observação,Total,Pago,Pagamento
-27/03,TRUE,TRUE,Dayanna Rodrigues,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,TRUE,Dinheiro
-27/03,TRUE,TRUE,Lara Gil,Colher,Preto,Lisa,Maracujá,Brigadeiro e Ninho,Não,Retirada,Retirada 14:00,R$50,TRUE,
-27/03,TRUE,TRUE,Lara Gil,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,Retirada,Retirada 14:00,R$55,TRUE,
-27/03,TRUE,TRUE,Laura Gabriela,Colher,Preto,Crocante,Prestígio,Brigadeiro e coco,Não,Retirada,Retirada 14:00,R$50,TRUE,
-27/03,TRUE,TRUE,Laura Gabriela,Colher,Preto,Crocante,Maracujá,Brigadeiro,Não,Retirada,Retirada 14:00,R$50,TRUE,
-27/03,TRUE,TRUE,Letícia Alves,Colher,Preto,Oreo,Maracujá,Brigadeiro,Não,Retirada,,R$50,TRUE,
-27/03,TRUE,TRUE,Ovo sorteio Thais,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,Retirada,,R$00,FALSE,
-27/03,TRUE,TRUE,Raisa,Colher,Preto,Crocante,Brigadeiro,Brigadeiro e morangos,Não,José Alves salgado número 33,Entregar para João Pedro,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Adão,Colher,Preto,Lisa,Prestígio,Brigadeiro e coco,Não,Retirada,,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Alessandro,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,alessandro vidromat,,R$55,TRUE,Pix
-28/03,TRUE,TRUE,Ana ,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,TRUE,Dinheiro
-28/03,TRUE,TRUE,Angélica Sousa,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,TRUE,Pix
-28/03,TRUE,TRUE,Flavia Diniz,Trufado,Preto,Confeti,Ninho c/ Nutella,Não,"Sim, menina ROSA",Rua Raimundo Azevedo número 23,Embalagem infantil,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Geraldo Gordinho,Colher,Preto,Lisa,Prestígio,Brigadeiro e côco,Não,Rua 13 de maio 139,ligar caso não estiver em casa (37) 9 8808-8550,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Geraldo Gordinho,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,Rua 13 de maio 139,ligar caso não estiver em casa (37) 9 8808-8550,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Luana,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,Retirada,,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Luana,Colher,Preto,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Retirada,,R$50,TRUE,Pix
-28/03,TRUE,TRUE,Pamela Silva,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Retirada,,R$60,TRUE,Pix
-28/03,TRUE,TRUE,Valter Pintor,Colher,Preto,Confeti,Ninho c/ Nutella,Ninho e confeti,"Sim, menina ROSA",Pegar vidromat,,R$55,TRUE,Pix
-29/03,FALSE,TRUE,Ana Laura ,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,Retirada,,R$65,FALSE,
-29/03,FALSE,TRUE,Cadu ,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,casa cadu,,R$55,FALSE,
-29/03,FALSE,TRUE,Cadu ,Colher,Branco,Lisa,Ninho c/ Nutella,Ninho,Não,casa cadu,,R$55,FALSE,
-29/03,FALSE,TRUE,Carlos,Trufado,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,Retirada,,R$65,FALSE,
-29/03,FALSE,TRUE,Clara Tereza,Trufado,Preto,Confeti/Lisa,Ninho c/ Nutella,Não,Não,Rua doutor Argemiro de Moura 792,,R$50,TRUE,Pix
-29/03,FALSE,TRUE,Clara Tereza,Trufado,Preto,Confeti/Lisa,Ninho c/ Nutella,Não,Não,Rua doutor Argemiro de Moura 792,,R$50,TRUE,Pix
-29/03,FALSE,TRUE,Flávio sogro,Trufado,Preto,Lisa,Maracujá,Não,Não,Casa namorado,ovo redondo,R$50,FALSE,
-29/03,FALSE,FALSE,Grasiele,Colher,Branco,Confeti,Ninho,Brigadeiro/ninho/confeti,Sim,Grasiele/Fabiano ,,R$55,FALSE,
-29/03,FALSE,FALSE,Henrique,Trufado,Preto,Oreo,Prestígio,Não,Não,Rua do acre 116,,R$60,FALSE,
-29/03,FALSE,FALSE,Henrique,Trufado,Preto,Confeti,Brigadeiro,Não,Não,Rua do acre 116,,R$60,FALSE,
-29/03,FALSE,TRUE,Josiane,Trufado,Preto,Lisa,Maracujá,Não,Não,NAMORADO,,R$50,FALSE,
-29/03,FALSE,FALSE,Juliana,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Fogão a lenha do jamais,vai estar deixando um urso de pelucia na vidromat. não é pra falar quem mandou. entregar para renan.,R$50,TRUE,Pix
-29/03,FALSE,FALSE,Leandro,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Retirada (Vidromat?),,R$50,TRUE,
-29/03,FALSE,TRUE,Leandro,Trufado,Preto,Crocante,Ninho c/ Nutella,Não,Não,Retirada (Vidromat?),,R$50,TRUE,
-29/03,FALSE,TRUE,Lorena,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,"Sim, menino",Rua Pará 956,,R$55,FALSE,
-29/03,FALSE,FALSE,Mãe Geraldo Gordinho,Colher,,,Prestígio,Brigadeiro e coco,Sim,Rua 13 de maio 139,,R$50,FALSE,
-29/03,FALSE,TRUE,Pâmela Vidromat,Trufado,Preto,Confeti,Ninho c/ Nutella,Não,"Sim, menino",Vizinha,,R$50,TRUE,Pix
-29/03,FALSE,FALSE,Samuell Bizorro,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Casa do Bizorro na praça 100,,R$50,TRUE,Pix
-29/03,FALSE,FALSE,Sarah,Colher,Preto,Lisa,Brigadeiro,Brigadeiro e morangos,Não,,,R$60,TRUE,Pix
-29/03,FALSE,TRUE,Schinaider,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,FALSE,
-29/03,FALSE,FALSE,Schinaider,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,Retirada, meia casca trufada em cima do ovo de colher ,R$25,FALSE,
-29/03,FALSE,FALSE,Silvana,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,"Maria Zilda de Oliveira, Residencial santa cruz, N:218",,R$50,TRUE,
-29/03,FALSE,FALSE,Silvana,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,"Maria Zilda de Oliveira, Residencial santa cruz, N:218",,R$50,TRUE,
-29/03,FALSE,TRUE,Thaina,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,FALSE,
-29/03,FALSE,FALSE,Thaina,Colher,Branco,Confeti,Brigadeiro,Brigadeiro e morangos,"Sim, menina ROSA",Retirada,,R$50,FALSE,
-29/03,FALSE,TRUE,Vanessa Saymon,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada ,,R$55,FALSE,
-29/03,FALSE,FALSE,Vanessa Saymon,Colher,Preto,Crocante,Brigadeiro,Brigadeiro e morangos,Não,Retirada,,R$50,FALSE,
-29/03,FALSE,FALSE,Victor,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Retirada,,R$60,,
-29/03,FALSE,TRUE,Wesley,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada,,R$65,FALSE,
-29/03,FALSE,TRUE,Yasmim Gabrielle,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,FALSE,
-30/03,FALSE,FALSE,Alex,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Retirada,,R$65,,
-30/03,FALSE,FALSE,Alex,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Retirada,,R$60,,
-30/03,FALSE,FALSE,Aniuska,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,Casa da aniuska,,R$65,FALSE,
-30/03,FALSE,FALSE,Caroliny,Colher,Preto,Lisa,Brigadeiro,Brigadeiro e morangos,Não,Orlando pinto da cunha número 96,,R$50,FALSE,
-30/03,FALSE,FALSE,Caroliny,Colher,Preto,Crocante,Brigadeiro c/ Nutella,Brigadeiro e morangos,Não,Orlando pinto da cunha número 96,,R$55,FALSE,
-30/03,FALSE,FALSE,Gabi Martins,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,FALSE,
-30/03,FALSE,FALSE,Gabi Santos,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Olavo Bilac 205,,R$50,FALSE,
-30/03,FALSE,FALSE,Gabi Santos,Colher,Preto,Oreo,Prestígio,Brigadeiro e coco,Não,Olavo Bilac 205,,R$50,FALSE,
-30/03,FALSE,FALSE,Gabi Santos,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Olavo Bilac 205,,R$55,FALSE,
-30/03,FALSE,FALSE,Joelma,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,Retirada,,R$55,FALSE,Pix
-30/03,FALSE,FALSE,Ketlyn Carolyne,Trufado,Preto,Lisa,Brigadeiro,Não,Não,Rua Raimundo Azevedo 40 ,,RS50,FALSE,
-30/03,FALSE,FALSE,Ketlyn Carolyne,Trufado,Preto,Lisa,Brigadeiro,Não,Não,Rua Raimundo Azevedo 40 ,,R$50,FALSE,
-30/03,FALSE,FALSE,Ketlyn Carolyne,Trufado,Preto,Lisa,Prestígio,Não,Não,Rua Raimundo Azevedo 40 ,,R$50,FALSE,
-30/03,FALSE,FALSE,Ketlyn Carolyne,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,Rua Raimundo Azevedo 40 ,,R$55,FALSE,
-30/03,FALSE,FALSE,Laís Fagundes,Colher,Preto,Confeti,Ninho c/ Nutella,Brigadeiro e confeti,Sim,Retirada,,R$55,FALSE,Cartão
-30/03,FALSE,FALSE,Laís Fagundes,Colher,Preto,Confeti,Ninho c/ Nutella,Brigadeiro e confeti,Sim,Retirada,,R$55,FALSE,Cartão
-30/03,FALSE,FALSE,Lorrany,Trufado,Branco,Confeti,Brigadeiro,Não,Não,Av Magalhães Pinto 100,,R$50,FALSE,
-30/03,FALSE,FALSE,Lorrany ,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,Av Magalhães Pinto 100,,R$55,FALSE,
-30/03,FALSE,TRUE,Luana Elcio,Trufado,Branco e Preto (1 casca de cada),Confeti,Brigadeiro,Não,"Sim, menino",Rua Djalma Melgaço 70,,R$50,TRUE,Pix
-30/03,FALSE,TRUE,Luana Elcio,Trufado,Branco e Preto (1 casca de cada),Confeti,Brigadeiro,Não,"Sim, menino",Rua Djalma Melgaço 70,,R$50,FALSE,Pix
-30/03,FALSE,TRUE,Luana Elcio,Trufado,Preto,Lisa,Prestígio,Não,Não,Rua Djalma Melgaço 70,,R$50,FALSE,Pix
-30/03,FALSE,TRUE,Luana Elcio,Trufado,Preto,Lisa,Brigadeiro,Não,Não,Rua Djalma Melgaço 70,,R$50,FALSE,Pix
-30/03,FALSE,FALSE,Luana Mae Krauss,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,Casa do Pedro,,R$55,FALSE,
-30/03,FALSE,FALSE,Luana Mae Krauss,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,Casa do Pedro,,R$55,FALSE,
-30/03,FALSE,FALSE,Luana Mãe Krauss,Trufado,Preto,Lisa,Ninho c/ Nutella,Não,Não,Casa do Pedro,,R$50,FALSE,
-30/03,FALSE,FALSE,Luana Mãe Krauss,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,Casa do Pedro,,R$55,FALSE,
-30/03,FALSE,FALSE,May,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,,,R$50,FALSE,
-30/03,FALSE,FALSE,Rafaela,Colher,Branco,Oreo,Maracujá,Brigadeiro,Não,Não sabe ainda,,R$50,FALSE,
-30/03,FALSE,FALSE,Rayssa,Colher,Branco,Lisa,Maracujá,Brigadeiro,Não,Retirada,,R$50,FALSE,
-30/03,FALSE,FALSE,Rayssa,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,Retirada,,R$50,FALSE,
-30/03,FALSE,FALSE,Victor Lara,Colher,,,Maracujá,Brigadeiro,Não,Casa da dona Lena,,R$60,FALSE,
-??,FALSE,FALSE,Matheus,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,Tia Cássia Bom Despacho,,R$55,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
-,FALSE,FALSE,,,,,,,,,,,FALSE,
+Dia Entrega,Entregue,Feito,Tipo,Chocolate,Casca,Recheio,Docinho,Criança?,Total,Pago,Pagamento
+27/03,True,True,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,True,Dinheiro
+27/03,True,True,Colher,Preto,Lisa,Maracujá,Brigadeiro e Ninho,Não,R$50,True,
+27/03,True,True,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$55,True,
+27/03,True,True,Colher,Preto,Crocante,Prestígio,Brigadeiro e coco,Não,R$50,True,
+27/03,True,True,Colher,Preto,Crocante,Maracujá,Brigadeiro,Não,R$50,True,
+27/03,True,True,Colher,Preto,Oreo,Maracujá,Brigadeiro,Não,R$50,True,
+27/03,True,True,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$00,False,
+27/03,True,True,Colher,Preto,Crocante,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,Pix
+28/03,True,True,Colher,Preto,Lisa,Prestígio,Brigadeiro e coco,Não,R$50,True,Pix
+28/03,True,True,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$55,True,Pix
+28/03,True,True,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,R$55,True,Dinheiro
+28/03,True,True,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,True,Pix
+28/03,True,True,Trufado,Preto,Confeti,Ninho c/ Nutella,Não,"Sim, menina ROSA",R$50,True,Pix
+28/03,True,True,Colher,Preto,Lisa,Prestígio,Brigadeiro e côco,Não,R$50,True,Pix
+28/03,True,True,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,R$50,True,Pix
+28/03,True,True,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,R$50,True,Pix
+28/03,True,True,Colher,Preto,Lisa,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,Pix
+28/03,True,True,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$60,True,Pix
+28/03,True,True,Colher,Preto,Confeti,Ninho c/ Nutella,Ninho e confeti,"Sim, menina ROSA",R$55,True,Pix
+29/03,False,True,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$65,False,
+29/03,False,True,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$55,False,
+29/03,False,True,Colher,Branco,Lisa,Ninho c/ Nutella,Ninho,Não,R$55,False,
+29/03,False,True,Trufado,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,R$65,False,
+29/03,False,True,Trufado,Preto,Confeti/Lisa,Ninho c/ Nutella,Não,Não,R$50,True,Pix
+29/03,False,True,Trufado,Preto,Confeti/Lisa,Ninho c/ Nutella,Não,Não,R$50,True,Pix
+29/03,False,True,Trufado,Preto,Lisa,Maracujá,Não,Não,R$50,False,
+29/03,False,False,Colher,Branco,Confeti,Ninho,Brigadeiro/ninho/confeti,Sim,R$55,False,
+29/03,False,False,Trufado,Preto,Oreo,Prestígio,Não,Não,R$60,False,
+29/03,False,False,Trufado,Preto,Confeti,Brigadeiro,Não,Não,R$60,False,
+29/03,False,True,Trufado,Preto,Lisa,Maracujá,Não,Não,R$50,False,
+29/03,False,False,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,Pix
+29/03,False,False,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,
+29/03,False,True,Trufado,Preto,Crocante,Ninho c/ Nutella,Não,Não,R$50,True,
+29/03,False,True,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,"Sim, menino",R$55,False,
+29/03,False,False,Colher,,,Prestígio,Brigadeiro e coco,Sim,R$50,False,
+29/03,False,True,Trufado,Preto,Confeti,Ninho c/ Nutella,Não,"Sim, menino",R$50,True,Pix
+29/03,False,False,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,Pix
+29/03,False,False,Colher,Preto,Lisa,Brigadeiro,Brigadeiro e morangos,Não,R$60,True,Pix
+29/03,False,True,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,R$55,False,
+29/03,False,False,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,R$25,False,
+29/03,False,False,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,
+29/03,False,False,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$50,True,
+29/03,False,True,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,False,
+29/03,False,False,Colher,Branco,Confeti,Brigadeiro,Brigadeiro e morangos,"Sim, menina ROSA",R$50,False,
+29/03,False,True,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,False,
+29/03,False,False,Colher,Preto,Crocante,Brigadeiro,Brigadeiro e morangos,Não,R$50,False,
+29/03,False,False,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$60,,
+29/03,False,True,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$65,False,
+29/03,False,True,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,False,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$65,,
+30/03,False,False,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$60,,
+30/03,False,False,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,R$65,False,
+30/03,False,False,Colher,Preto,Lisa,Brigadeiro,Brigadeiro e morangos,Não,R$50,False,
+30/03,False,False,Colher,Preto,Crocante,Brigadeiro c/ Nutella,Brigadeiro e morangos,Não,R$55,False,
+30/03,False,False,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,False,Colher,Preto,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$50,False,
+30/03,False,False,Colher,Preto,Oreo,Prestígio,Brigadeiro e coco,Não,R$50,False,
+30/03,False,False,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,False,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$55,False,Pix
+30/03,False,False,Trufado,Preto,Lisa,Brigadeiro,Não,Não,RS50,False,
+30/03,False,False,Trufado,Preto,Lisa,Brigadeiro,Não,Não,R$50,False,
+30/03,False,False,Trufado,Preto,Lisa,Prestígio,Não,Não,R$50,False,
+30/03,False,False,Colher,Preto,Crocante,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,False,Colher,Preto,Confeti,Ninho c/ Nutella,Brigadeiro e confeti,Sim,R$55,False,Cartão
+30/03,False,False,Colher,Preto,Confeti,Ninho c/ Nutella,Brigadeiro e confeti,Sim,R$55,False,Cartão
+30/03,False,False,Trufado,Branco,Confeti,Brigadeiro,Não,Não,R$50,False,
+30/03,False,False,Colher,Preto,Oreo,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,True,Trufado,Branco e Preto (1 casca de cada),Confeti,Brigadeiro,Não,"Sim, menino",R$50,True,Pix
+30/03,False,True,Trufado,Branco e Preto (1 casca de cada),Confeti,Brigadeiro,Não,"Sim, menino",R$50,False,Pix
+30/03,False,True,Trufado,Preto,Lisa,Prestígio,Não,Não,R$50,False,Pix
+30/03,False,True,Trufado,Preto,Lisa,Brigadeiro,Não,Não,R$50,False,Pix
+30/03,False,False,Colher,Branco,Oreo,Brigadeiro,Brigadeiro e morangos,Não,R$55,False,
+30/03,False,False,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,False,Trufado,Preto,Lisa,Ninho c/ Nutella,Não,Não,R$50,False,
+30/03,False,False,Colher,Branco,Oreo,Ninho c/ Nutella,Ninho,Não,R$55,False,
+30/03,False,False,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,R$50,False,
+30/03,False,False,Colher,Branco,Oreo,Maracujá,Brigadeiro,Não,R$50,False,
+30/03,False,False,Colher,Branco,Lisa,Maracujá,Brigadeiro,Não,R$50,False,
+30/03,False,False,Colher,Preto,Lisa,Maracujá,Brigadeiro,Não,R$50,False,
+30/03,False,False,Colher,,,Maracujá,Brigadeiro,Não,R$60,False,
+??,False,False,Colher,Preto,Lisa,Ninho c/ Nutella,Ninho,Não,R$55,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,
+,False,False,,,,,,,,False,

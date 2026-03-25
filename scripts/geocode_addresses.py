@@ -71,6 +71,17 @@ def pedido_sort_key(pedido: dict) -> int:
     return min(nums) if nums else 99999
 
 
+def redact(route: dict) -> dict:
+    """Returns a copy of route with PII fields (endereco, ordens[].nome) set to None."""
+    return {
+        **route,
+        "pedidos": [
+            {**p, "endereco": None, "ordens": [{**o, "nome": None} for o in p.get("ordens", [])]}
+            for p in route.get("pedidos", [])
+        ],
+    }
+
+
 def is_retirada(addr: str) -> bool:
     return bool(RETIRADA_RE.search(addr)) or not addr.strip()
 
@@ -294,19 +305,7 @@ def main() -> None:
     # ── Salva ─────────────────────────────────────────────────────────────────
     ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
-    # routes_full.json — dados completos (protegido por senha no frontend)
-    full_output = {"last_updated_utc": ts, "routes": routes}
-
-    # routes.json — versão pública sem PII
-    def redact(r):
-        import copy
-        r2 = copy.deepcopy(r)
-        for p in r2.get("pedidos", []):
-            p["endereco"] = None
-            for o in p.get("ordens", []):
-                o["nome"] = None
-        return r2
-
+    full_output   = {"last_updated_utc": ts, "routes": routes}
     public_routes = {k: redact(v) for k, v in routes.items()}
     public_output = {"last_updated_utc": ts, "routes": public_routes}
 
