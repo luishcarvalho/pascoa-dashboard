@@ -39,7 +39,7 @@ function popupOrdemHtml(o) {
     ${o.recheio ? `<span style="color:#e0622d">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span><br>` : ""}
     ${o.faltante_num > 0
       ? `<small style="color:#4caf50;font-weight:600">💰 ${o.faltante}</small><br>`
-      : `<small style="color:#999">Pago</small><br>`}
+      : `<small style="color:#4caf50;font-weight:600">Pago</small><br>`}
     ${o.obs && o.obs !== "nan" ? `<small style="color:#999">${o.obs}</small>` : ""}
   </div>`;
 }

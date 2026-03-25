@@ -1,9 +1,9 @@
-name: Build & Deploy (every 10 minutes)
+name: Build & Deploy
 
 on:
   workflow_dispatch:
   schedule:
-    - cron: "*/10 * * * *"   # a cada 10 minutos
+    - cron: "0 12 * * *"   # diariamente às 12:00 UTC
 
 concurrency:
   group: deploy
