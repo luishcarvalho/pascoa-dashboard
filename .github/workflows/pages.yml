@@ -30,11 +30,12 @@ jobs:
         run: |
           rm -rf dist
           mkdir -p dist
-          rsync -av --delete --exclude='rotas.html' --exclude='rotas.js' site/ dist/
+          rsync -av --delete site/ dist/
           mkdir -p dist/data
-          mkdir -p dist/metricas dist/predicao
+          mkdir -p dist/metricas dist/predicao dist/rotas
           cp dist/metricas.html dist/metricas/index.html
           cp dist/predicao.html dist/predicao/index.html
+          cp dist/rotas.html dist/rotas/index.html
 
       # ✅ Debug: garante que o app.js publicado é o que você editou
       - name: Debug published JS (ensure Brasil is present)
@@ -53,6 +54,9 @@ jobs:
 
       - name: Build prediction.json
         run: python scripts/build_prediction.py
+
+      - name: Build routes.json
+        run: python scripts/geocode_addresses.py
 
       - name: Debug dist/data (fail if NaN)
         run: |

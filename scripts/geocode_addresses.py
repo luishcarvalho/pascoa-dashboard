@@ -435,7 +435,22 @@ def main() -> None:
                 }
             grupos[addr]["ordens"].append(ordem)
 
-        pedidos = list(grupos.values())
+        # Mescla entradas com coordenadas idênticas (endereços diferentes, mesmo ponto)
+        coord_map: dict = {}
+        no_coord_list: list = []
+        for entry in grupos.values():
+            if entry["geocoded"]:
+                key = (entry["lat"], entry["lon"])
+                if key in coord_map:
+                    coord_map[key]["ordens"].extend(entry["ordens"])
+                    if entry["endereco"] not in coord_map[key]["endereco"]:
+                        coord_map[key]["endereco"] += f" / {entry['endereco']}"
+                else:
+                    coord_map[key] = entry
+            else:
+                no_coord_list.append(entry)
+
+        pedidos = list(coord_map.values()) + no_coord_list
 
         ok     = sum(1 for p in pedidos if p["geocoded"])
         falhou = sum(1 for p in pedidos if not p["geocoded"])
