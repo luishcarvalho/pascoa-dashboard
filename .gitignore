@@ -1,4 +1,5 @@
 .claude/settings.local.json
+.vscode/
 
 # dist/ é reconstruído pelo GitHub Actions — não commitar nada de lá
 dist/
