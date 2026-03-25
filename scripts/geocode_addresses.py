@@ -99,6 +99,14 @@ def clean_for_geocoding(address: str) -> str:
     return cleaned.strip().rstrip(",")
 
 
+def parse_faltante(val) -> float:
+    """Converte 'R$ 35,00' para 35.0."""
+    try:
+        return float(str(val).replace("R$", "").replace(" ", "").replace(".", "").replace(",", "."))
+    except (ValueError, AttributeError):
+        return 0.0
+
+
 def geocode(address: str, cache: dict) -> dict | None:
     """Retorna {'lat': float, 'lon': float, 'display': str} ou None."""
     if address in cache:
@@ -418,12 +426,16 @@ def main() -> None:
             addr  = row["_endereco"]
             coord = cache.get(addr)
             pedido_num = row.get("Pedido", "")
+            faltante_raw = str(row.get("Faltante", "") or "").strip()
+            faltante_num = parse_faltante(faltante_raw)
             ordem = {
-                "pedido":  str(int(pedido_num)) if str(pedido_num).replace(".0","").isdigit() else str(pedido_num or ""),
-                "nome":    row["_nome"],
-                "recheio": str(row.get("Recheio", "") or ""),
-                "tipo":    str(row.get("Tipo", "") or ""),
-                "obs":     str(row.get("Observação", "") or ""),
+                "pedido":       str(int(pedido_num)) if str(pedido_num).replace(".0","").isdigit() else str(pedido_num or ""),
+                "nome":         row["_nome"],
+                "recheio":      str(row.get("Recheio", "") or ""),
+                "tipo":         str(row.get("Tipo", "") or ""),
+                "obs":          str(row.get("Observação", "") or ""),
+                "faltante":     faltante_raw if faltante_raw and faltante_raw != "nan" else "R$ 0,00",
+                "faltante_num": faltante_num,
             }
             if addr not in grupos:
                 grupos[addr] = {
@@ -452,6 +464,10 @@ def main() -> None:
 
         pedidos = list(coord_map.values()) + no_coord_list
 
+        # Calcula total a receber por parada
+        for p in pedidos:
+            p["faltante_parada"] = round(sum(o.get("faltante_num", 0) for o in p["ordens"]), 2)
+
         ok     = sum(1 for p in pedidos if p["geocoded"])
         falhou = sum(1 for p in pedidos if not p["geocoded"])
 
@@ -459,6 +475,8 @@ def main() -> None:
         pedidos_otimizados, dist_total, route_type = optimize_route(origin_coord, pedidos)
 
         total_ordens = sum(len(p["ordens"]) for p in pedidos_otimizados)
+
+        faltante_total = round(sum(p.get("faltante_parada", 0) for p in pedidos_otimizados), 2)
 
         routes[chave] = {
             "origin":          {"lat": origin_coord["lat"], "lon": origin_coord["lon"], "endereco": ORIGIN_ADDRESS},
@@ -469,6 +487,7 @@ def main() -> None:
             "geocoded_falhou": falhou,
             "dist_km_est":     round(dist_total, 2),
             "route_type":      route_type,
+            "faltante_total":  faltante_total,
         }
 
         status = f"{ok} OK, {dist_total:.1f} km (ida+volta)" + (f", {falhou} sem coord" if falhou else "")

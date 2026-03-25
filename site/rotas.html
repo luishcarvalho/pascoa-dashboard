@@ -79,6 +79,8 @@
     .stop-name { font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .stop-addr { color: var(--text2); font-size: 0.75rem; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .stop-recheio { color: var(--accent); font-size: 0.72rem; }
+    .stop-faltante { color: #4caf50; font-size: 0.72rem; font-weight: 600; }
+    .stop-faltante-total { color: #4caf50; font-size: 0.78rem; font-weight: 700; margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--border); }
     .stop-ordem { margin-top: 3px; display: flex; flex-direction: column; gap: 1px; }
     .stop-ordem + .stop-ordem { border-top: 1px solid var(--border); padding-top: 3px; margin-top: 3px; }
     /* Leaflet popup dark mode */
@@ -129,6 +131,10 @@
         <div class="route-stat">
           <span>Sem coordenada</span>
           <strong id="stat-missing">—</strong>
+        </div>
+        <div class="route-stat">
+          <span>A receber</span>
+          <strong id="stat-faltante">—</strong>
         </div>
         <ul class="stop-list" id="stop-list"></ul>
       </div>

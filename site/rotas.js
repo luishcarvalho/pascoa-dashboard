@@ -93,6 +93,7 @@ async function renderDay(dia) {
       `<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(128,128,128,0.3)">
         ${o.pedido ? `<small style="color:#999">#${o.pedido}</small> ` : ""}<b>${o.nome}</b><br>
         ${o.recheio ? `<span style="color:#e0622d">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span><br>` : ""}
+        ${o.faltante_num > 0 ? `<small style="color:#4caf50;font-weight:600">💰 ${o.faltante}</small><br>` : ""}
         ${o.obs && o.obs !== "nan" ? `<small style="color:#999">${o.obs}</small>` : ""}
       </div>`
     ).join("");
@@ -142,9 +143,10 @@ async function renderDay(dia) {
   }
 
   // Stats (distância provisória enquanto OSRM carrega)
-  document.getElementById("stat-stops").textContent   = `${day.total_paradas} paradas · ${day.total_ordens} ovos`;
-  document.getElementById("stat-dist").textContent    = `~${day.dist_km_est} km (c/ retorno)`;
-  document.getElementById("stat-missing").textContent = day.geocoded_falhou || "0";
+  document.getElementById("stat-stops").textContent    = `${day.total_paradas} paradas · ${day.total_ordens} ovos`;
+  document.getElementById("stat-dist").textContent     = `~${day.dist_km_est} km (c/ retorno)`;
+  document.getElementById("stat-missing").textContent  = day.geocoded_falhou || "0";
+  document.getElementById("stat-faltante").textContent = fmtBRL(day.faltante_total || 0);
 
   // Rota pelas ruas via OSRM
   if (osrmWaypoints.length > 1) {
@@ -203,12 +205,16 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
   pedidos.forEach((p, i) => {
     const noCoord  = !p.geocoded;
     const multi    = p.ordens.length > 1;
+    const faltantePar = p.faltante_parada || 0;
     const ordensHtml = p.ordens.map(o =>
       `<div class="stop-ordem">
         ${o.pedido ? `<span style="color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace">#${o.pedido}</span> ` : ""}<span class="stop-name">${o.nome}</span>
         ${o.recheio ? `<span class="stop-recheio">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span>` : ""}
+        ${o.faltante_num > 0 ? `<span class="stop-faltante">${o.faltante}</span>` : ""}
       </div>`
     ).join("");
+    const faltanteTotal = faltantePar > 0
+      ? `<div class="stop-faltante-total">${fmtBRL(faltantePar)}</div>` : "";
 
     rows.push(`
       <li class="stop-item${noCoord ? " stop-no-coord" : ""}" id="stop-${i}">
@@ -216,6 +222,7 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
         <div class="stop-info">
           <div class="stop-addr">${p.endereco}</div>
           ${ordensHtml}
+          ${faltanteTotal}
         </div>
       </li>`);
 
@@ -238,6 +245,10 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
     const item = document.getElementById(`stop-${i}`);
     if (item) item.style.cursor = "pointer";
   });
+}
+
+function fmtBRL(val) {
+  return Number(val).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
 function getAccentColor() {
