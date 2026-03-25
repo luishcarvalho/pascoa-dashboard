@@ -9,6 +9,7 @@ import json
 import os
 import re
 import time
+from datetime import datetime, timezone
 
 import pandas as pd
 import requests
@@ -291,11 +292,16 @@ def main() -> None:
         print(f"  {chave:<28} {len(pedidos)} entrega(s) ({status})")
 
     # ── Salva ─────────────────────────────────────────────────────────────────
+    output = {
+        "last_updated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "routes": routes,
+    }
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(ROUTES_PATH, "w", encoding="utf-8") as f:
-        json.dump(routes, f, ensure_ascii=False, indent=2)
+        json.dump(output, f, ensure_ascii=False, indent=2)
 
     total_ok = sum(r["geocoded_ok"] for r in routes.values())
+    print(f"  last_updated_utc: {output['last_updated_utc']}")
     print(f"\nroutes.json salvo: {total_ok} pontos geocodificados -> {ROUTES_PATH}")
 
 

@@ -13,11 +13,15 @@
   });
 })();
 
+// ── CONSTANTES ────────────────────────────────────────────────────────────────
+const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+
 // ── ESTADO ────────────────────────────────────────────────────────────────────
-let routesData = null;
-let map        = null;
-let tileLayer  = null;
-let layerGroup = null;
+let routesData    = null;
+let lastUpdatedTs = null;
+let map           = null;
+let tileLayer     = null;
+let layerGroup    = null;
 
 // Paleta de cores distintas para os pins
 const PIN_COLORS = [
@@ -178,7 +182,7 @@ function renderSidebar(origin, pedidos) {
       </div>`;
     }).join("");
 
-    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${faltantePar > 0 ? fmtBRL(faltantePar) : "Pago"}</span></div>`;
+    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>`;
     const numStyle = noCoord ? "" : `style="background:${color}"`;
 
     rows.push(`
@@ -215,7 +219,9 @@ async function init() {
     const base = document.querySelector('base')?.href ?? window.location.href.replace(/[^/]*$/, '');
     const res  = await fetch(`${base}data/routes.json?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    routesData = await res.json();
+    const payload  = await res.json();
+    lastUpdatedTs  = payload.last_updated_utc ?? null;
+    routesData     = payload.routes ?? payload; // compatibilidade com formato antigo
   } catch (e) {
     statusEl.textContent = `Erro ao carregar rotas: ${e.message}`;
     return;
@@ -244,16 +250,45 @@ async function init() {
 }
 
 document.getElementById("btnRefresh")?.addEventListener("click", async () => {
-  const btn = document.getElementById("btnRefresh");
-  btn.disabled = true;
-  btn.classList.add("is-loading");
-  btn.textContent = "Atualizando…";
-  routesData = null;
-  document.getElementById("daySelectRoutes").innerHTML = "";
-  await init();
-  btn.disabled = false;
-  btn.classList.remove("is-loading");
-  btn.textContent = "Atualizar agora";
+  const btn      = document.getElementById("btnRefresh");
+  const statusEl = document.getElementById("status-rotas");
+  const previousTs = lastUpdatedTs;
+
+  const setLoading = (label) => { btn.disabled = true; btn.classList.add("is-loading"); btn.textContent = label; };
+
+  try {
+    setLoading("Disparando…");
+    statusEl.textContent = "Disparando atualização no servidor…";
+    const r = await fetch(`${DISPATCH_URL}?t=${Date.now()}`, { method: "POST", mode: "cors", cache: "no-store" });
+    if (!r.ok) throw new Error(`Dispatch HTTP ${r.status}`);
+
+    setLoading("Aguardando…");
+    statusEl.textContent = "Workflow iniciado. Aguardando processamento…";
+    await new Promise(res => setTimeout(res, 15000));
+
+    const base  = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+    const start = Date.now();
+    while (Date.now() - start < 3 * 60 * 1000) {
+      setLoading("Atualizando…");
+      statusEl.textContent = "Buscando dados publicados…";
+      try {
+        const res = await fetch(`${base}data/routes.json?t=${Date.now()}`, { cache: "no-store" });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.last_updated_utc && data.last_updated_utc !== previousTs) { window.location.reload(); return; }
+        }
+      } catch (_) {}
+      await new Promise(res => setTimeout(res, 8000));
+    }
+    throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
+  } catch (e) {
+    console.error(e);
+    statusEl.textContent = `Erro: ${e.message}`;
+  } finally {
+    btn.disabled = false;
+    btn.classList.remove("is-loading");
+    btn.textContent = "Atualizar agora";
+  }
 });
 
 init();
