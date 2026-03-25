@@ -16,6 +16,7 @@
 
 // ── CONSTANTES ────────────────────────────────────────────────────────────────
 const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+const GITHUB_REPO  = "luishcarvalho/pascoa-dashboard";
 const DAY_ORDER    = ["qua", "qui", "sex", "sab", "dom", "seg"];
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
