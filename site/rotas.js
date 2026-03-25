@@ -15,6 +15,103 @@
 
 // ── CONSTANTES ────────────────────────────────────────────────────────────────
 const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+// Hash injetado pelo CI via GitHub Secret AUTH_HASH. Nunca coloque o hash real aqui.
+const AUTH_HASH = "HASH_PLACEHOLDER";
+
+// ── AUTENTICAÇÃO ──────────────────────────────────────────────────────────────
+let isAuthenticated = sessionStorage.getItem("rotas_auth") === AUTH_HASH;
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+function setAuthUI(authenticated) {
+  const bar   = document.getElementById("auth-bar");
+  const icon  = document.getElementById("auth-icon");
+  const label = document.getElementById("auth-label");
+  const input = document.getElementById("auth-input");
+  const btn   = document.getElementById("auth-btn");
+  const msg   = document.getElementById("auth-msg");
+
+  if (authenticated) {
+    bar.classList.add("unlocked");
+    icon.textContent  = "🔓";
+    label.textContent = "Dados completos visíveis";
+    input.style.display  = "none";
+    btn.style.display    = "none";
+    msg.textContent      = "";
+    let logoutBtn = document.getElementById("auth-logout");
+    if (!logoutBtn) {
+      logoutBtn = document.createElement("button");
+      logoutBtn.id          = "auth-logout";
+      logoutBtn.textContent = "Sair";
+      logoutBtn.addEventListener("click", async () => {
+        sessionStorage.removeItem("rotas_auth");
+        isAuthenticated = false;
+        setAuthUI(false);
+        // Recarrega versão pública e re-renderiza
+        try {
+          const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+          const res  = await fetch(`${base}data/routes.json?t=${Date.now()}`);
+          if (res.ok) {
+            const payload = await res.json();
+            routesData = payload.routes ?? payload;
+            const sel = document.getElementById("daySelectRoutes");
+            if (sel.value === "__all__") renderAll();
+            else renderDay(sel.value);
+          }
+        } catch (e) { console.error(e); }
+      });
+      bar.appendChild(logoutBtn);
+    }
+    logoutBtn.style.display = "";
+  } else {
+    bar.classList.remove("unlocked");
+    icon.textContent  = "🔒";
+    label.textContent = "Dados sensíveis ocultos";
+    input.style.display = "";
+    btn.style.display   = "";
+    const logoutBtn = document.getElementById("auth-logout");
+    if (logoutBtn) logoutBtn.style.display = "none";
+  }
+}
+
+document.getElementById("auth-btn").addEventListener("click", async () => {
+  const input = document.getElementById("auth-input");
+  const msg   = document.getElementById("auth-msg");
+  const hash  = await sha256(input.value);
+
+  if (hash !== AUTH_HASH) {
+    msg.textContent = "Senha incorreta";
+    msg.style.color = "#e05c5c";
+    input.value = "";
+    return;
+  }
+
+  sessionStorage.setItem("rotas_auth", hash);
+  isAuthenticated = true;
+  setAuthUI(true);
+  msg.textContent = "";
+
+  // Carrega dados completos e re-renderiza
+  try {
+    const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+    const res  = await fetch(`${base}data/routes_full.json?t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const payload = await res.json();
+    routesData = payload.routes ?? payload;
+    const sel = document.getElementById("daySelectRoutes");
+    if (sel.value === "__all__") renderAll();
+    else renderDay(sel.value);
+  } catch (e) {
+    console.error("Erro ao carregar dados completos:", e);
+  }
+});
+
+document.getElementById("auth-input").addEventListener("keydown", e => {
+  if (e.key === "Enter") document.getElementById("auth-btn").click();
+});
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 let routesData    = null;
@@ -154,13 +251,15 @@ function renderDay(dia) {
 function stopCardHtml(p, i, color, idPrefix = "stop") {
   const noCoord     = !p.geocoded;
   const multi       = p.ordens.length > 1;
-  const faltantePar = p.faltante_parada || 0;
+  const faltantePar = p.faltante_parada;
   const numStyle    = noCoord ? "" : `style="background:${color}"`;
+  const priv        = '<span style="color:var(--text3);font-style:italic">•••</span>';
 
   const ordensHtml = p.ordens.map(o => {
     const val = o.faltante_num ?? 0;
     return `<div class="stop-ordem">
-      ${o.pedido ? `<span style="color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace">#${o.pedido}</span> ` : ""}<span class="stop-name">${o.nome}</span>
+      ${o.pedido ? `<span style="color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace">#${o.pedido}</span> ` : ""}
+      <span class="stop-name">${o.nome ?? priv}</span>
       <div class="stop-recheio-row">
         ${o.recheio ? `<span class="stop-recheio">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span>` : "<span></span>"}
         <span class="stop-faltante">${val > 0 ? o.faltante : "Pago"}</span>
@@ -172,9 +271,9 @@ function stopCardHtml(p, i, color, idPrefix = "stop") {
     <li class="stop-item${noCoord ? " stop-no-coord" : ""}" id="${idPrefix}-${i}">
       <div class="stop-num" ${numStyle}>${noCoord ? "?" : ""}${multi ? `<div style="font-size:0.6rem;margin-top:1px">${p.ordens.length}x</div>` : ""}</div>
       <div class="stop-info">
-        <div class="stop-addr">${p.endereco}</div>
+        <div class="stop-addr">${p.endereco ?? priv}</div>
         ${ordensHtml}
-        <div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>
+        <div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar ?? 0)}</span></div>
       </div>
     </li>`;
 }
@@ -283,6 +382,19 @@ async function init() {
   }
 
   statusEl.textContent = "";
+
+  // Se já autenticado, substitui pelos dados completos
+  if (isAuthenticated) {
+    try {
+      const base = document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+      const res  = await fetch(`${base}data/routes_full.json?t=${Date.now()}`);
+      if (res.ok) {
+        const payload = await res.json();
+        routesData = payload.routes ?? payload;
+      }
+    } catch (_) {}
+  }
+  setAuthUI(isAuthenticated);
 
   const sel  = document.getElementById("daySelectRoutes");
   const dias = Object.keys(routesData);

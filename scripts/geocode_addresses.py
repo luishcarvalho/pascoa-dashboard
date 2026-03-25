@@ -292,17 +292,36 @@ def main() -> None:
         print(f"  {chave:<28} {len(pedidos)} entrega(s) ({status})")
 
     # ── Salva ─────────────────────────────────────────────────────────────────
-    output = {
-        "last_updated_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "routes": routes,
-    }
+    ts = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    # routes_full.json — dados completos (protegido por senha no frontend)
+    full_output = {"last_updated_utc": ts, "routes": routes}
+
+    # routes.json — versão pública sem PII
+    def redact(r):
+        import copy
+        r2 = copy.deepcopy(r)
+        for p in r2.get("pedidos", []):
+            p["endereco"] = None
+            for o in p.get("ordens", []):
+                o["nome"] = None
+        return r2
+
+    public_routes = {k: redact(v) for k, v in routes.items()}
+    public_output = {"last_updated_utc": ts, "routes": public_routes}
+
     os.makedirs(OUT_DIR, exist_ok=True)
     with open(ROUTES_PATH, "w", encoding="utf-8") as f:
-        json.dump(output, f, ensure_ascii=False, indent=2)
+        json.dump(public_output, f, ensure_ascii=False, indent=2)
+
+    routes_full_path = os.path.join(OUT_DIR, "routes_full.json")
+    with open(routes_full_path, "w", encoding="utf-8") as f:
+        json.dump(full_output, f, ensure_ascii=False, indent=2)
 
     total_ok = sum(r["geocoded_ok"] for r in routes.values())
-    print(f"  last_updated_utc: {output['last_updated_utc']}")
-    print(f"\nroutes.json salvo: {total_ok} pontos geocodificados -> {ROUTES_PATH}")
+    print(f"  last_updated_utc: {ts}")
+    print(f"\nroutes.json salvo (público):  {ROUTES_PATH}")
+    print(f"routes_full.json salvo (PII):  {routes_full_path}")
 
 
 if __name__ == "__main__":

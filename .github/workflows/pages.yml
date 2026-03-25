@@ -63,6 +63,9 @@ jobs:
       - name: Build routes.json
         run: python scripts/geocode_addresses.py
 
+      - name: Inject auth hash
+        run: sed -i "s/HASH_PLACEHOLDER/${{ secrets.AUTH_HASH }}/" dist/rotas.js
+
       - name: Debug dist/data (fail if NaN)
         run: |
           echo "== dist =="

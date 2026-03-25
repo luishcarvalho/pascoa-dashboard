@@ -13,6 +13,55 @@
   <base href="../">
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* ── Barra de autenticação ── */
+    .auth-bar {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
+      background: var(--surface2);
+      border-radius: var(--r);
+      padding: 0.5rem 0.9rem;
+    }
+    #auth-icon {
+      font-size: 15px;
+      color: var(--text3);
+    }
+    #auth-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: var(--text3);
+      flex: 1;
+      min-width: 120px;
+    }
+    #auth-input {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      height: 38px;
+      width: 160px;
+      padding: 0 14px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border2);
+      background: var(--surface);
+      color: var(--text2);
+      outline: none;
+      transition: border-color 0.15s;
+    }
+    #auth-input:focus { border-color: var(--accent); }
+    #auth-btn, #auth-logout {
+      font-size: 13px;
+      height: 38px;
+      padding: 0 16px;
+    }
+    #auth-msg {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      color: #e05c5c;
+    }
+    .auth-bar.unlocked #auth-icon { color: #4caf50; }
+    .auth-bar.unlocked #auth-label { color: #4caf50; }
+
     /* ── Barra de controles ── */
     .route-controls {
       display: flex;
@@ -140,6 +189,14 @@
     </nav>
 
     <div class="status-bar"><span id="status-rotas"></span></div>
+
+    <div class="auth-bar" id="auth-bar">
+      <span id="auth-icon">🔒</span>
+      <span id="auth-label">Dados sensíveis ocultos</span>
+      <input type="password" id="auth-input" placeholder="Senha" autocomplete="current-password" />
+      <button id="auth-btn">Desbloquear</button>
+      <span id="auth-msg"></span>
+    </div>
 
     <div class="route-controls">
       <select id="daySelectRoutes"></select>
