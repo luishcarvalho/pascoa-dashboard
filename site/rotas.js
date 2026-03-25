@@ -206,15 +206,17 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
     const noCoord  = !p.geocoded;
     const multi    = p.ordens.length > 1;
     const faltantePar = p.faltante_parada || 0;
-    const ordensHtml = p.ordens.map(o =>
-      `<div class="stop-ordem">
+    const ordensHtml = p.ordens.map(o => {
+      const val = o.faltante_num ?? 0;
+      return `<div class="stop-ordem">
         ${o.pedido ? `<span style="color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace">#${o.pedido}</span> ` : ""}<span class="stop-name">${o.nome}</span>
-        ${o.recheio ? `<span class="stop-recheio">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span>` : ""}
-        ${o.faltante_num > 0 ? `<span class="stop-faltante">${o.faltante}</span>` : ""}
-      </div>`
-    ).join("");
-    const faltanteTotal = faltantePar > 0
-      ? `<div class="stop-faltante-total">${fmtBRL(faltantePar)}</div>` : "";
+        <div class="stop-recheio-row">
+          ${o.recheio ? `<span class="stop-recheio">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span>` : "<span></span>"}
+          <span class="stop-faltante">${val > 0 ? o.faltante : "Pago"}</span>
+        </div>
+      </div>`;
+    }).join("");
+    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>`;
 
     rows.push(`
       <li class="stop-item${noCoord ? " stop-no-coord" : ""}" id="stop-${i}">
