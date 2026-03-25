@@ -1,16 +1,20 @@
 # Páscoa Dashboard
 
-Dashboard de gestão de encomendas de ovos de Páscoa com **predição bayesiana de ingredientes** — construído para resolver um problema real de planejamento de produção artesanal.
+Dashboard de gestão de encomendas de ovos de Páscoa com predição bayesiana para os ingredientes. Construído para resolver um problema real de planejamento de produção artesanal.
 
-> Pipeline completo: Google Sheets → Python (pandas + numpy) → GitHub Actions → GitHub Pages. Zero banco de dados, zero servidor, zero custo.
+> Pipeline completo: Google Sheets → Python (pandas + numpy) → GitHub Actions → GitHub Pages. 
+> 
+> Zero banco de dados, zero servidor, zero custo.
 
 ---
 
 ## O problema
 
-Produção artesanal de ovos de Páscoa envolve compra antecipada de ingredientes sem saber a demanda exata. Comprar de menos = perder vendas. Comprar demais = desperdício e prejuízo.
+A produção artesanal de ovos de Páscoa envolve compra antecipada de ingredientes sem saber a demanda exata. Comprar de menos = perder vendas. Comprar demais = desperdício e prejuízo.
 
-A solução foi um modelo que combina **histórico de dois anos** com os pedidos em aberto de 2026 para estimar, por cenário de meta, quanto de cada ingrediente comprar — e com qual margem de segurança.
+No entanto, o problema vai além do planejamento de compras. Existe também uma dificuldade significativa em antecipar o volume de trabalho necessário, isto é, quantas unidades de cada tipo de preparo precisarão ser produzidas, quanto tempo será demandado em cada etapa e como distribuir esse esforço ao longo dos dias de produção. Sem esse tipo de previsão, é comum ocorrerem gargalos, sobrecarga em momentos críticos ou ociosidade em outros.
+
+A solução proposta aborda essas incertezas de forma integrada. O dashboard permite entender a escala de produção esperada em cada componente do processo permitindo um planejamento mais equilibrado, com maior previsibilidade e margem de segurança. O modelo combina histórico de dois anos com os pedidos em aberto de 2026 para estimar, por diferentes cenários de meta quanto adquirir de cada insumo. 
 
 ---
 
@@ -20,6 +24,7 @@ A solução foi um modelo que combina **histórico de dois anos** com os pedidos
 |---|---|
 | **Métricas** | Pedidos em tempo real: recheios, chocolates, cascas, docinhos, ingredientes acumulados |
 | **Predição** | Simulação bayesiana: dado uma meta de ovos, quanto de cada ingrediente comprar nos percentis P50 / P75 / P90 / P95 |
+| **Entregas** | Mapa com locais de entrega e visualização georreferenciada dos pedidos pra facilitar na criação de rotas|
 
 ---
 
@@ -52,7 +57,7 @@ pascoa_2025.csv ───────┘          │
                          (browser apenas lê JSON — zero simulação no cliente)
 ```
 
-**Decisão de arquitetura:** toda a computação pesada (10 000 iterações Monte Carlo) roda no build. O browser só interpola e exibe — sem WebWorkers, sem WASM, sem latência de cálculo no cliente. O foco aqui era ser algo de acesso rápido e fácil seja pelo computador ou celular para acompanhar a venda.
+Decisão de arquitetura: toda a computação pesada (10 000 iterações Monte Carlo) roda no build. O browser só interpola e exibe — sem WebWorkers, sem WASM, sem latência de cálculo no cliente. O foco aqui era ser algo de acesso rápido e fácil seja pelo computador ou celular para acompanhar a venda.
 
 ---
 
@@ -149,3 +154,19 @@ Os JSONs são gerados em `dist/data/`. O site é estático — qualquer servidor
 Este foi um projeto pessoal, desenvolvido com o objetivo principal de explorar técnicas de análise de dados e modelagem probabilística aplicadas a um problema real. O foco esteve concentrado na construção do pipeline analítico, demonstração e extração de insights e no desenvolvimento dos modelos e simulações pra suporte à tomada de decisão.
 
 As camadas de interface e grande parte da implementação do frontend não foram o foco central do projeto. Essas etapas foram desenvolvidas com o apoio do Claude Code, também como um experimento prático para avaliar as capacidades da ferramenta na geração de código, organização de interfaces e aceleração de desenvolvimento.
+
+---
+
+## Evoluções e próximos passos
+
+Este projeto foi concebido com foco em resolver um problema imediato de planejamento, mas há diversas oportunidades claras de evolução à medida que seu uso se estende ao longo do tempo.
+
+- Implementar um sistema simples de cálculo de rotas para otimizar a logística de entregas, reduzindo tempo e custo operacional.
+
+- Aprimorar continuamente os dados utilizados pelos modelos à medida que novos anos de histórico forem incorporados, permitindo estimativas mais precisas e robustas.
+
+- Explorar refinamentos na modelagem, como ajustes mais consistentes de pesos temporais e possíveis abordagens além da bayesiana.
+
+- Reforçar aspectos de segurança e privacidade, incluindo melhorias no controle de acesso, proteção de endpoints e na forma de exposição dos dados no frontend.
+
+- Manter a evolução do projeto de forma incremental e orientada ao problema real, priorizando simplicidade, eficiência e utilidade prática.
