@@ -147,58 +147,43 @@ function renderDay(dia) {
   document.getElementById("stat-missing").textContent  = day.geocoded_falhou || "0";
   document.getElementById("stat-faltante").textContent = fmtBRL(day.faltante_total || 0);
 
-  // Lista lateral
-  renderSidebar(origin, pedidos);
+  // Grid de entregas
+  renderGrid(pedidos);
 }
 
-function renderSidebar(origin, pedidos) {
-  const ul   = document.getElementById("stop-list");
-  const rows = [];
+function stopCardHtml(p, i, color, idPrefix = "stop") {
+  const noCoord     = !p.geocoded;
+  const multi       = p.ordens.length > 1;
+  const faltantePar = p.faltante_parada || 0;
+  const numStyle    = noCoord ? "" : `style="background:${color}"`;
 
-  // Origem
-  rows.push(`
-    <li class="stop-item stop-origin">
-      <div class="stop-num">⌂</div>
-      <div class="stop-info">
-        <div class="stop-name">Ponto de partida</div>
-        <div class="stop-addr">${origin.endereco}</div>
+  const ordensHtml = p.ordens.map(o => {
+    const val = o.faltante_num ?? 0;
+    return `<div class="stop-ordem">
+      ${o.pedido ? `<span style="color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace">#${o.pedido}</span> ` : ""}<span class="stop-name">${o.nome}</span>
+      <div class="stop-recheio-row">
+        ${o.recheio ? `<span class="stop-recheio">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span>` : "<span></span>"}
+        <span class="stop-faltante">${val > 0 ? o.faltante : "Pago"}</span>
       </div>
-    </li>`);
+    </div>`;
+  }).join("");
 
-  pedidos.forEach((p, i) => {
-    const noCoord = !p.geocoded;
-    const multi   = p.ordens.length > 1;
-    const color   = pinColor(i);
-    const faltantePar = p.faltante_parada || 0;
+  return `
+    <li class="stop-item${noCoord ? " stop-no-coord" : ""}" id="${idPrefix}-${i}">
+      <div class="stop-num" ${numStyle}>${noCoord ? "?" : ""}${multi ? `<div style="font-size:0.6rem;margin-top:1px">${p.ordens.length}x</div>` : ""}</div>
+      <div class="stop-info">
+        <div class="stop-addr">${p.endereco}</div>
+        ${ordensHtml}
+        <div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>
+      </div>
+    </li>`;
+}
 
-    const ordensHtml = p.ordens.map(o => {
-      const val = o.faltante_num ?? 0;
-      return `<div class="stop-ordem">
-        ${o.pedido ? `<span style="color:var(--text3);font-size:0.72rem;font-family:'DM Mono',monospace">#${o.pedido}</span> ` : ""}<span class="stop-name">${o.nome}</span>
-        <div class="stop-recheio-row">
-          ${o.recheio ? `<span class="stop-recheio">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span>` : "<span></span>"}
-          <span class="stop-faltante">${val > 0 ? o.faltante : "Pago"}</span>
-        </div>
-      </div>`;
-    }).join("");
-
-    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>`;
-    const numStyle = noCoord ? "" : `style="background:${color}"`;
-
-    rows.push(`
-      <li class="stop-item${noCoord ? " stop-no-coord" : ""}" id="stop-${i}">
-        <div class="stop-num" ${numStyle}>${noCoord ? "?" : ""}${multi ? `<div style="font-size:0.6rem;margin-top:1px">${p.ordens.length}x</div>` : ""}</div>
-        <div class="stop-info">
-          <div class="stop-addr">${p.endereco}</div>
-          ${ordensHtml}
-          ${faltanteTotal}
-        </div>
-      </li>`);
-  });
-
+function renderGrid(pedidos) {
+  const ul   = document.getElementById("stop-list");
+  const rows = pedidos.map((p, i) => stopCardHtml(p, i, pinColor(i)));
   ul.innerHTML = rows.join("");
 
-  // Re-bind cliques após renderizar
   pedidos.forEach((p, i) => {
     if (!p.geocoded) return;
     const item = document.getElementById(`stop-${i}`);
@@ -208,6 +193,76 @@ function renderSidebar(origin, pedidos) {
 
 function fmtBRL(val) {
   return Number(val).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+}
+
+// ── RENDER ALL ────────────────────────────────────────────────────────────────
+function renderAll() {
+  if (!routesData || !map) return;
+  layerGroup.clearLayers();
+
+  const latlngs = [];
+  let totalParadas = 0, totalOrdens = 0, totalMissing = 0, totalFaltante = 0;
+  let colorIdx = 0;
+  const ul = document.getElementById("stop-list");
+  const rows = [];
+
+  Object.entries(routesData).forEach(([chave, day]) => {
+    const pedidos = day.pedidos;
+
+    totalParadas += day.total_paradas;
+    totalOrdens  += day.total_ordens;
+    totalMissing += day.geocoded_falhou || 0;
+    totalFaltante += day.faltante_total || 0;
+
+    // Separador de dia na sidebar
+    const parts = chave.split(" · ");
+    rows.push(`<li class="stop-item stop-day-label">${parts.length > 1 ? `${parts[0]} · ${parts[1]}` : chave}</li>`);
+
+    pedidos.forEach((p) => {
+      if (!p.geocoded) return;
+      latlngs.push([p.lat, p.lon]);
+      const color    = pinColor(colorIdx);
+      const pinLabel = p.ordens.length > 1 ? `${p.ordens.length}x` : "";
+      const icon     = makeIcon(pinLabel, color);
+      const ordensHtml = p.ordens.map(o =>
+        `<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(128,128,128,0.3)">
+          ${o.pedido ? `<small style="color:#999">#${o.pedido}</small> ` : ""}<b>${o.nome}</b><br>
+          ${o.recheio ? `<span style="color:#e0622d">${o.recheio}${o.tipo ? " · " + o.tipo : ""}</span><br>` : ""}
+          ${o.faltante_num > 0 ? `<small style="color:#4caf50;font-weight:600">💰 ${o.faltante}</small><br>` : ""}
+        </div>`
+      ).join("");
+
+      const marker = L.marker([p.lat, p.lon], { icon })
+        .bindPopup(`<div style="min-width:180px"><small style="color:#999">${p.endereco}</small>${ordensHtml}</div>`);
+      layerGroup.addLayer(marker);
+
+      rows.push(stopCardHtml(p, colorIdx, color, "stop-all"));
+
+      colorIdx++;
+    });
+  });
+
+  ul.innerHTML = rows.join("");
+
+  // bind cliques
+  let idx = 0;
+  Object.values(routesData).forEach(day => {
+    day.pedidos.forEach(p => {
+      if (!p.geocoded) { idx++; return; }
+      const el = document.getElementById(`stop-all-${idx}`);
+      if (el) {
+        const lat = p.lat, lon = p.lon;
+        el.addEventListener("click", () => map.setView([lat, lon], 16));
+      }
+      idx++;
+    });
+  });
+
+  if (latlngs.length > 0) map.fitBounds(L.latLngBounds(latlngs), { padding: [32, 32] });
+
+  document.getElementById("stat-stops").textContent    = `${totalParadas} paradas · ${totalOrdens} ovos`;
+  document.getElementById("stat-missing").textContent  = totalMissing || "0";
+  document.getElementById("stat-faltante").textContent = fmtBRL(totalFaltante);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -239,9 +294,18 @@ async function init() {
     sel.appendChild(opt);
   });
 
+  // "Todos os dias" — última opção, não default
+  const optAll = document.createElement("option");
+  optAll.value = "__all__";
+  optAll.textContent = "Geral (todos os dias)";
+  sel.appendChild(optAll);
+
   initMap();
 
-  sel.addEventListener("change", () => renderDay(sel.value));
+  sel.addEventListener("change", () => {
+    if (sel.value === "__all__") renderAll();
+    else renderDay(sel.value);
+  });
 
   if (dias.length > 0) {
     sel.value = dias[0];
