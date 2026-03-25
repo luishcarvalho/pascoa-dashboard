@@ -47,7 +47,7 @@ A solução proposta aborda essas incertezas de forma integrada. O dashboard per
 Google Sheets (2026) ──┐
 pascoa_2024.csv ───────┼──→  build_metrics.py    →  dist/data/metrics.json
 pascoa_2025.csv ───────┘          │
-                                  └──→  build_prediction.py  →  dist/data/    prediction.json
+                                  └──→  build_prediction.py  →  dist/data/prediction.json
                                                                         │
                                    GitHub Actions (cron diário) ────────┘
                                              │
