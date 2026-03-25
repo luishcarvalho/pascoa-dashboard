@@ -19,6 +19,17 @@ let map        = null;
 let tileLayer  = null;
 let layerGroup = null;
 
+// Paleta de cores distintas para os pins
+const PIN_COLORS = [
+  "#e05c5c", "#e07d1e", "#c9a800", "#4caf50", "#2196f3",
+  "#9c27b0", "#00bcd4", "#e91e8c", "#795548", "#607d8b",
+  "#ff5722", "#009688", "#3f51b5", "#f06292", "#8bc34a",
+];
+
+function pinColor(index) {
+  return PIN_COLORS[index % PIN_COLORS.length];
+}
+
 // ── MAPA ──────────────────────────────────────────────────────────────────────
 function tileUrl(dark) {
   return dark
@@ -41,19 +52,20 @@ function initMap() {
   updateMapTheme(isDark);
   layerGroup = L.layerGroup().addTo(map);
 
-  // Sincroniza tiles com mudanças de tema
   new MutationObserver(() => {
     updateMapTheme(document.documentElement.getAttribute("data-theme") === "dark");
   }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
 }
 
 function makeIcon(label, color) {
+  const isOrigin = label === "⌂";
+  const isMulti  = !isOrigin && label !== "";
+  const fontSize = isMulti && label.length > 2 ? "8" : "10";
   const svg = `
     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="38" viewBox="0 0 30 38">
       <path d="M15 1C8.37 1 3 6.37 3 13c0 8.5 12 24 12 24S27 21.5 27 13C27 6.37 21.63 1 15 1z"
             fill="${color}" stroke="white" stroke-width="1.5"/>
-      <text x="15" y="17" text-anchor="middle" dominant-baseline="middle"
-            font-family="DM Mono, monospace" font-size="10" font-weight="600" fill="white">${label}</text>
+      ${label ? `<text x="15" y="17" text-anchor="middle" dominant-baseline="middle" font-family="DM Mono, monospace" font-size="${fontSize}" font-weight="600" fill="white">${label}</text>` : ""}
     </svg>`;
   return L.divIcon({
     html: svg,
@@ -65,7 +77,7 @@ function makeIcon(label, color) {
 }
 
 // ── RENDER ────────────────────────────────────────────────────────────────────
-async function renderDay(dia) {
+function renderDay(dia) {
   if (!routesData || !map) return;
 
   const day = routesData[dia];
@@ -75,20 +87,22 @@ async function renderDay(dia) {
 
   const origin  = day.origin;
   const pedidos = day.pedidos;
-  const latlngs = [];
+  const latlngs = [[origin.lat, origin.lon]];
 
   // Marcador de origem
   const oriIcon = makeIcon("⌂", "#6b6660");
-  const oriMarker = L.marker([origin.lat, origin.lon], { icon: oriIcon })
-    .bindPopup(`<b>Ponto de partida</b><br><small>${origin.endereco}</small>`);
-  layerGroup.addLayer(oriMarker);
-  latlngs.push([origin.lat, origin.lon]);
+  L.marker([origin.lat, origin.lon], { icon: oriIcon })
+    .bindPopup(`<b>Ponto de partida</b><br><small>${origin.endereco}</small>`)
+    .addTo(layerGroup);
 
-  // Marcadores das paradas
+  // Marcadores das paradas — uma cor por parada
   pedidos.forEach((p, i) => {
     if (!p.geocoded) return;
 
-    const icon   = makeIcon(i + 1, getAccentColor());
+    latlngs.push([p.lat, p.lon]);
+    const color  = pinColor(i);
+    const pinLabel = p.ordens.length > 1 ? `${p.ordens.length}x` : "";
+    const icon   = makeIcon(pinLabel, color);
     const ordensHtml = p.ordens.map(o =>
       `<div style="margin-top:5px;padding-top:5px;border-top:1px solid rgba(128,128,128,0.3)">
         ${o.pedido ? `<small style="color:#999">#${o.pedido}</small> ` : ""}<b>${o.nome}</b><br>
@@ -106,7 +120,6 @@ async function renderDay(dia) {
         </div>
       `);
     layerGroup.addLayer(marker);
-    latlngs.push([p.lat, p.lon]);
 
     // Clique no item da lista abre o popup
     const listItem = document.getElementById(`stop-${i}`);
@@ -118,78 +131,24 @@ async function renderDay(dia) {
     }
   });
 
-  const routeType = day.route_type || "loop";
-
-  // Waypoints para OSRM:
-  //   loop → origin;s1;s2;...;origin
-  //   star → origin;s1;origin;s2;origin;...
-  const geocodedPedidos = pedidos.filter(p => p.geocoded);
-  let osrmWaypoints;
-  if (routeType === "star") {
-    osrmWaypoints = [];
-    geocodedPedidos.forEach(p => {
-      osrmWaypoints.push([origin.lat, origin.lon]);
-      osrmWaypoints.push([p.lat, p.lon]);
-    });
-    osrmWaypoints.push([origin.lat, origin.lon]);
-  } else {
-    osrmWaypoints = [...latlngs];
-    if (latlngs.length > 1) osrmWaypoints.push([origin.lat, origin.lon]);
-  }
-
-  // Ajusta zoom para mostrar todos os pontos (usa apenas coords únicas dos stops)
-  if (latlngs.length > 0) {
+  // Ajusta zoom
+  if (latlngs.length > 1) {
     map.fitBounds(L.latLngBounds(latlngs), { padding: [32, 32] });
+  } else {
+    map.setView([origin.lat, origin.lon], 14);
   }
 
-  // Stats (distância provisória enquanto OSRM carrega)
+  // Stats
   document.getElementById("stat-stops").textContent    = `${day.total_paradas} paradas · ${day.total_ordens} ovos`;
-  document.getElementById("stat-dist").textContent     = `~${day.dist_km_est} km (c/ retorno)`;
   document.getElementById("stat-missing").textContent  = day.geocoded_falhou || "0";
   document.getElementById("stat-faltante").textContent = fmtBRL(day.faltante_total || 0);
 
-  // Rota pelas ruas via OSRM
-  if (osrmWaypoints.length > 1) {
-    const color = getAccentColor();
-    const lineStyle = { color, weight: 3, opacity: 0.85, dashArray: "6, 4" };
-    const osrmCoords = osrmWaypoints.map(([lat, lon]) => `${lon},${lat}`).join(";");
-    const statusEl = document.getElementById("status-rotas");
-    statusEl.textContent = "Calculando rota pelas ruas…";
-    try {
-      const res = await fetch(
-        `https://routing.openstreetmap.de/routed-foot/route/v1/driving/${osrmCoords}?overview=full&geometries=geojson`,
-        { cache: "no-store" }
-      );
-      if (!res.ok) throw new Error(`OSRM HTTP ${res.status}`);
-      const data = await res.json();
-      if (data.code !== "Ok") throw new Error(`OSRM: ${data.code}`);
-      const route = data.routes?.[0];
-      if (!route?.geometry) throw new Error("sem geometria");
-      L.geoJSON(route.geometry, { style: lineStyle }).addTo(layerGroup);
-      const km = (route.distance / 1000).toFixed(1);
-      document.getElementById("stat-dist").textContent = `${km} km (c/ retorno)`;
-      statusEl.textContent = "";
-    } catch (e) {
-      statusEl.textContent = `Rota estimada (linha reta) — ${e.message}`;
-      L.polyline(latlngs, lineStyle).addTo(layerGroup);
-    }
-  }
-
   // Lista lateral
-  renderSidebar(origin, pedidos, routeType);
+  renderSidebar(origin, pedidos);
 }
 
-const RETURN_ROW = (addr) => `
-    <li class="stop-item stop-origin" style="opacity:0.7">
-      <div class="stop-num">⌂</div>
-      <div class="stop-info">
-        <div class="stop-name">Retorno ao ponto de partida</div>
-        <div class="stop-addr">${addr}</div>
-      </div>
-    </li>`;
-
-function renderSidebar(origin, pedidos, routeType = "loop") {
-  const ul = document.getElementById("stop-list");
+function renderSidebar(origin, pedidos) {
+  const ul   = document.getElementById("stop-list");
   const rows = [];
 
   // Origem
@@ -203,9 +162,11 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
     </li>`);
 
   pedidos.forEach((p, i) => {
-    const noCoord  = !p.geocoded;
-    const multi    = p.ordens.length > 1;
+    const noCoord = !p.geocoded;
+    const multi   = p.ordens.length > 1;
+    const color   = pinColor(i);
     const faltantePar = p.faltante_parada || 0;
+
     const ordensHtml = p.ordens.map(o => {
       const val = o.faltante_num ?? 0;
       return `<div class="stop-ordem">
@@ -216,28 +177,20 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
         </div>
       </div>`;
     }).join("");
-    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>`;
+
+    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${faltantePar > 0 ? fmtBRL(faltantePar) : "Pago"}</span></div>`;
+    const numStyle = noCoord ? "" : `style="background:${color}"`;
 
     rows.push(`
       <li class="stop-item${noCoord ? " stop-no-coord" : ""}" id="stop-${i}">
-        <div class="stop-num">${noCoord ? "?" : i + 1}${multi ? `<div style="font-size:0.6rem;margin-top:1px">${p.ordens.length}x</div>` : ""}</div>
+        <div class="stop-num" ${numStyle}>${noCoord ? "?" : ""}${multi ? `<div style="font-size:0.6rem;margin-top:1px">${p.ordens.length}x</div>` : ""}</div>
         <div class="stop-info">
           <div class="stop-addr">${p.endereco}</div>
           ${ordensHtml}
           ${faltanteTotal}
         </div>
       </li>`);
-
-    // No modo star, mostra retorno após cada parada geocodificada
-    if (routeType === "star" && !noCoord) {
-      rows.push(RETURN_ROW(origin.endereco));
-    }
   });
-
-  // No modo loop, mostra retorno apenas no final
-  if (routeType !== "star") {
-    rows.push(RETURN_ROW(origin.endereco));
-  }
 
   ul.innerHTML = rows.join("");
 
@@ -251,10 +204,6 @@ function renderSidebar(origin, pedidos, routeType = "loop") {
 
 function fmtBRL(val) {
   return Number(val).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-}
-
-function getAccentColor() {
-  return getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() || "#c84b1e";
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
@@ -274,13 +223,11 @@ async function init() {
 
   statusEl.textContent = "";
 
-  // Popula seletor de dias/turnos
   const sel  = document.getElementById("daySelectRoutes");
   const dias = Object.keys(routesData);
   dias.forEach(chave => {
     const opt = document.createElement("option");
     opt.value = chave;
-    // Exibe "Sex - 03/04  ·  Manhã" formatado
     const parts = chave.split(" · ");
     opt.textContent = parts.length > 1 ? `${parts[0]}  ·  ${parts[1]}` : chave;
     sel.appendChild(opt);

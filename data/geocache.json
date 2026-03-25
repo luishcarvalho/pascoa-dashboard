@@ -118,5 +118,18 @@
     "lon": -45.59675,
     "display": "Rua José Barbosa Ferola, 86, Dores do Indaía, MG",
     "query_used": "manual"
+  },
+  "Rua Dr Zacarias 695": null,
+  "Rua Ezequiel TIburcio 168": {
+    "lat": -19.4750354,
+    "lon": -45.6008239,
+    "display": "Rua Ezequiel Tibúrcio, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Ezequiel TIburcio 168"
+  },
+  "Rua Professor Djalma Melgaço 38": {
+    "lat": -19.4749481,
+    "lon": -45.5968021,
+    "display": "Rua Professor Djalma Melgaço, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Professor Djalma Melgaço 38"
   }
 }
