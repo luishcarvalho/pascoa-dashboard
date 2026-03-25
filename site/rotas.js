@@ -178,7 +178,7 @@ function renderSidebar(origin, pedidos) {
       </div>`;
     }).join("");
 
-    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${faltantePar > 0 ? fmtBRL(faltantePar) : "Pago"}</span></div>`;
+    const faltanteTotal = `<div class="stop-faltante-total"><span>Total a Receber</span><span>${fmtBRL(faltantePar)}</span></div>`;
     const numStyle = noCoord ? "" : `style="background:${color}"`;
 
     rows.push(`
