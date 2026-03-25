@@ -39,6 +39,29 @@ function sleep(ms) {
   return new Promise(res => setTimeout(res, ms));
 }
 
+// Aguarda o workflow mais recente (disparado após dispatchedAt) completar com sucesso.
+// Usa a GitHub Actions API pública — sem necessidade de token para repos públicos.
+async function waitForDeploy(dispatchedAt, onStatus, timeoutMs = 5 * 60 * 1000) {
+  const url   = `https://api.github.com/repos/${GITHUB_REPO}/actions/runs?per_page=10`;
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    await sleep(10000);
+    onStatus("Aguardando conclusão do workflow…");
+    try {
+      const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+      if (!res.ok) continue;
+      const { workflow_runs } = await res.json();
+      const done = workflow_runs?.find(r =>
+        new Date(r.created_at).getTime() >= dispatchedAt - 30_000 &&
+        r.status     === "completed" &&
+        r.conclusion === "success"
+      );
+      if (done) return true;
+    } catch (_) {}
+  }
+  return false;
+}
+
 function pad2(n) {
   return String(n).padStart(2, "0");
 }
@@ -212,7 +235,7 @@ function setButtonLoading(isLoading, label) {
 }
 
 async function runUpdateFlow() {
-  const previous = lastUpdatedIso;
+  const dispatchedAt = Date.now();
 
   setStatus("Disparando atualização no servidor…");
   setButtonLoading(true, "Disparando…");
@@ -221,20 +244,16 @@ async function runUpdateFlow() {
   const txt = await r.text();
   if (!r.ok) throw new Error(txt || `HTTP ${r.status}`);
 
-  setStatus("Workflow iniciado. Aguardando processamento…");
   setButtonLoading(true, "Aguardando…");
-  await sleep(15000);
+  const done = await waitForDeploy(dispatchedAt, msg => {
+    setStatus(msg);
+    setButtonLoading(true, "Aguardando…");
+  });
+  if (!done) throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
 
-  const start = Date.now();
-  while (Date.now() - start < 3 * 60 * 1000) {
-    setStatus("Buscando novas métricas publicadas…");
-    setButtonLoading(true, "Atualizando…");
-    await loadMetrics(true);
-    if (lastUpdatedIso && lastUpdatedIso !== previous) { window.location.reload(); return; }
-    await sleep(8000);
-  }
-
-  throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
+  setStatus("Concluído. Recarregando…");
+  await sleep(2000);
+  window.location.reload();
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────

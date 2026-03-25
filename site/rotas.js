@@ -15,12 +15,38 @@
 
 // ── CONSTANTES ────────────────────────────────────────────────────────────────
 const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
+const GITHUB_REPO  = "luishcarvalho/pascoa-dashboard";
 const AUTH_HASH    = "HASH_PLACEHOLDER"; // injetado pelo CI (GitHub Secret AUTH_HASH)
 const ALL_DAYS     = "__all__";
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function getBaseUrl() {
   return document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
+}
+
+function sleep(ms) {
+  return new Promise(res => setTimeout(res, ms));
+}
+
+async function waitForDeploy(dispatchedAt, onStatus, timeoutMs = 5 * 60 * 1000) {
+  const url   = `https://api.github.com/repos/${GITHUB_REPO}/actions/runs?per_page=10`;
+  const start = Date.now();
+  while (Date.now() - start < timeoutMs) {
+    await sleep(10000);
+    onStatus("Aguardando conclusão do workflow…");
+    try {
+      const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+      if (!res.ok) continue;
+      const { workflow_runs } = await res.json();
+      const done = workflow_runs?.find(r =>
+        new Date(r.created_at).getTime() >= dispatchedAt - 30_000 &&
+        r.status     === "completed" &&
+        r.conclusion === "success"
+      );
+      if (done) return true;
+    } catch (_) {}
+  }
+  return false;
 }
 
 function fmtBRL(val) {
@@ -375,30 +401,22 @@ document.getElementById("btnRefresh")?.addEventListener("click", async () => {
   const setLoading = (label) => { btn.disabled = true; btn.classList.add("is-loading"); btn.textContent = label; };
 
   try {
+    const dispatchedAt = Date.now();
     setLoading("Disparando…");
     statusEl.textContent = "Disparando atualização no servidor…";
     const r = await fetch(DISPATCH_URL, { method: "POST", mode: "cors", cache: "no-store" });
     if (!r.ok) throw new Error(`Dispatch HTTP ${r.status}`);
 
     setLoading("Aguardando…");
-    statusEl.textContent = "Workflow iniciado. Aguardando processamento…";
-    await new Promise(res => setTimeout(res, 15000));
+    const done = await waitForDeploy(dispatchedAt, msg => {
+      statusEl.textContent = msg;
+      setLoading("Aguardando…");
+    });
+    if (!done) throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
 
-    const base  = getBaseUrl();
-    const start = Date.now();
-    while (Date.now() - start < 3 * 60 * 1000) {
-      setLoading("Atualizando…");
-      statusEl.textContent = "Buscando dados publicados…";
-      try {
-        const res = await fetch(`${base}data/routes.json`, { cache: "no-store" });
-        if (res.ok) {
-          const data = await res.json();
-          if (data.last_updated_utc && data.last_updated_utc !== previousTs) { window.location.reload(); return; }
-        }
-      } catch (_) {}
-      await new Promise(res => setTimeout(res, 8000));
-    }
-    throw new Error("Atualização demorou mais que o esperado. Tente novamente em instantes.");
+    statusEl.textContent = "Concluído. Recarregando…";
+    await sleep(2000);
+    window.location.reload(); return;
   } catch (e) {
     console.error(e);
     statusEl.textContent = `Erro: ${e.message}`;
