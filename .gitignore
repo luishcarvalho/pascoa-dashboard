@@ -3,3 +3,10 @@
 
 # dist/ é reconstruído pelo GitHub Actions — não commitar nada de lá
 dist/
+
+# virtual environments
+.venv/
+venv/
+env/
+__pycache__/
+*.pyc

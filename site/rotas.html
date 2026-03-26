@@ -13,55 +13,6 @@
   <base href="../">
   <link rel="stylesheet" href="styles.css" />
   <style>
-    /* ── Barra de autenticação ── */
-    .auth-bar {
-      display: flex;
-      align-items: center;
-      gap: 0.6rem;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
-      background: var(--surface2);
-      border-radius: var(--r);
-      padding: 0.5rem 0.9rem;
-    }
-    #auth-icon {
-      font-size: 15px;
-      color: var(--text3);
-    }
-    #auth-label {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      color: var(--text3);
-      flex: 1;
-      min-width: 120px;
-    }
-    #auth-input {
-      font-family: 'DM Mono', monospace;
-      font-size: 12px;
-      height: 38px;
-      width: 160px;
-      padding: 0 14px;
-      border-radius: 20px;
-      border: 0.5px solid var(--border2);
-      background: var(--surface);
-      color: var(--text2);
-      outline: none;
-      transition: border-color 0.15s;
-    }
-    #auth-input:focus { border-color: var(--accent); }
-    #auth-btn, #auth-logout {
-      font-size: 13px;
-      height: 38px;
-      padding: 0 16px;
-    }
-    #auth-msg {
-      font-family: 'DM Mono', monospace;
-      font-size: 11px;
-      color: #e05c5c;
-    }
-    .auth-bar.unlocked #auth-icon { color: #4caf50; }
-    .auth-bar.unlocked #auth-label { color: #4caf50; }
-
     /* ── Barra de controles ── */
     .route-controls {
       display: flex;
@@ -177,8 +128,21 @@
         <p class="header-sub">Encomendas de Páscoa 2026</p>
       </div>
       <div class="actions">
-        <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
-        <button id="btnRefresh">Atualizar agora</button>
+        <div class="header-auth" id="header-auth" style="display:none">
+          <div class="auth-input-wrap">
+            <input type="password" id="header-auth-input" placeholder="Senha" autocomplete="current-password" />
+            <span id="header-auth-msg" class="auth-msg"></span>
+          </div>
+          <button id="header-auth-btn">Desbloquear</button>
+          <span id="header-auth-icon">🔒</span>
+        </div>
+        <div class="actions-right">
+          <div class="actions-btns">
+            <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+            <button id="btnRefresh">Atualizar agora</button>
+          </div>
+          <p class="header-ts" id="lastUpdated">—</p>
+        </div>
       </div>
     </header>
 
@@ -186,17 +150,10 @@
       <a href="metricas/" class="tab-link">Métricas</a>
       <a href="predicao/" class="tab-link">Predição</a>
       <a href="rotas/" class="tab-link tab-active">Entregas</a>
+      <a href="financeiro/" class="tab-link">Financeiro</a>
     </nav>
 
     <div class="status-bar"><span id="status-rotas"></span></div>
-
-    <div class="auth-bar" id="auth-bar">
-      <span id="auth-icon">🔒</span>
-      <span id="auth-label">Dados sensíveis ocultos</span>
-      <span id="auth-msg"></span>
-      <input type="password" id="auth-input" placeholder="Senha" autocomplete="current-password" />
-      <button id="auth-btn">Desbloquear</button>
-    </div>
 
     <div class="route-controls">
       <select id="daySelectRoutes"></select>
@@ -239,6 +196,7 @@
   </div>
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="auth.js"></script>
   <script src="rotas.js"></script>
 </body>
 </html>

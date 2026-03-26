@@ -101,8 +101,8 @@ function timeAgo(isoString) {
 function startOrRefreshTimeAgoTimer() {
   if (timeAgoIntervalId) clearInterval(timeAgoIntervalId);
   timeAgoIntervalId = setInterval(() => {
-    const el = document.getElementById("timeAgo");
-    if (el && lastUpdatedIso) el.textContent = timeAgo(lastUpdatedIso);
+    const el = document.getElementById("lastUpdated");
+    if (el && lastUpdatedIso) el.textContent = `Atualizado: ${formatDateBR(lastUpdatedIso)} · ${timeAgo(lastUpdatedIso)}`;
   }, 10 * 1000);
 }
 
@@ -195,12 +195,10 @@ function renderView(m) {
       <div class="label">Total de pedidos</div>
       <div class="value">${m.total_pedidos ?? m.n_rows ?? "-"}</div>
     </div>
-    <div class="kpi">
-      <div class="label">Última atualização (Brasil - UTC-3)</div>
-      <div class="value" style="font-size:14px">${formatDateBR(lastUpdatedIso)}</div>
-      <div id="timeAgo" class="label" style="margin-top:6px">${timeAgo(lastUpdatedIso)}</div>
-    </div>
   `;
+
+  const tsEl = document.getElementById("lastUpdated");
+  if (tsEl) tsEl.textContent = `Atualizado: ${formatDateBR(lastUpdatedIso)}`;
 
   startOrRefreshTimeAgoTimer();
 

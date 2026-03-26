@@ -37,10 +37,11 @@ jobs:
           mkdir -p dist
           rsync -av --delete site/ dist/
           mkdir -p dist/data
-          mkdir -p dist/metricas dist/predicao dist/rotas
+          mkdir -p dist/metricas dist/predicao dist/rotas dist/financeiro
           cp dist/metricas.html dist/metricas/index.html
           cp dist/predicao.html dist/predicao/index.html
           cp dist/rotas.html dist/rotas/index.html
+          cp dist/financeiro.html dist/financeiro/index.html
 
       # ✅ Debug: garante que o app.js publicado é o que você editou
       - name: Debug published JS (ensure Brasil is present)
@@ -63,8 +64,12 @@ jobs:
       - name: Build routes.json
         run: python scripts/geocode_addresses.py
 
+      - name: Build financeiro.json
+        run: python scripts/build_financeiro.py
+
       - name: Inject auth hash
-        run: sed -i "s/HASH_PLACEHOLDER/${{ secrets.AUTH_HASH }}/" dist/rotas.js
+        run: |
+          sed -i "s/HASH_PLACEHOLDER/${{ secrets.AUTH_HASH }}/" dist/auth.js
 
       - name: Debug dist/data (fail if NaN)
         run: |

@@ -131,5 +131,17 @@
     "lon": -45.5968021,
     "display": "Rua Professor Djalma Melgaço, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Professor Djalma Melgaço 38"
+  },
+  "Rua São Paulo 300": {
+    "lat": -19.4679163,
+    "lon": -45.6057419,
+    "display": "Rua São Paulo, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua São Paulo 300"
+  },
+  "Rua Jair Barbosa Lopes 72": {
+    "lat": -19.475288,
+    "lon": -45.5967164,
+    "display": "Rua Doutor Jair Barbosa Lopes, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Rua Jair Barbosa Lopes 72"
   }
 }

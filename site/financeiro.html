@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Páscoa 2026 · Predição</title>
+  <title>Páscoa 2026 · Financeiro</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥚</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -11,14 +11,14 @@
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
   <base href="../">
   <link rel="stylesheet" href="styles.css" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 </head>
 <body>
   <div class="page">
-
     <header class="header">
       <div class="header-left">
-        <h1>Dashboard · Predição</h1>
-        <p class="header-sub">Modelo bayesiano com dados históricos de 2024, 2025 e 2026</p>
+        <h1>Dashboard · Financeiro</h1>
+        <p class="header-sub">Receita, custos e lucro da temporada Páscoa 2026</p>
       </div>
       <div class="actions">
         <div class="header-auth" id="header-auth" style="display:none">
@@ -41,96 +41,57 @@
 
     <nav class="tab-nav">
       <a href="metricas/" class="tab-link">Métricas</a>
-      <a href="predicao/" class="tab-link tab-active">Predição</a>
+      <a href="predicao/" class="tab-link">Predição</a>
       <a href="rotas/" class="tab-link">Entregas</a>
-      <a href="financeiro/" class="tab-link">Financeiro</a>
+      <a href="financeiro/" class="tab-link tab-active">Financeiro</a>
     </nav>
 
     <div class="status-bar">
-      <span id="status-pred"></span>
+      <span id="status-fin"></span>
     </div>
 
-    <!-- CONTROLES -->
-    <p class="section-label">Configuração</p>
-    <div class="card controls-card">
-      <div class="control-row">
-        <label class="control-label" for="slider-n">Meta de ovos</label>
-        <div class="slider-wrap">
-          <input type="range" id="slider-n" min="0" max="300" step="10" value="150" />
-          <span class="slider-value"><span id="label-n">150</span> ovos</span>
+    <!-- RECEITA -->
+    <p class="section-label">Receita</p>
+    <div id="kpi-receita" class="kpi-grid"></div>
+
+    <!-- SALDO DE CAIXA -->
+    <p class="section-label">Saldo de Caixa <span class="section-label-hint">investimento real</span></p>
+    <div id="kpi-saldo" class="kpi-grid"></div>
+
+    <!-- ANÁLISE GRÁFICA -->
+    <p class="section-label">Análise</p>
+    <div class="card-grid two-col">
+      <div class="card">
+        <h2 class="card-title">Divisão dos Gastos por Categoria</h2>
+        <div class="chart-wrap">
+          <canvas id="chartGastos"></canvas>
         </div>
       </div>
-      <div class="control-row">
-        <label class="control-label" for="select-pct">Percentil</label>
-        <select id="select-pct">
-          <option value="p50">P50 — mediana</option>
-          <option value="p75">P75 — conservador</option>
-          <option value="p90" selected>P90 — seguro</option>
-          <option value="p95">P95 — muito seguro</option>
-        </select>
+      <div class="card">
+        <h2 class="card-title">Situação dos Pagamentos</h2>
+        <div class="chart-wrap">
+          <canvas id="chartPagamentos"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Gastos por Método de Pagamento</h2>
+        <div class="chart-wrap">
+          <canvas id="chartMetodo"></canvas>
+        </div>
+      </div>
+      <div class="card">
+        <h2 class="card-title">Gastos por Loja</h2>
+        <div class="chart-wrap">
+          <canvas id="chartLoja"></canvas>
+        </div>
       </div>
     </div>
 
-    <!-- KPI CARDS -->
-    <p class="section-label">Ingredientes principais</p>
-    <div class="kpi-grid">
-      <div class="kpi">
-        <div class="label">Leite Condensado</div>
-        <div class="value" id="kpi-lc">—</div>
-        <div class="kpi-unit">caixas</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Creme de Leite</div>
-        <div class="value" id="kpi-cl">—</div>
-        <div class="kpi-unit">caixas</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Nutella</div>
-        <div class="value" id="kpi-nutella">—</div>
-        <div class="kpi-unit">gramas</div>
-      </div>
-      <div class="kpi">
-        <div class="label">Chocolate em Pó</div>
-        <div class="value" id="kpi-chocpo">—</div>
-        <div class="kpi-unit">colheres</div>
-      </div>
-    </div>
-
-    <!-- TABELA DE INGREDIENTES -->
-    <p class="section-label">Todos os ingredientes</p>
+    <!-- RECEITA POR DIA -->
+    <p class="section-label">Receita por Dia de Entrega</p>
     <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Ingrediente</th>
-            <th>Valor</th>
-            <th>Faixa P50 → P95</th>
-            <th>Incerteza</th>
-          </tr>
-        </thead>
-        <tbody id="ingr-tbody">
-          <tr><td colspan="4" class="small">Carregando…</td></tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- TENDÊNCIA HISTÓRICA -->
-    <p class="section-label">Tendência histórica por recheio</p>
-    <div class="card">
-      <table>
-        <thead>
-          <tr>
-            <th>Recheio</th>
-            <th>2024</th>
-            <th>2025</th>
-            <th>2026</th>
-            <th>Tendência</th>
-          </tr>
-        </thead>
-        <tbody id="hist-tbody">
-          <tr><td colspan="5" class="small">Carregando…</td></tr>
-        </tbody>
-      </table>
+      <h2 class="card-title">Detalhamento por dia</h2>
+      <div id="tabelaDias"></div>
     </div>
 
     <footer class="site-footer">
@@ -153,6 +114,6 @@
   </div>
 
   <script src="auth.js"></script>
-  <script src="predicao.js"></script>
+  <script src="financeiro.js"></script>
 </body>
 </html>

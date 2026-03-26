@@ -20,8 +20,21 @@
         <p class="header-sub">Atualiza automaticamente a cada 24h via GitHub Actions</p>
       </div>
       <div class="actions">
-        <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
-        <button id="btnRefresh">Atualizar agora</button>
+        <div class="header-auth" id="header-auth" style="display:none">
+          <div class="auth-input-wrap">
+            <input type="password" id="header-auth-input" placeholder="Senha" autocomplete="current-password" />
+            <span id="header-auth-msg" class="auth-msg"></span>
+          </div>
+          <button id="header-auth-btn">Desbloquear</button>
+          <span id="header-auth-icon">🔒</span>
+        </div>
+        <div class="actions-right">
+          <div class="actions-btns">
+            <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+            <button id="btnRefresh">Atualizar agora</button>
+          </div>
+          <p class="header-ts" id="lastUpdated">—</p>
+        </div>
       </div>
     </header>
 
@@ -29,6 +42,7 @@
       <a href="metricas/" class="tab-link tab-active">Métricas</a>
       <a href="predicao/" class="tab-link">Predição</a>
       <a href="rotas/" class="tab-link">Entregas</a>
+      <a href="financeiro/" class="tab-link">Financeiro</a>
     </nav>
 
     <div class="status-bar">
@@ -121,6 +135,7 @@
     </footer>
   </div>
 
+  <script src="auth.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

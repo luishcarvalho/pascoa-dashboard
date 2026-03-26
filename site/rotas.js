@@ -16,7 +16,6 @@
 // ── CONSTANTES ────────────────────────────────────────────────────────────────
 const DISPATCH_URL = "https://pascoa-dispatch.luis-h-carvalho.workers.dev/";
 const GITHUB_REPO  = "luishcarvalho/pascoa-dashboard";
-const AUTH_HASH    = "HASH_PLACEHOLDER"; // injetado pelo CI (GitHub Secret AUTH_HASH)
 const ALL_DAYS     = "__all__";
 
 // ── HELPERS ───────────────────────────────────────────────────────────────────
@@ -69,98 +68,6 @@ function popupOrdemHtml(o) {
     ${o.obs && o.obs !== "nan" ? `<small style="color:#999">${o.obs}</small>` : ""}
   </div>`;
 }
-
-// ── AUTENTICAÇÃO ──────────────────────────────────────────────────────────────
-let isAuthenticated = false;
-
-async function sha256(str) {
-  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
-  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
-}
-
-function setAuthUI(authenticated) {
-  const bar   = document.getElementById("auth-bar");
-  const icon  = document.getElementById("auth-icon");
-  const label = document.getElementById("auth-label");
-  const input = document.getElementById("auth-input");
-  const btn   = document.getElementById("auth-btn");
-  const msg   = document.getElementById("auth-msg");
-
-  if (authenticated) {
-    bar.classList.add("unlocked");
-    icon.textContent  = "🔓";
-    label.textContent = "Dados completos visíveis";
-    const btnWidth = btn.offsetWidth;
-    input.style.display = "none";
-    btn.style.display   = "none";
-    msg.textContent     = "";
-    let logoutBtn = document.getElementById("auth-logout");
-    if (!logoutBtn) {
-      logoutBtn = document.createElement("button");
-      logoutBtn.id          = "auth-logout";
-      logoutBtn.textContent = "Ocultar";
-      logoutBtn.style.width = `${btnWidth}px`;
-      logoutBtn.addEventListener("click", async () => {
-        sessionStorage.removeItem("rotas_auth");
-        isAuthenticated = false;
-        setAuthUI(false);
-        try {
-          const res = await fetch(`${getBaseUrl()}data/routes.json`, { cache: "no-store" });
-          if (res.ok) {
-            const payload = await res.json();
-            routesData = payload.routes ?? payload;
-            const sel = document.getElementById("daySelectRoutes");
-            if (sel.value === ALL_DAYS) renderAll();
-            else renderDay(sel.value);
-          }
-        } catch (e) { console.error(e); }
-      });
-      bar.appendChild(logoutBtn);
-    }
-    logoutBtn.style.display = "";
-  } else {
-    bar.classList.remove("unlocked");
-    icon.textContent  = "🔒";
-    label.textContent = "Dados sensíveis ocultos";
-    input.style.display = "";
-    btn.style.display   = "";
-    const logoutBtn = document.getElementById("auth-logout");
-    if (logoutBtn) logoutBtn.style.display = "none";
-  }
-}
-
-document.getElementById("auth-btn").addEventListener("click", async () => {
-  const input = document.getElementById("auth-input");
-  const msg   = document.getElementById("auth-msg");
-  const hash  = await sha256(input.value);
-
-  if (hash !== AUTH_HASH) {
-    msg.textContent = "Senha incorreta";
-    input.value = "";
-    return;
-  }
-
-  sessionStorage.setItem("rotas_auth", hash);
-  isAuthenticated = true;
-  setAuthUI(true);
-  msg.textContent = "";
-
-  try {
-    const res = await fetch(`${getBaseUrl()}data/routes_full.json`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const payload = await res.json();
-    routesData = payload.routes ?? payload;
-    const sel = document.getElementById("daySelectRoutes");
-    if (sel.value === ALL_DAYS) renderAll();
-    else renderDay(sel.value);
-  } catch (e) {
-    console.error("Erro ao carregar dados completos:", e);
-  }
-});
-
-document.getElementById("auth-input").addEventListener("keydown", e => {
-  if (e.key === "Enter") document.getElementById("auth-btn").click();
-});
 
 // ── ESTADO ────────────────────────────────────────────────────────────────────
 let routesData    = null;
@@ -346,13 +253,28 @@ function renderAll() {
   );
 }
 
+// ── AUTH CHANGE ───────────────────────────────────────────────────────────────
+window.addEventListener("authchange", async ({ detail: { authenticated } }) => {
+  const jsonFile = authenticated ? "routes_full.json" : "routes.json";
+  try {
+    const res = await fetch(`${getBaseUrl()}data/${jsonFile}`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const payload = await res.json();
+    routesData = payload.routes ?? payload;
+    const sel = document.getElementById("daySelectRoutes");
+    if (sel.value === ALL_DAYS) renderAll();
+    else renderDay(sel.value);
+  } catch (e) { console.error(e); }
+});
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 async function init() {
   const statusEl = document.getElementById("status-rotas");
   statusEl.textContent = "Carregando…";
 
+  const jsonFile = window.isAuth?.() ? "routes_full.json" : "routes.json";
   try {
-    const res     = await fetch(`${getBaseUrl()}data/routes.json`);
+    const res     = await fetch(`${getBaseUrl()}data/${jsonFile}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const payload  = await res.json();
     lastUpdatedTs  = payload.last_updated_utc ?? null;
@@ -363,7 +285,13 @@ async function init() {
   }
 
   statusEl.textContent = "";
-  setAuthUI(false);
+
+  const tsEl = document.getElementById("lastUpdated");
+  if (tsEl && lastUpdatedTs) {
+    const d  = new Date(new Date(lastUpdatedTs).getTime() - 3 * 60 * 60 * 1000);
+    const p2 = n => String(n).padStart(2, "0");
+    tsEl.textContent = `Atualizado: ${p2(d.getUTCDate())}/${p2(d.getUTCMonth() + 1)}/${d.getUTCFullYear()} · ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;
+  }
 
   const sel  = document.getElementById("daySelectRoutes");
   const dias = Object.keys(routesData);

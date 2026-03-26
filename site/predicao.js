@@ -260,6 +260,14 @@ async function init() {
   }
 
   statusEl.textContent = "";
+
+  const tsEl = document.getElementById("lastUpdated");
+  if (tsEl && predData?.last_updated_utc) {
+    const d  = new Date(new Date(predData.last_updated_utc).getTime() - 3 * 60 * 60 * 1000);
+    const p2 = n => String(n).padStart(2, "0");
+    tsEl.textContent = `Atualizado: ${p2(d.getUTCDate())}/${p2(d.getUTCMonth() + 1)}/${d.getUTCFullYear()} · ${p2(d.getUTCHours())}:${p2(d.getUTCMinutes())}`;
+  }
+
   renderHistorico();
   render();
 }

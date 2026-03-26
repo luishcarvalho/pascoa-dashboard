@@ -70,9 +70,22 @@ html, body {
 
 .actions {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 8px;
   flex-wrap: wrap;
+}
+
+.actions-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.actions-btns {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* ── STATUS BAR ───────────────────────────────────────────────────────── */
@@ -85,10 +98,17 @@ html, body {
   gap: 1rem;
 }
 
-#status, #status-pred, #status-rotas {
+#status, #status-pred, #status-rotas, #status-fin {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   color: var(--text3);
+}
+
+.header-ts {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 3px;
 }
 
 /* ── SECTION LABELS ───────────────────────────────────────────────────── */
@@ -265,6 +285,10 @@ button:disabled {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 12px;
   margin-bottom: 0.5rem;
+}
+
+.card-grid.two-col {
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .card-grid.three-col {
@@ -494,6 +518,92 @@ input[type="range"] {
 
 p.small { margin-top: 4px; }
 
+/* ── SECTION LABEL HINT ──────────────────────────────────────────────── */
+.section-label-hint {
+  font-size: 9px;
+  color: var(--text3);
+  opacity: 0.7;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ── AUTH INLINE (header compartilhado) ──────────────────────────────── */
+.header-auth {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.auth-input-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+#header-auth-icon {
+  order: 10;
+  line-height: 38px;
+}
+
+#header-auth-logout {
+  order: 9;
+}
+
+.header-auth input[type="password"] {
+  font-family: 'DM Mono', monospace;
+  font-size: 12px;
+  height: 38px;
+  padding: 0 12px;
+  border-radius: 20px;
+  border: 0.5px solid var(--border2);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  width: 150px;
+  transition: border-color 0.15s;
+}
+
+.header-auth input[type="password"]:focus {
+  border-color: var(--accent);
+}
+
+.header-auth button#header-auth-btn {
+  width: 110px;
+}
+
+.auth-msg {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px;
+  color: var(--red, #dc2626);
+  padding-left: 12px;
+}
+
+/* ── LOCKED STATE ────────────────────────────────────────────────────── */
+
+/* ── FINANCIAL COLORS ────────────────────────────────────────────────── */
+:root {
+  --green: #16a34a;
+  --red:   #dc2626;
+}
+[data-theme="dark"] {
+  --green: #4ade80;
+  --red:   #f87171;
+}
+
+.kpi-value-green { color: var(--green) !important; }
+.kpi-value-red   { color: var(--red)   !important; }
+
+/* ── CHART WRAP ──────────────────────────────────────────────────────── */
+.chart-wrap {
+  position: relative;
+  height: 240px;
+  margin: 0.5rem 0 0;
+}
+
+.half-width {
+  max-width: 520px;
+}
+
 /* ── FOOTER ─────────────────────────────────────────────────────────── */
 .site-footer {
   margin-top: 3rem;
@@ -535,7 +645,7 @@ p.small { margin-top: 4px; }
 
 @media (max-width: 600px) {
   .header { flex-direction: column; }
-  .card-grid, .card-grid.three-col { grid-template-columns: 1fr; }
+  .card-grid, .card-grid.two-col, .card-grid.three-col { grid-template-columns: 1fr; }
   .half-card { max-width: 100%; }
   .kpi .value { font-size: 22px; }
 }
