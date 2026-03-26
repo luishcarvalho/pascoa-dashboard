@@ -1,6 +1,6 @@
 // ── AUTH COMPARTILHADO ────────────────────────────────────────────────────────
 // HASH_PLACEHOLDER é substituído pelo CI (GitHub Secret AUTH_HASH)
-const AUTH_HASH  = "HASH_PLACEHOLDER";
+const AUTH_HASH  = "AUTH_HASH";
 const AUTH_LOCAL = AUTH_HASH === "HASH_PLACEHOLDER"; // dev local: sem auth
 
 async function _sha256(str) {
