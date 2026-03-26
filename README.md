@@ -2,13 +2,8 @@
 
 Dashboard de gestão de encomendas de ovos de Páscoa com predição bayesiana para os ingredientes. Construído para resolver um problema real de planejamento de produção artesanal.
 
-<<<<<<< HEAD
-> Pipeline completo: Google Sheets → Python (pandas + numpy) → GitHub Actions → GitHub Pages. 
-> 
-=======
 > Pipeline completo: Google Sheets → Python (pandas + numpy) → GitHub Actions → GitHub Pages.
->
->>>>>>> 6d873ee95307abcebc0407f36409d3e9badfe53d
+> 
 > Zero banco de dados, zero servidor, zero custo.
 
 ---
@@ -52,7 +47,7 @@ A solução proposta aborda essas incertezas de forma integrada. O dashboard per
 Google Sheets (2026) ──┐
 pascoa_2024.csv ───────┼──→  build_metrics.py    →  dist/data/metrics.json
 pascoa_2025.csv ───────┘          │
-                                  └──→  build_prediction.py  →  dist/data/    prediction.json
+                                  └──→  build_prediction.py  →  dist/data/prediction.json
                                                                         │
                                    GitHub Actions (cron diário) ────────┘
                                              │
