@@ -1,7 +1,7 @@
 // ── AUTH COMPARTILHADO ────────────────────────────────────────────────────────
 // HASH_PLACEHOLDER é substituído pelo CI (GitHub Secret AUTH_HASH)
 const AUTH_HASH  = "HASH_PLACEHOLDER";
-const AUTH_LOCAL = AUTH_HASH === "HASH_PLACEHOLDER"; // dev local: sem auth
+const AUTH_LOCAL = AUTH_HASH.length !== 64; // dev local: HASH_PLACEHOLDER não tem 64 chars
 
 async function _sha256(str) {
   const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(str));
