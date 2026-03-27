@@ -96,10 +96,14 @@ def main():
     nomes    = df_enc["Nome"].fillna("").astype(str).str.strip()
     df_valid = df_enc[nomes != ""].copy()
 
+    n_pedidos = int(len(df_valid))
+
+    n_pedidos_com_valor = 0
+
     if "Valor" in df_valid.columns:
         df_valid["_valor"] = df_valid["Valor"].apply(parse_brl)
-        receita_bruta = round(df_valid["_valor"].sum(), 2)
-        n_pedidos     = int((df_valid["_valor"] > 0).sum())
+        receita_bruta       = round(df_valid["_valor"].sum(), 2)
+        n_pedidos_com_valor = int((df_valid["_valor"] > 0).sum())
 
     if "Recebido" in df_valid.columns:
         recebido = round(df_valid["Recebido"].apply(parse_brl).sum(), 2)
@@ -118,7 +122,7 @@ def main():
             for k in sorted(receita_por_dia, key=day_sort_key)
         }
 
-    ticket_medio = round(receita_bruta / n_pedidos, 2) if n_pedidos > 0 else 0.0
+    ticket_medio = round(receita_bruta / n_pedidos_com_valor, 2) if n_pedidos_com_valor > 0 else 0.0
 
     # ── Gastos reais da aba Gastos ────────────────────────────────────────────
     gastos_por_categoria: dict = {}
