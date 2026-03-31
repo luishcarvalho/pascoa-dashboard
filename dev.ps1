@@ -38,11 +38,9 @@ class NoCacheHandler(http.server.SimpleHTTPRequestHandler):
     def log_message(self, fmt, *args):
         print(fmt % args)
 
+socketserver.TCPServer.allow_reuse_address = True
 with socketserver.TCPServer(('', 8000), NoCacheHandler) as httpd:
-    try:
-        httpd.serve_forever()
-    except KeyboardInterrupt:
-        pass
+    httpd.serve_forever()
 "
 } finally {
     Pop-Location

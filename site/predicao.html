@@ -71,8 +71,8 @@
       </div>
     </div>
 
-    <!-- KPI CARDS -->
-    <p class="section-label">Ingredientes principais</p>
+    <!-- KPI CARDS — RECHEIOS -->
+    <p class="section-label">Ingredientes principais · Recheios</p>
     <div class="kpi-grid">
       <div class="kpi">
         <div class="label">Leite Condensado</div>
@@ -96,8 +96,58 @@
       </div>
     </div>
 
-    <!-- TABELA DE INGREDIENTES -->
-    <p class="section-label">Todos os ingredientes</p>
+    <!-- KPI CARDS — DOCINHOS -->
+    <p class="section-label">Ingredientes principais · Docinhos</p>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">Leite Condensado</div>
+        <div class="value" id="kpi-doc-lc">—</div>
+        <div class="kpi-unit">caixas</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Margarina</div>
+        <div class="value" id="kpi-doc-margarina">—</div>
+        <div class="kpi-unit">colheres</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Chocolate em Pó</div>
+        <div class="value" id="kpi-doc-chocpo">—</div>
+        <div class="kpi-unit">colheres</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Leite em Pó</div>
+        <div class="value" id="kpi-doc-leitepo">—</div>
+        <div class="kpi-unit">colheres</div>
+      </div>
+    </div>
+
+    <!-- KPI CARDS — PANORAMA GERAL -->
+    <p class="section-label">Panorama geral <span class="section-hint">recheio + docinhos</span></p>
+    <div class="kpi-grid">
+      <div class="kpi">
+        <div class="label">Leite Condensado</div>
+        <div class="value" id="kpi-tot-lc">—</div>
+        <div class="kpi-unit">caixas</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Chocolate em Pó</div>
+        <div class="value" id="kpi-tot-chocpo">—</div>
+        <div class="kpi-unit">colheres</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Leite em Pó</div>
+        <div class="value" id="kpi-tot-leitepo">—</div>
+        <div class="kpi-unit">colheres</div>
+      </div>
+      <div class="kpi">
+        <div class="label">Margarina</div>
+        <div class="value" id="kpi-tot-margarina">—</div>
+        <div class="kpi-unit">colheres</div>
+      </div>
+    </div>
+
+    <!-- TABELA DE INGREDIENTES — RECHEIOS -->
+    <p class="section-label">Todos os ingredientes · Recheios</p>
     <div class="card">
       <table>
         <thead>
@@ -110,6 +160,43 @@
         </thead>
         <tbody id="ingr-tbody">
           <tr><td colspan="4" class="small">Carregando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TABELA DE INGREDIENTES — DOCINHOS -->
+    <p class="section-label">Todos os ingredientes · Docinhos</p>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Ingrediente</th>
+            <th>Valor</th>
+            <th>Faixa P50 → P95</th>
+            <th>Incerteza</th>
+          </tr>
+        </thead>
+        <tbody id="doc-tbody">
+          <tr><td colspan="4" class="small">Carregando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- RECEITAS A PRODUZIR -->
+    <p class="section-label">Receitas a produzir</p>
+    <div class="card">
+      <table>
+        <thead>
+          <tr>
+            <th>Receita</th>
+            <th>Recheios</th>
+            <th>Docinhos</th>
+            <th>Total</th>
+            <th>Incerteza</th>
+          </tr>
+        </thead>
+        <tbody id="receitas-tbody">
+          <tr><td colspan="5" class="small">Carregando…</td></tr>
         </tbody>
       </table>
     </div>

@@ -92,11 +92,93 @@ INGREDIENTES = [
 
 NUTELLA_G_POR_OVO = 60
 
+# ── ALIASES DE DOCINHO ────────────────────────────────────────────────────────
+# Normaliza variações históricas para tipos canônicos de docinho
+# None = pedido sem docinho (ignorar na contagem de docinhos)
+DOCINHO_ALIASES: dict[str, str | None] = {
+    # sem docinho
+    "não":                       None,
+    "nao":                       None,
+    "-":                         None,
+    # brigadeiro e variantes
+    "brigadeiro":                "Brigadeiro",
+    "brigadeiro e morangos":     "Brigadeiro com Morango",
+    "brigadeiro e coco":         "Brigadeiro com Coco",
+    "brigadeiro e côco":         "Brigadeiro com Coco",
+    "brigadeiro e confeti":      "Brigadeiro com Confeti",
+    "brigadeiros e confeti":     "Brigadeiro com Confeti",
+    "brigadeiro e ninho":        "Brigadeiro com Ninho",
+    "brigadeiro/ninho/confeti":  "Brigadeiro com Ninho",
+    # ninho e variantes
+    "ninho":                     "Ninho",
+    "ninho e morangos":          "Ninho com Morango",
+    "ninho e brigadeiros":       "Ninho com Brigadeiro",
+    "ninho e confeti":           "Ninho com Confeti",
+    "ninho e confeti":           "Ninho com Confeti",
+    # outros
+    "ferrero rocher":            "Ferrero Rocher",
+    "kids":                      "Kids",
+    "morangos":                  "Morango",
+    "morango":                   "Morango",
+}
+
+# Tipos canônicos de docinho (ordem fixa para numpy)
+DOCINHO_TIPOS = [
+    "Brigadeiro",
+    "Brigadeiro com Morango",
+    "Brigadeiro com Coco",
+    "Brigadeiro com Confeti",
+    "Brigadeiro com Ninho",
+    "Ninho",
+    "Ninho com Morango",
+    "Ninho com Brigadeiro",
+    "Ninho com Confeti",
+    "Ferrero Rocher",
+    "Kids",
+    "Morango",
+]
+
+# Docinhos individuais (Brigadeiro/Ninho) por pedido de cada tipo
+# Baseado em TOPPINGS de build_metrics.py — apenas Brigadeiro/Ninho têm receita
+TOPPINGS_ING: dict[str, dict[str, int]] = {
+    "Brigadeiro":           {"Brigadeiro": 7, "Ninho": 0},
+    "Brigadeiro com Morango": {"Brigadeiro": 6, "Ninho": 0},
+    "Brigadeiro com Coco":  {"Brigadeiro": 7, "Ninho": 0},
+    "Brigadeiro com Confeti": {"Brigadeiro": 5, "Ninho": 0},
+    "Brigadeiro com Ninho": {"Brigadeiro": 3, "Ninho": 4},
+    "Ninho":                {"Brigadeiro": 0, "Ninho": 7},
+    "Ninho com Morango":    {"Brigadeiro": 0, "Ninho": 4},
+    "Ninho com Brigadeiro": {"Brigadeiro": 3, "Ninho": 4},
+    "Ninho com Confeti":    {"Brigadeiro": 0, "Ninho": 5},
+    "Ferrero Rocher":       {"Brigadeiro": 4, "Ninho": 0},
+    "Kids":                 {"Brigadeiro": 2, "Ninho": 0},
+    "Morango":              {"Brigadeiro": 0, "Ninho": 0},
+}
+
+# Ingredientes por receita de docinho (1 receita = DOCINHOS_POR_RECEITA unidades)
+RECEITAS_DOCINHOS: dict[str, dict[str, int]] = {
+    "Brigadeiro": {"Leite Condensado": 1, "Margarina": 1, "Chocolate em Pó": 2},
+    "Ninho":      {"Leite Condensado": 1, "Margarina": 1, "Leite em Pó": 2},
+}
+
+DOCINHOS_POR_RECEITA = 20  # consistente com build_metrics.py
+
+INGREDIENTES_DOCINHOS = ["Leite Condensado", "Margarina", "Chocolate em Pó", "Leite em Pó"]
+
 
 # ── HELPERS ───────────────────────────────────────────────────────────────────
 
 def normalize_recheio(s: str) -> str | None:
     return RECHEIO_ALIASES.get(str(s).strip().lower())
+
+
+def normalize_docinho(s: str) -> str | None:
+    """Normaliza string de docinho para tipo canônico; None = sem docinho."""
+    key = str(s).strip().lower()
+    if key in DOCINHO_ALIASES:
+        return DOCINHO_ALIASES[key]
+    # Tenta match parcial para variações não mapeadas
+    return None
 
 
 def load_csv(path_or_url: str) -> pd.DataFrame:
@@ -108,8 +190,22 @@ def load_csv(path_or_url: str) -> pd.DataFrame:
     return df
 
 
-def extract_counts(df: pd.DataFrame) -> tuple[int, dict, int]:
-    """Retorna (total_válido, {recheio: contagem}, n_colher)."""
+def sc_stats(v: "np.ndarray") -> dict | None:
+    """Retorna dict p50/p75/p90/p95/mean/std ou None se todos zeros."""
+    if v.max() == 0:
+        return None
+    return {
+        "p50":  round(float(np.percentile(v, 50)), 1),
+        "p75":  round(float(np.percentile(v, 75)), 1),
+        "p90":  round(float(np.percentile(v, 90)), 1),
+        "p95":  round(float(np.percentile(v, 95)), 1),
+        "mean": round(float(np.mean(v)), 1),
+        "std":  round(float(np.std(v)), 2),
+    }
+
+
+def extract_counts(df: pd.DataFrame) -> tuple[int, dict, int, dict]:
+    """Retorna (total_válido, {recheio: contagem}, n_colher, {docinho_tipo: contagem})."""
     df = df.copy()
     df["_recheio"] = df["Recheio"].fillna("").astype(str).apply(normalize_recheio)
     df["_tipo"]    = df["Tipo"].fillna("").astype(str).str.strip().str.lower()
@@ -123,7 +219,15 @@ def extract_counts(df: pd.DataFrame) -> tuple[int, dict, int]:
         if r in counts:
             counts[r] += 1
 
-    return len(valid), counts, n_colher
+    # Contagem de docinhos (somente pedidos válidos)
+    doc_counts = {t: 0 for t in DOCINHO_TIPOS}
+    if "Docinho" in valid.columns:
+        doc_series = valid["Docinho"].fillna("").astype(str).apply(normalize_docinho)
+        for d in doc_series:
+            if d is not None and d in doc_counts:
+                doc_counts[d] += 1
+
+    return len(valid), counts, n_colher, doc_counts
 
 
 # ── MAIN ──────────────────────────────────────────────────────────────────────
@@ -143,8 +247,8 @@ def main() -> None:
 
     year_stats = {}
     for y, df in dfs.items():
-        total, counts, n_colher = extract_counts(df)
-        year_stats[y] = {"total": total, "counts": counts, "n_colher": n_colher}
+        total, counts, n_colher, doc_counts = extract_counts(df)
+        year_stats[y] = {"total": total, "counts": counts, "n_colher": n_colher, "doc_counts": doc_counts}
 
     # ── Beta bayesiano por recheio ─────────────────────────────────────────────
     beta_params: dict = {}
@@ -179,6 +283,27 @@ def main() -> None:
         beta_c  += w * (stats["total"] - stats["n_colher"])
     p_colher_mean = alpha_c / (alpha_c + beta_c)
 
+    # ── Beta bayesiano por tipo de docinho ────────────────────────────────────
+    beta_params_doc: dict = {}
+    for t in DOCINHO_TIPOS:
+        alpha_d, beta_d = 1.0, 1.0
+        for y in years_order:
+            stats  = year_stats[y]
+            w      = weights[y]
+            cnt    = stats["doc_counts"].get(t, 0)
+            # total de docinhos pedidos (excluindo "sem docinho" / None)
+            tot_doc = sum(stats["doc_counts"].values())
+            alpha_d += w * cnt
+            beta_d  += w * max(tot_doc - cnt, 0)
+        mean_d = alpha_d / (alpha_d + beta_d)
+        var_d  = (alpha_d * beta_d) / ((alpha_d + beta_d) ** 2 * (alpha_d + beta_d + 1))
+        beta_params_doc[t] = {
+            "alpha": round(alpha_d, 3),
+            "beta":  round(beta_d,  3),
+            "mean":  round(mean_d,  4),
+            "std":   round(math.sqrt(var_d), 4),
+        }
+
     # ── Monte Carlo (amostras únicas reutilizadas por target) ─────────────────
     alphas_arr = np.array([beta_params[r]["alpha"] for r in RECHEIOS])
     betas_arr  = np.array([beta_params[r]["beta"]  for r in RECHEIOS])
@@ -190,12 +315,27 @@ def main() -> None:
     # (N_SIM,) — proporção Colher
     p_col = rng.beta(alpha_c, beta_c, size=N_SIM)
 
+    # (N_SIM, n_tipos_docinho) — proporções normalizadas de docinhos
+    alphas_doc = np.array([beta_params_doc[t]["alpha"] for t in DOCINHO_TIPOS])
+    betas_doc  = np.array([beta_params_doc[t]["beta"]  for t in DOCINHO_TIPOS])
+    x_doc = rng.beta(alphas_doc, betas_doc, size=(N_SIM, len(DOCINHO_TIPOS)))
+    p_doc = x_doc / x_doc.sum(axis=1, keepdims=True)
+
+    # Proporção histórica de pedidos COM docinho (qualquer tipo) — constante
+    tot_doc_hist = sum(
+        sum(year_stats[y]["doc_counts"].values()) for y in years_order
+    )
+    tot_ov_hist  = sum(year_stats[y]["total"] for y in years_order)
+    p_tem_doc    = tot_doc_hist / max(tot_ov_hist, 1)
+
     scenarios: dict = {}
 
     for N in TARGETS:
         n_rec = p_rec * N   # ovos por recheio, (N_SIM, n_rec)
 
         acc = {ing: np.zeros(N_SIM) for ing in INGREDIENTES}
+        acc_rec = {"Brigadeiro": np.zeros(N_SIM), "Ninho": np.zeros(N_SIM),
+                   "Maracujá": np.zeros(N_SIM), "Coco": np.zeros(N_SIM)}
 
         for i, r in enumerate(RECHEIOS):
             cfg = RECHEIO_CONFIG[r]
@@ -204,6 +344,7 @@ def main() -> None:
             nt  = nr * (1 - p_col)    # trufado
 
             receitas = nc / 3.0 + nt / 4.0
+            acc_rec[cfg["receita"]] += receitas
 
             for ing, qty in RECEITA_INGREDIENTES[cfg["receita"]].items():
                 acc[ing] += receitas * qty
@@ -213,17 +354,9 @@ def main() -> None:
 
         sc: dict = {}
         for ing in INGREDIENTES:
-            v = acc[ing]
-            if v.max() == 0:
-                continue
-            sc[ing] = {
-                "p50":  round(float(np.percentile(v, 50)), 1),
-                "p75":  round(float(np.percentile(v, 75)), 1),
-                "p90":  round(float(np.percentile(v, 90)), 1),
-                "p95":  round(float(np.percentile(v, 95)), 1),
-                "mean": round(float(np.mean(v)), 1),
-                "std":  round(float(np.std(v)), 2),
-            }
+            stats_ing = sc_stats(acc[ing])
+            if stats_ing is not None:
+                sc[ing] = stats_ing
 
         # Histograma do Leite Condensado (20 bins)
         lc_vals = acc["Leite Condensado"]
@@ -233,15 +366,91 @@ def main() -> None:
             "counts": [int(c) for c in counts_h],
         }
 
+        # ── Docinhos ─────────────────────────────────────────────────────────
+        # Pedidos com docinho = N * p_tem_doc; proporção por tipo via p_doc
+        n_doc_por_tipo = p_doc * (N * p_tem_doc)   # (N_SIM, n_tipos)
+
+        acc_doc  = {ing: np.zeros(N_SIM) for ing in INGREDIENTES_DOCINHOS}
+        acc_rdoc = {"Brigadeiro": np.zeros(N_SIM), "Ninho": np.zeros(N_SIM)}
+
+        for j, t in enumerate(DOCINHO_TIPOS):
+            nd   = n_doc_por_tipo[:, j]          # pedidos desse tipo
+            tops = TOPPINGS_ING.get(t, {})
+            n_brig = tops.get("Brigadeiro", 0)
+            n_ninh = tops.get("Ninho", 0)
+
+            # Receitas = total individual docinhos / DOCINHOS_POR_RECEITA
+            receitas_brig = (nd * n_brig) / DOCINHOS_POR_RECEITA
+            receitas_ninh = (nd * n_ninh) / DOCINHOS_POR_RECEITA
+            acc_rdoc["Brigadeiro"] += receitas_brig
+            acc_rdoc["Ninho"]      += receitas_ninh
+
+            for ing, qty in RECEITAS_DOCINHOS["Brigadeiro"].items():
+                acc_doc[ing] += receitas_brig * qty
+            for ing, qty in RECEITAS_DOCINHOS["Ninho"].items():
+                acc_doc[ing] += receitas_ninh * qty
+
+        sc_doc: dict = {}
+        for ing in INGREDIENTES_DOCINHOS:
+            stats_ing = sc_stats(acc_doc[ing])
+            if stats_ing is not None:
+                sc_doc[ing] = stats_ing
+        sc["_docinhos"] = sc_doc
+
+        # ── Total combinado (recheio + docinhos) ─────────────────────────────
+        # Ingredientes que somam: LC, Chocolate em Pó, Leite em Pó, Margarina, Nutella
+        TOTAL_KEYS = [
+            ("Leite Condensado",  "Leite Condensado",   "Leite Condensado"),
+            ("Chocolate em Pó",   "Chocolate em Pó",    "Chocolate em Pó"),
+            ("Leite em Pó",       "Leite em Pó",        "Leite em Pó"),
+            ("Margarina",         None,                  "Margarina"),
+            ("Nutella (g)",       "Nutella (g)",         None),
+        ]
+        sc_total: dict = {}
+        for out_key, rec_key, doc_key in TOTAL_KEYS:
+            v_rec = acc[rec_key]     if rec_key and rec_key in acc     else np.zeros(N_SIM)
+            v_doc = acc_doc[doc_key] if doc_key and doc_key in acc_doc else np.zeros(N_SIM)
+            v_tot = v_rec + v_doc
+            stats_tot = sc_stats(v_tot)
+            if stats_tot is not None:
+                sc_total[out_key] = stats_tot
+        sc["_total"] = sc_total
+
+        # ── Receitas a produzir ───────────────────────────────────────────────
+        RECEITA_TIPOS = ["Brigadeiro", "Ninho", "Maracujá", "Coco"]
+
+        sc_rrec: dict = {}
+        for rt in RECEITA_TIPOS:
+            s = sc_stats(acc_rec[rt])
+            if s:
+                sc_rrec[rt] = s
+        sc["_receitas_recheio"] = sc_rrec
+
+        sc_rdoc: dict = {}
+        for rt in ["Brigadeiro", "Ninho"]:
+            s = sc_stats(acc_rdoc[rt])
+            if s:
+                sc_rdoc[rt] = s
+        sc["_receitas_docinho"] = sc_rdoc
+
+        sc_rtot: dict = {}
+        for rt in RECEITA_TIPOS:
+            v = acc_rec[rt] + acc_rdoc.get(rt, np.zeros(N_SIM))
+            s = sc_stats(v)
+            if s:
+                sc_rtot[rt] = s
+        sc["_receitas_total"] = sc_rtot
+
         scenarios[str(N)] = sc
 
     payload = {
         "last_updated_utc": datetime.now(timezone.utc).isoformat(),
         "model": {
-            "weights":     {str(y): round(weights[y], 4) for y in years_order},
-            "beta_params": beta_params,
-            "p_colher":    round(p_colher_mean, 4),
-            "historico":   historico,
+            "weights":          {str(y): round(weights[y], 4) for y in years_order},
+            "beta_params":      beta_params,
+            "beta_params_doc":  beta_params_doc,
+            "p_colher":         round(p_colher_mean, 4),
+            "historico":        historico,
         },
         "scenarios": scenarios,
     }

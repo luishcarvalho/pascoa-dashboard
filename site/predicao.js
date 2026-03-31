@@ -65,6 +65,28 @@ const RECHEIO_COR = {
   "Prestígio":        "#a09c96",
 };
 
+// Ingredientes de docinhos
+const DOCINHO_ING_LABEL = {
+  "Leite Condensado":  "Leite Condensado",
+  "Margarina":         "Margarina",
+  "Chocolate em Pó":   "Chocolate em Pó",
+  "Leite em Pó":       "Leite em Pó",
+};
+
+const DOCINHO_ING_UNIT = {
+  "Leite Condensado":  "cx",
+  "Margarina":         "col",
+  "Chocolate em Pó":   "col",
+  "Leite em Pó":       "col",
+};
+
+const DOCINHO_ING_COR = {
+  "Leite Condensado":  "#2060a8",
+  "Margarina":         "#b87010",
+  "Chocolate em Pó":   "#6b3a1a",
+  "Leite em Pó":       "#b87010",
+};
+
 // ── HELPERS ───────────────────────────────────────────────────────────────────
 function getBaseUrl() {
   return document.querySelector("base")?.href ?? window.location.href.replace(/[^/]*$/, "");
@@ -115,6 +137,7 @@ function fmt(v, decimals = 1) {
 
 // ── RENDER: KPI CARDS ─────────────────────────────────────────────────────────
 function renderKpis(sc, pct) {
+  // Recheios
   const lc       = sc["Leite Condensado"]?.[pct];
   const cl       = sc["Creme de Leite"]?.[pct];
   const nutellaG = sc["Nutella (g)"]?.[pct] ?? 0;
@@ -124,6 +147,20 @@ function renderKpis(sc, pct) {
   document.getElementById("kpi-cl").textContent      = fmt(cl);
   document.getElementById("kpi-nutella").textContent = nutellaG ? nutellaG.toFixed(0) : "—";
   document.getElementById("kpi-chocpo").textContent  = fmt(chocPo);
+
+  // Docinhos
+  const doc = sc["_docinhos"] ?? {};
+  document.getElementById("kpi-doc-lc").textContent       = fmt(doc["Leite Condensado"]?.[pct]);
+  document.getElementById("kpi-doc-margarina").textContent = fmt(doc["Margarina"]?.[pct]);
+  document.getElementById("kpi-doc-chocpo").textContent    = fmt(doc["Chocolate em Pó"]?.[pct]);
+  document.getElementById("kpi-doc-leitepo").textContent   = fmt(doc["Leite em Pó"]?.[pct]);
+
+  // Total combinado
+  const tot = sc["_total"] ?? {};
+  document.getElementById("kpi-tot-lc").textContent       = fmt(tot["Leite Condensado"]?.[pct]);
+  document.getElementById("kpi-tot-chocpo").textContent    = fmt(tot["Chocolate em Pó"]?.[pct]);
+  document.getElementById("kpi-tot-leitepo").textContent   = fmt(tot["Leite em Pó"]?.[pct]);
+  document.getElementById("kpi-tot-margarina").textContent = fmt(tot["Margarina"]?.[pct]);
 }
 
 // ── RENDER: TABELA DE INGREDIENTES ────────────────────────────────────────────
@@ -161,6 +198,92 @@ function renderTable(sc, pct) {
   tbody.innerHTML = rows.length
     ? rows.join("")
     : `<tr><td colspan="4" class="small">Sem dados.</td></tr>`;
+}
+
+// ── RENDER: TABELA DE INGREDIENTES DE DOCINHOS ───────────────────────────────
+function renderTableDocinhos(sc, pct) {
+  const tbody = document.getElementById("doc-tbody");
+  const doc   = sc["_docinhos"];
+
+  if (!doc || Object.keys(doc).length === 0) {
+    tbody.innerHTML = `<tr><td colspan="4" class="small">Sem dados de docinhos.</td></tr>`;
+    return;
+  }
+
+  const rows = Object.keys(DOCINHO_ING_LABEL)
+    .filter(k => doc[k] && doc[k].mean > 0)
+    .map(k => {
+      const d    = doc[k];
+      const cv   = d.std / d.mean;
+      const unit = DOCINHO_ING_UNIT[k];
+      const cor  = DOCINHO_ING_COR[k] || "var(--accent)";
+
+      const ref       = d.p95 * 1.05;
+      const barVal    = Math.min((d[pct] / ref) * 100, 100).toFixed(1);
+      const barRangeL = ((d.p50  / ref) * 100).toFixed(1);
+      const barRangeW = Math.min(((d.p95 - d.p50) / ref) * 100, 100 - barRangeL).toFixed(1);
+
+      return `<tr>
+        <td style="font-weight:500">${DOCINHO_ING_LABEL[k]}</td>
+        <td>
+          <div class="ingr-val-main" style="color:${cor}">${fmt(d[pct])} <span class="ingr-unit">${unit}</span></div>
+          <div class="ingr-bar-wrap">
+            <div class="ingr-bar-range" style="left:${barRangeL}%;width:${barRangeW}%;background:${cor}"></div>
+            <div class="ingr-bar-val"   style="width:${barVal}%;background:${cor}"></div>
+          </div>
+        </td>
+        <td class="ingr-faixa">${fmt(d.p50)} – ${fmt(d.p95)}</td>
+        <td>${badge(cv)}</td>
+      </tr>`;
+    });
+
+  tbody.innerHTML = rows.length
+    ? rows.join("")
+    : `<tr><td colspan="4" class="small">Sem dados.</td></tr>`;
+}
+
+// ── RENDER: RECEITAS A PRODUZIR ───────────────────────────────────────────────
+const RECEITA_COR = {
+  "Brigadeiro": "#6b3a1a",
+  "Ninho":      "#b87010",
+  "Maracujá":   "#7a5ea8",
+  "Coco":       "#4a8a4a",
+};
+
+function renderReceitas(sc, pct) {
+  const tbody = document.getElementById("receitas-tbody");
+  const rrec  = sc["_receitas_recheio"] ?? {};
+  const rdoc  = sc["_receitas_docinho"] ?? {};
+  const rtot  = sc["_receitas_total"]   ?? {};
+
+  const tipos = ["Brigadeiro", "Ninho", "Maracujá", "Coco"];
+  const rows  = tipos
+    .filter(t => rrec[t] || rdoc[t])
+    .map(t => {
+      const rec  = rrec[t];
+      const doc  = rdoc[t];
+      const tot  = rtot[t];
+      const cor  = RECEITA_COR[t] || "var(--accent)";
+      const cv   = tot ? tot.std / tot.mean : 0;
+
+      const fmtCell = (d) => d
+        ? `<span style="color:${cor};font-weight:500">${fmt(d[pct])}</span> <span class="ingr-unit">rec</span>`
+        : `<span class="small">—</span>`;
+
+      return `<tr>
+        <td style="font-weight:500">
+          <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${cor};margin-right:6px;vertical-align:middle"></span>${t}
+        </td>
+        <td>${fmtCell(rec)}</td>
+        <td>${fmtCell(doc)}</td>
+        <td>${fmtCell(tot)}</td>
+        <td>${badge(cv)}</td>
+      </tr>`;
+    });
+
+  tbody.innerHTML = rows.length
+    ? rows.join("")
+    : `<tr><td colspan="5" class="small">Sem dados.</td></tr>`;
 }
 
 // ── RENDER: TENDÊNCIA HISTÓRICA ───────────────────────────────────────────────
@@ -243,6 +366,8 @@ function render() {
 
   renderKpis(sc, pct);
   renderTable(sc, pct);
+  renderTableDocinhos(sc, pct);
+  renderReceitas(sc, pct);
 }
 
 // ── INIT ──────────────────────────────────────────────────────────────────────
