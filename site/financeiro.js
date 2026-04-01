@@ -114,10 +114,11 @@ document.getElementById("btnRefresh").addEventListener("click", async () => {
 });
 
 // ── KPI RENDER ────────────────────────────────────────────────────────────────
-function kpiCard(label, value, sub, colorClass) {
-  const extra = colorClass ? ` ${colorClass}` : "";
+function kpiCard(label, value, sub, colorClass, tooltip) {
+  const extra   = colorClass ? ` ${colorClass}` : "";
+  const tipAttr = tooltip ? ` data-tooltip="${tooltip}"` : "";
   return `
-    <div class="kpi">
+    <div class="kpi"${tipAttr}>
       <div class="label">${label}</div>
       <div class="value${extra}" style="font-size:22px">${value}</div>
       ${sub ? `<div class="kpi-unit">${sub}</div>` : ""}
@@ -138,15 +139,19 @@ function renderKPIs(d) {
       : "");
 
   // ── Saldo de caixa (investimento real) ─────────────────────────────────────
+  const saldo    = (d.recebido || 0) - (d.gastos_total || 0);
   const roi      = d.gastos_total > 0 ? (d.lucro_bruto || 0) / d.gastos_total * 100 : 0;
   const margem   = d.margem_lucro_pct || 0;
-  const cxPos    = (d.lucro_bruto || 0) >= 0;
+  const saldoPos = saldo >= 0;
+  const lucroPos = (d.lucro_bruto || 0) >= 0;
 
   document.getElementById("kpi-saldo").innerHTML =
     kpiCard("Investimento total", mask(formatBRL(d.gastos_total)), "Tudo que foi comprado (inclui estoque)") +
-    kpiCard("Saldo disponível", mask(formatBRL(d.lucro_bruto)), "Receita − Investimento total", cxPos ? "kpi-value-green" : "kpi-value-red") +
-    kpiCard("Margem de lucro", mask(formatPct(margem)), null, cxPos ? "kpi-value-green" : "kpi-value-red") +
-    kpiCard("Retorno s/ investimento", mask(formatPct(roi)), "Lucro ÷ Investimento total", cxPos ? "kpi-value-green" : "kpi-value-red");
+    kpiCard("Saldo disponível", mask(formatBRL(saldo)), "Recebido − Investimento total", saldoPos ? "kpi-value-green" : "kpi-value-red") +
+    kpiCard("Margem de lucro", mask(formatPct(margem)), "Lucro ÷ Receita bruta", lucroPos ? "kpi-value-green" : "kpi-value-red",
+      "De cada R$1 vendido, quanto sobra como lucro. Ex.: 38% significa que para cada R$100 em ovos vendidos, R$38 é lucro e R$62 é custo.") +
+    kpiCard("Retorno s/ investimento", mask(formatPct(roi)), "Lucro ÷ Investimento total", lucroPos ? "kpi-value-green" : "kpi-value-red",
+      "Para cada R$1 investido em materiais, quanto de lucro foi gerado. Ex.: 60% significa que para cada R$100 gastos, R$60 de lucro foi gerado.");
 }
 
 // ── TABLE DIAS ────────────────────────────────────────────────────────────────

@@ -230,6 +230,39 @@ button:disabled {
 #select-pct:focus { border-color: rgba(0,0,0,0.3); outline: none; }
 #daySelect:disabled { opacity: 0.45; cursor: not-allowed; }
 
+/* ── TOOLTIP ─────────────────────────────────────────────────────────── */
+[data-tooltip] {
+  position: relative;
+  cursor: help;
+}
+
+[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--surface2);
+  color: var(--text2);
+  border: 0.5px solid var(--border2);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.5;
+  white-space: normal;
+  width: max-content;
+  max-width: 260px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  z-index: 100;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+[data-tooltip]:hover::after { opacity: 1; }
+
 /* ── KPI GRID ─────────────────────────────────────────────────────────── */
 .kpi-grid {
   display: grid;

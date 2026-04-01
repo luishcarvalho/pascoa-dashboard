@@ -12,6 +12,38 @@
   <base href="../">
   <link rel="stylesheet" href="styles.css" />
   <style>
+    /* ── Select dropdown (mesmo estilo que #daySelect no styles.css) ── */
+    #daySelectPedidos {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      height: 38px;
+      padding: 0 36px 0 14px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border2);
+      background-color: var(--surface);
+      color: var(--text2);
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image:
+        linear-gradient(45deg, transparent 50%, var(--text3) 50%),
+        linear-gradient(135deg, var(--text3) 50%, transparent 50%);
+      background-position: calc(100% - 16px) 50%, calc(100% - 10px) 50%;
+      background-size: 5px 5px, 5px 5px;
+      background-repeat: no-repeat;
+      transition: border-color 0.15s;
+    }
+    #daySelectPedidos:hover { border-color: var(--border2); }
+    #daySelectPedidos:focus { border-color: rgba(0,0,0,0.3); outline: none; }
+
+    /* ── Scrollbar horizontal da tabela ── */
+    .pedidos-wrap::-webkit-scrollbar       { height: 5px; }
+    .pedidos-wrap::-webkit-scrollbar-track { background: var(--surface2); border-radius: 3px; }
+    .pedidos-wrap::-webkit-scrollbar-thumb { background: var(--border2);  border-radius: 3px; }
+    .pedidos-wrap::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+    .pedidos-wrap { scrollbar-width: thin; scrollbar-color: var(--border2) var(--surface2); }
+
     /* ── Seções de cidade ── */
     .cidade-section {
       margin-bottom: 2.5rem;
