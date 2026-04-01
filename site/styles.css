@@ -98,7 +98,7 @@ html, body {
   gap: 1rem;
 }
 
-#status, #status-pred, #status-rotas, #status-fin {
+#status, #status-pred, #status-rotas, #status-fin, #status-pedidos {
   font-family: 'DM Mono', monospace;
   font-size: 11px;
   color: var(--text3);
@@ -174,7 +174,8 @@ button:disabled {
 
 /* ── SELECT ───────────────────────────────────────────────────────────── */
 #daySelect,
-#daySelectRoutes {
+#daySelectRoutes,
+#daySelectPedidos {
   font-family: 'DM Mono', monospace;
   font-size: 12px;
   height: 38px;
@@ -197,9 +198,11 @@ button:disabled {
 }
 
 #daySelect:hover,
-#daySelectRoutes:hover { border-color: var(--border2); }
+#daySelectRoutes:hover,
+#daySelectPedidos:hover { border-color: var(--border2); }
 #daySelect:focus,
-#daySelectRoutes:focus { border-color: rgba(0,0,0,0.3); outline: none; }
+#daySelectRoutes:focus,
+#daySelectPedidos:focus { border-color: rgba(0,0,0,0.3); outline: none; }
 
 #select-pct {
   font-family: 'DM Mono', monospace;
@@ -649,3 +652,11 @@ p.small { margin-top: 4px; }
   .half-card { max-width: 100%; }
   .kpi .value { font-size: 22px; }
 }
+
+/* ── SCROLLBAR CUSTOMIZADA ───────────────────────────────────────────── */
+.custom-scroll::-webkit-scrollbar       { height: 5px; width: 5px; }
+.custom-scroll::-webkit-scrollbar-track { background: var(--surface2); border-radius: 3px; }
+.custom-scroll::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+.custom-scroll::-webkit-scrollbar-thumb:hover { background: var(--text3); }
+/* Firefox */
+.custom-scroll { scrollbar-width: thin; scrollbar-color: var(--border2) var(--surface2); }

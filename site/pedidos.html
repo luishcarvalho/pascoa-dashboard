@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Páscoa 2026 · Pedidos</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥚</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('theme')||'dark')</script>
+  <base href="../">
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    /* ── Seções de cidade ── */
+    .cidade-section {
+      margin-bottom: 2.5rem;
+    }
+
+    .cidade-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--text);
+      font-weight: 500;
+      margin: 1.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1.5px solid var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .cidade-badge {
+      font-size: 0.72rem;
+      font-weight: 500;
+      background: var(--surface2);
+      color: var(--text2);
+      border-radius: 999px;
+      padding: 0.1em 0.6em;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    /* ── Seções de turno ── */
+    .turno-section {
+      margin-bottom: 1.5rem;
+      padding-left: 0.75rem;
+      border-left: 2px solid var(--border2);
+    }
+
+    .turno-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text2);
+      margin-bottom: 0.75rem;
+    }
+
+    /* ── Seção entrega/retirada ── */
+    .tipo-section {
+      margin-bottom: 1rem;
+    }
+
+    .tipo-label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .tipo-badge {
+      font-size: 0.72rem;
+      color: var(--text3);
+    }
+
+    /* ── Tabela de pedidos ── */
+    .pedidos-wrap {
+      overflow-x: auto;
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      margin-bottom: 0.5rem;
+    }
+
+    .pedidos-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    /* Override globais da tabela que afetam a última coluna */
+    .pedidos-table td:last-child,
+    .pedidos-table th:last-child {
+      text-align: left;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.82rem;
+    }
+
+    .pedidos-table th {
+      background: var(--surface2);
+      color: var(--text3);
+      font-family: 'DM Mono', monospace;
+      font-weight: 400;
+      font-size: 0.7rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.5rem 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .pedidos-table td {
+      padding: 0.45rem 0.7rem;
+      border-bottom: 0.5px solid var(--border);
+      color: var(--text);
+      vertical-align: middle;
+    }
+
+    .pedidos-table tr:last-child td { border-bottom: none; }
+
+    .pedidos-table tbody tr:hover td { background: var(--surface2); }
+
+    .pedidos-table tr.group-alt td {
+      background: color-mix(in srgb, var(--surface2) 45%, transparent);
+    }
+    .pedidos-table tr.group-alt:hover td { background: var(--surface2); }
+
+    /* ── Badges ── */
+    .badge-entrega {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.1em 0.5em;
+      border-radius: 999px;
+      background: color-mix(in srgb, #3b82f6 18%, transparent);
+      color: #3b82f6;
+    }
+    .badge-retirada {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.1em 0.5em;
+      border-radius: 999px;
+      background: color-mix(in srgb, #f59e0b 18%, transparent);
+      color: #f59e0b;
+    }
+    .badge-infantil {
+      display: inline-block;
+      font-size: 0.68rem;
+      font-weight: 600;
+      padding: 0.1em 0.5em;
+      border-radius: 999px;
+      background: color-mix(in srgb, #ec4899 18%, transparent);
+      color: #ec4899;
+    }
+
+    .faltante-zero { color: var(--text3); }
+    .faltante-pos  { color: var(--red, #f87171); font-weight: 600; }
+
+    .pedido-num {
+      font-family: 'DM Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text2);
+    }
+
+    /* ── Status bar com stats inline ── */
+    .pedidos-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .day-summary {
+      display: flex;
+      gap: 0.45rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .day-stat {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.3rem 0.65rem;
+      background: var(--surface2);
+      border-radius: var(--r);
+      font-size: 0.78rem;
+      color: var(--text2);
+    }
+
+    .day-stat strong {
+      color: var(--text);
+      font-family: 'DM Mono', monospace;
+    }
+
+    /* ── Observação colapsável ── */
+    .obs-cell {
+      max-width: 220px;
+      white-space: normal;
+      font-size: 0.78rem;
+    }
+
+    .obs-details { cursor: pointer; }
+
+    .obs-summary {
+      list-style: none;
+      color: var(--text2);
+      font-size: 0.78rem;
+      line-height: 1.4;
+      cursor: pointer;
+    }
+
+    .obs-summary::-webkit-details-marker { display: none; }
+    .obs-summary::after        { content: " ▸"; font-size: 0.65rem; color: var(--text3); }
+    .obs-details[open] .obs-summary::after { content: " ▾"; }
+
+    .obs-full {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--text);
+      font-size: 0.78rem;
+      line-height: 1.4;
+      white-space: normal;
+    }
+
+    .obs-text { color: var(--text2); font-size: 0.78rem; }
+
+    .priv {
+      color: var(--text3);
+      letter-spacing: 0.08em;
+    }
+
+    .empty-day {
+      color: var(--text3);
+      font-size: 0.9rem;
+      padding: 2rem 0;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="header">
+      <div class="header-left">
+        <h1>Dashboard · Pedidos</h1>
+        <p class="header-sub">Pedidos de entrega e retirada por dia e turno</p>
+      </div>
+      <div class="actions">
+        <div class="header-auth" id="header-auth" style="display:none">
+          <div class="auth-input-wrap">
+            <input type="password" id="header-auth-input" placeholder="Senha" autocomplete="current-password" />
+            <span id="header-auth-msg" class="auth-msg"></span>
+          </div>
+          <button id="header-auth-btn">Desbloquear</button>
+          <span id="header-auth-icon">🔒</span>
+        </div>
+        <div class="actions-right">
+          <div class="actions-btns">
+            <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+            <button id="btnRefresh">Atualizar agora</button>
+          </div>
+          <p class="header-ts" id="lastUpdated">—</p>
+        </div>
+      </div>
+    </header>
+
+    <nav class="tab-nav">
+      <a href="metricas/" class="tab-link">Métricas</a>
+      <a href="predicao/" class="tab-link">Predição</a>
+      <a href="rotas/" class="tab-link">Entregas</a>
+      <a href="financeiro/" class="tab-link">Financeiro</a>
+      <a href="pedidos/" class="tab-link tab-active">Pedidos</a>
+    </nav>
+
+    <div class="status-bar">
+      <span id="status-pedidos"></span>
+      <div class="pedidos-bar-right">
+        <div id="pedidos-day-stats" class="day-summary"></div>
+        <select id="daySelectPedidos"></select>
+      </div>
+    </div>
+
+    <div id="pedidos-content"></div>
+
+    <footer class="site-footer">
+      <span class="footer-name">Luís Henrique S. de Carvalho</span>
+      <div class="footer-links">
+        <a href="mailto:luishenriquescarvalho@gmail.com" title="E-mail">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+          luishenriquescarvalho@gmail.com
+        </a>
+        <a href="https://www.linkedin.com/in/luishcarvalho/" target="_blank" rel="noopener" title="LinkedIn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+          luishcarvalho
+        </a>
+        <a href="https://github.com/luishcarvalho" target="_blank" rel="noopener" title="GitHub">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+          luishcarvalho
+        </a>
+      </div>
+    </footer>
+  </div>
+
+  <script src="auth.js"></script>
+  <script src="pedidos.js"></script>
+</body>
+</html>

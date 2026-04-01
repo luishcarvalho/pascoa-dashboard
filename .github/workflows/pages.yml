@@ -40,11 +40,12 @@ jobs:
           mkdir -p dist
           rsync -av --delete site/ dist/
           mkdir -p dist/data
-          mkdir -p dist/metricas dist/predicao dist/rotas dist/financeiro
+          mkdir -p dist/metricas dist/predicao dist/rotas dist/financeiro dist/pedidos
           cp dist/metricas.html dist/metricas/index.html
           cp dist/predicao.html dist/predicao/index.html
           cp dist/rotas.html dist/rotas/index.html
           cp dist/financeiro.html dist/financeiro/index.html
+          cp dist/pedidos.html dist/pedidos/index.html
 
       # ✅ Debug: garante que o app.js publicado é o que você editou
       - name: Debug published JS (ensure Brasil is present)
@@ -69,6 +70,9 @@ jobs:
 
       - name: Build financeiro.json
         run: python scripts/build_financeiro.py
+
+      - name: Build pedidos.json
+        run: python scripts/build_pedidos.py
 
       - name: Inject auth hash
         run: |
