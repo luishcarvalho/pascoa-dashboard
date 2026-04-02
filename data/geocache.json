@@ -202,5 +202,11 @@
     "lon": -45.60421845258839,
     "display": "Rua São Paulo 300, Dores do Indaiá, MG",
     "query_used": "manual"
+  },
+  "Rua José Barbosa Ferola 39": {
+    "lat": -19.474064118213875, 
+    "lon": -45.598138362104976,
+    "display": "Rua José Barbosa Ferola 39, Dores do Indaiá, MG",
+    "query_used": "manual"
   }
 }
