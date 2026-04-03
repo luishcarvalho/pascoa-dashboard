@@ -47,18 +47,6 @@ jobs:
           cp dist/financeiro.html dist/financeiro/index.html
           cp dist/pedidos.html dist/pedidos/index.html
 
-      # ✅ Debug: garante que o app.js publicado é o que você editou
-      - name: Debug published JS (ensure Brasil is present)
-        run: |
-          echo "== site/app.js (first 30 lines) =="
-          sed -n '1,30p' site/app.js
-          echo "== dist/app.js (first 30 lines) =="
-          sed -n '1,30p' dist/app.js
-          echo "== grep Brasil (site/app.js) =="
-          (grep -n "Brasil" site/app.js || true)
-          echo "== grep Brasil (dist/app.js) =="
-          (grep -n "Brasil" dist/app.js || true)
-
       - name: Build metrics.json
         run: python scripts/build_metrics.py
 
@@ -90,7 +78,7 @@ jobs:
         run: |
           sed -i "s/HASH_PLACEHOLDER/${{ secrets.AUTH_HASH }}/" dist/auth.js
 
-      - name: Debug dist/data (fail if NaN)
+      - name: Validate dist/data (fail if NaN)
         run: |
           echo "== dist =="
           ls -lah dist

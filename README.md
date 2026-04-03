@@ -14,7 +14,7 @@ A produção artesanal de ovos de Páscoa envolve compra antecipada de ingredien
 
 No entanto, o problema vai além do planejamento de compras. Existe também uma dificuldade significativa em antecipar o volume de trabalho necessário, isto é, quantas unidades de cada tipo de preparo precisarão ser produzidas, quanto tempo será demandado em cada etapa e como distribuir esse esforço ao longo dos dias de produção. Sem esse tipo de previsão, é comum ocorrerem gargalos, sobrecarga em momentos críticos ou ociosidade em outros.
 
-A solução proposta aborda essas incertezas de forma integrada. O dashboard permite entender a escala de produção esperada em cada componente do processo permitindo um planejamento mais equilibrado, com maior previsibilidade e margem de segurança. O modelo combina histórico de dois anos com os pedidos em aberto de 2026 para estimar, por diferentes cenários de meta quanto adquirir de cada insumo. 
+A solução proposta aborda essas incertezas de forma integrada. O dashboard permite entender a escala de produção esperada em cada componente do processo permitindo um planejamento mais equilibrado, com maior previsibilidade e margem de segurança. O modelo combina histórico de dois anos com os pedidos em aberto de 2026 para estimar, por diferentes cenários de meta, quanto adquirir de cada insumo.
 
 ---
 
@@ -24,7 +24,9 @@ A solução proposta aborda essas incertezas de forma integrada. O dashboard per
 |---|---|
 | **Métricas** | Pedidos em tempo real: recheios, chocolates, cascas, docinhos, ingredientes acumulados |
 | **Predição** | Simulação bayesiana: dado uma meta de ovos, quanto de cada ingrediente comprar nos percentis P50 / P75 / P90 / P95 |
-| **Entregas** | Mapa com locais de entrega e visualização georreferenciada dos pedidos pra facilitar na criação de rotas|
+| **Entregas** | Mapa com locais de entrega e visualização georreferenciada dos pedidos pra facilitar na criação de rotas |
+| **Financeiro** | Receita consolidada por dia, cidade e recheio, com controle de valores recebidos e pendentes |
+| **Pedidos** | Lista completa de pedidos organizada por dia → cidade → turno → tipo (entrega/retirada), com impressão otimizada para uso na cozinha |
 
 ---
 
@@ -45,15 +47,17 @@ A solução proposta aborda essas incertezas de forma integrada. O dashboard per
 
 ```
 Google Sheets (2026) ──┐
-pascoa_2024.csv ───────┼──→  build_metrics.py    →  dist/data/metrics.json
+pascoa_2024.csv ───────┼──→  build_metrics.py     →  dist/data/metrics.json
 pascoa_2025.csv ───────┘          │
                                   └──→  build_prediction.py  →  dist/data/prediction.json
-                                                                        │
-                                   GitHub Actions (cron diário) ────────┘
-                                             │
-                                        GitHub Pages
-                                             │
-                               index.html + predicao.html
+                       ├──→  build_financeiro.py   →  dist/data/financeiro.json
+                       └──→  build_pedidos.py      →  dist/data/pedidos.json
+                                                              │
+                                    GitHub Actions (cron diário) ──────────┘
+                                              │
+                                         GitHub Pages
+                                              │
+                          index.html · predicao.html · financeiro.html · pedidos.html · rotas.html
                          (browser apenas lê JSON — zero simulação no cliente)
 ```
 
@@ -68,18 +72,32 @@ pascoa-dashboard/
 ├── site/
 │   ├── index.html          # Aba Métricas
 │   ├── predicao.html       # Aba Predição
-│   ├── app.js              # Lógica de métricas
+│   ├── rotas.html          # Aba Entregas
+│   ├── financeiro.html     # Aba Financeiro
+│   ├── pedidos.html        # Aba Pedidos
+│   ├── metricas.js         # Lógica de métricas
 │   ├── predicao.js         # Interpolação e renderização da predição
+│   ├── rotas.js            # Mapa e georreferenciamento de entregas
+│   ├── financeiro.js       # Consolidado financeiro
+│   ├── pedidos.js          # Lista de pedidos e impressão por turno
+│   ├── auth.js             # Controle de acesso (campos sensíveis)
 │   └── styles.css          # Dark/light mode · design system consistente
 ├── scripts/
 │   ├── build_metrics.py    # Lê CSV da Sheets → dist/data/metrics.json
-│   └── build_prediction.py # Modelo bayesiano + Monte Carlo → dist/data/prediction.json
+│   ├── build_prediction.py # Modelo bayesiano + Monte Carlo → dist/data/prediction.json
+│   ├── build_financeiro.py # Consolidado financeiro → dist/data/financeiro.json
+│   ├── build_pedidos.py    # Pedidos por dia/turno/tipo → dist/data/pedidos.json
+│   ├── geocode_addresses.py # Geocodificação de endereços → data/geocache.json
+│   └── utils/
+│       └── analyze_addresses.py # Utilitário ad-hoc de análise de endereços
 ├── data/
+│   ├── geocache.json       # Cache de coordenadas geocodificadas
 │   └── historico/          # Dados de outros anos de venda
 │       ├── pascoa_2024.csv
 │       └── pascoa_2025.csv
 ├── .github/workflows/
 │   └── pages.yml           # Build & deploy automático
+├── dev.ps1                 # Build local completo + servidor de desenvolvimento
 └── requirements.txt
 ```
 
@@ -128,21 +146,38 @@ O resultado é um JSON de cenários que o browser apenas lê e interpola — sem
 
 ---
 
+## Impressão de pedidos
+
+A aba Pedidos inclui uma função de impressão pensada para uso operacional na cozinha. O botão **Imprimir** gera um PDF organizado por turno onde:
+
+- Cada turno (Manhã / Tarde / Noite) começa em uma nova página com cabeçalho identificando o dia e a cidade
+- As páginas de continuação do mesmo turno não têm margem superior nem inferior, permitindo que sejam coladas sequencialmente na parede sem gap visual entre elas
+- Os metadados do browser (data, URL, número de página) são suprimidos automaticamente
+- Observações colapsadas na tela são expandidas na impressão
+
+---
+
 ## Desenvolvimento local
 
+```powershell
+# Build completo + servidor (recomendado)
+.\dev.ps1
+# → http://localhost:8000/pedidos/
+# → http://localhost:8000/metricas/
+# → http://localhost:8000/financeiro/
+```
+
+O script sincroniza `site/ → dist/`, cria as rotas de URL limpas, roda todos os scripts Python e sobe um servidor com cache desabilitado.
+
+Para rodar scripts individualmente:
+
 ```bash
-# Instalar dependências
 pip install -r requirements.txt
 
-# Gerar métricas (requer acesso à Google Sheets pública ou CSV local)
 python scripts/build_metrics.py
-
-# Gerar predição
 python scripts/build_prediction.py
-
-# Servir o site localmente
-python -m http.server 8000 --directory dist
-# → http://localhost:8000
+python scripts/build_financeiro.py
+python scripts/build_pedidos.py
 ```
 
 Os JSONs são gerados em `dist/data/`. O site é estático — qualquer servidor HTTP funciona.
@@ -160,8 +195,6 @@ As camadas de interface e grande parte da implementação do frontend não foram
 ## Evoluções e próximos passos
 
 Este projeto foi concebido com foco em resolver um problema imediato de planejamento, mas há diversas oportunidades claras de evolução à medida que seu uso se estende ao longo do tempo.
-
-- Implementar um sistema simples de cálculo de rotas para otimizar a logística de entregas, reduzindo tempo e custo operacional.
 
 - Aprimorar continuamente os dados utilizados pelos modelos à medida que novos anos de histórico forem incorporados, permitindo estimativas mais precisas e robustas.
 

@@ -276,7 +276,7 @@
 
     /* ── Impressão ── */
     @media print {
-      @page { margin: 1.5cm 1.8cm; }
+      @page { margin: 0 1.8cm; }  /* sem margem top/bottom elimina os metadados do browser */
 
       body, .page { background: #fff !important; color: #000 !important; }
       .page { padding: 0 !important; max-width: none !important; }
@@ -289,8 +289,8 @@
       /* Quebra de página antes de cada turno (exceto o primeiro — aplicada via JS) */
       .print-page-break { page-break-before: always; break-before: page; }
 
-      /* Cabeçalho por turno (injetado via JS) */
-      .turno-page-header { margin-bottom: 1rem; }
+      /* Cabeçalho por turno (injetado via JS) — padding-top substitui a margem de página */
+      .turno-page-header { margin-bottom: 1rem; padding-top: 1.2cm; }
       .turno-page-header-top {
         display: flex; align-items: baseline; gap: 0.75rem;
         border-bottom: 2px solid #000; padding-bottom: 0.35rem; margin-bottom: 0.6rem;
