@@ -338,6 +338,45 @@ document.getElementById("btnRefresh").addEventListener("click", async () => {
   }
 });
 
+document.getElementById("btnPrint").addEventListener("click", () => {
+  const dia = daySelect.value || "";
+
+  // Abre todos os <details> de observação antes de imprimir
+  const allDetails = contentEl.querySelectorAll("details");
+  const wasOpen = Array.from(allDetails).map(d => d.open);
+  allDetails.forEach(d => { d.open = true; });
+
+  // Injeta cabeçalho + cidade em cada turno-section; marca quebra de página a partir do 2º
+  const turnoSections = Array.from(contentEl.querySelectorAll(".turno-section"));
+  turnoSections.forEach((section, idx) => {
+    const cidadeEl = section.closest(".cidade-section")?.querySelector(".cidade-label");
+    const cidade = cidadeEl
+      ? Array.from(cidadeEl.childNodes).find(n => n.nodeType === 3)?.textContent?.trim() ?? ""
+      : "";
+
+    const h = document.createElement("div");
+    h.className = "turno-page-header";
+    h.innerHTML =
+      `<div class="turno-page-header-top">` +
+        `<span class="print-header-title">Pedidos · ${dia}</span>` +
+        `<span class="print-header-sub">Páscoa 2026</span>` +
+      `</div>` +
+      (cidade ? `<div class="turno-page-cidade">${cidade}</div>` : "");
+    section.insertBefore(h, section.firstChild);
+
+    if (idx > 0) section.classList.add("print-page-break");
+  });
+
+  window.print();
+
+  // Restaura estado após impressão
+  allDetails.forEach((d, i) => { d.open = wasOpen[i]; });
+  turnoSections.forEach(section => {
+    section.classList.remove("print-page-break");
+    section.querySelector(".turno-page-header")?.remove();
+  });
+});
+
 // ── INIT ──────────────────────────────────────────────────────────────────────
 isLocked = !window.isAuth?.();
 loadPedidos();

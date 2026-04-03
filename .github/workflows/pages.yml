@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
   actions: write
@@ -67,6 +67,18 @@ jobs:
 
       - name: Build routes.json
         run: python scripts/geocode_addresses.py
+
+      - name: Commit geocache.json atualizado
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/geocache.json
+          if git diff --cached --quiet; then
+            echo "geocache.json sem mudanças, nada a commitar."
+          else
+            git commit -m "chore: atualiza geocache.json [skip ci]"
+            git push
+          fi
 
       - name: Build financeiro.json
         run: python scripts/build_financeiro.py

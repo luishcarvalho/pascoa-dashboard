@@ -204,9 +204,45 @@
     "query_used": "manual"
   },
   "Rua José Barbosa Ferola 39": {
-    "lat": -19.474064118213875, 
+    "lat": -19.474064118213875,
     "lon": -45.598138362104976,
     "display": "Rua José Barbosa Ferola 39, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Benedito Valadares 19": {
+    "lat": -19.4614106,
+    "lon": -45.6005562,
+    "display": "Rua Benedito Valadares 19, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Amazonas 240": {
+    "lat": -19.4597085,
+    "lon": -45.5990649,
+    "display": "Rua Amazonas 240, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Ezequiel Tiburcio 189": {
+    "lat": -19.4752801,
+    "lon": -45.6006247,
+    "display": "Rua Ezequiel Tiburcio 189, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Cassimiro de Abreu 90": {
+    "lat": -19.4632977,
+    "lon": -45.594047,
+    "display": "Rua Cassimiro de Abreu 90, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Pará 956": {
+    "lat": -19.4643402,
+    "lon": -45.5942466,
+    "display": "Rua Pará 956, Dores do Indaiá, MG",
+    "query_used": "manual"
+  },
+  "Rua Guarani 90": {
+    "lat": -19.4554454,
+    "lon": -45.5951105,
+    "display": "Rua Guarani 90, Dores do Indaiá, MG",
     "query_used": "manual"
   }
 }

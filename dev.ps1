@@ -8,7 +8,7 @@ Write-Host "`n[1/4] Sincronizando site/ → dist/ ..." -ForegroundColor Cyan
 robocopy site dist /E /IS /IT /NFL /NDL /NJH /NJS | Out-Null
 
 Write-Host "[2/4] Criando rotas de URL limpas ..." -ForegroundColor Cyan
-foreach ($page in @("metricas","predicao","rotas","financeiro")) {
+foreach ($page in @("metricas","predicao","rotas","financeiro","pedidos")) {
     $dir = "dist\$page"
     if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Path $dir | Out-Null }
     Copy-Item "dist\$page.html" "$dir\index.html" -Force
@@ -17,6 +17,7 @@ foreach ($page in @("metricas","predicao","rotas","financeiro")) {
 Write-Host "[3/4] Rodando scripts Python ..." -ForegroundColor Cyan
 python scripts/build_metrics.py
 python scripts/build_financeiro.py
+python scripts/build_pedidos.py
 # Descomente se quiser rodar também predicao e rotas:
 # python scripts/build_prediction.py
 # python scripts/geocode_addresses.py

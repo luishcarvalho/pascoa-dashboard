@@ -273,6 +273,70 @@
       padding: 2rem 0;
       text-align: center;
     }
+
+    /* ── Impressão ── */
+    @media print {
+      @page { margin: 1.5cm 1.8cm; }
+
+      body, .page { background: #fff !important; color: #000 !important; }
+      .page { padding: 0 !important; max-width: none !important; }
+
+      /* Ocultar elementos de UI e cabeçalho estático */
+      .header, nav.tab-nav, .status-bar, .site-footer,
+      #btnPrint, #btnTheme, #btnRefresh, .header-auth,
+      #printHeader, .cidade-label { display: none !important; }
+
+      /* Quebra de página antes de cada turno (exceto o primeiro — aplicada via JS) */
+      .print-page-break { page-break-before: always; break-before: page; }
+
+      /* Cabeçalho por turno (injetado via JS) */
+      .turno-page-header { margin-bottom: 1rem; }
+      .turno-page-header-top {
+        display: flex; align-items: baseline; gap: 0.75rem;
+        border-bottom: 2px solid #000; padding-bottom: 0.35rem; margin-bottom: 0.6rem;
+      }
+      .print-header-title {
+        font-family: 'DM Mono', monospace; font-size: 1rem; font-weight: 600;
+        color: #000; text-transform: uppercase; letter-spacing: 0.08em;
+      }
+      .print-header-sub { font-size: 0.78rem; color: #555; }
+      .turno-page-cidade {
+        font-family: 'DM Mono', monospace; font-size: 0.72rem; font-weight: 600;
+        letter-spacing: 0.1em; text-transform: uppercase; color: #000; margin-bottom: 0.4rem;
+      }
+
+      /* Seções */
+      .cidade-section { margin-bottom: 0; }
+      .turno-section { border-left: 2px solid #bbb !important; }
+      .turno-label { page-break-after: avoid; break-after: avoid; color: #333 !important; }
+      .tipo-label { page-break-after: avoid; break-after: avoid; }
+      .pedidos-table tr { page-break-inside: avoid; break-inside: avoid; }
+
+      /* Tabela */
+      .pedidos-wrap { overflow: visible !important; border: 1px solid #ccc !important; }
+      .pedidos-table { font-size: 9px !important; white-space: normal !important; }
+      .pedidos-table th { background: #f0f0f0 !important; color: #333 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .pedidos-table td { color: #000 !important; border-bottom: 0.5px solid #ddd !important; }
+      .pedidos-table tr.group-alt td { background: #f7f7f7 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .pedidos-table tbody tr:hover td { background: transparent !important; }
+
+      /* Badges */
+      .badge-entrega { background: #dbeafe !important; color: #1d4ed8 !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .badge-retirada { background: #fef3c7 !important; color: #92400e !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+      .badge-infantil { background: #fce7f3 !important; color: #9d174d !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+
+      /* Valores em vermelho — tamanho explícito para não herdar tamanho maior */
+      .faltante-pos { font-size: 9px !important; color: #c00 !important; font-weight: 600; }
+      .faltante-zero { font-size: 9px !important; }
+
+      /* Expandir observações colapsadas */
+      details { display: block !important; }
+      details > summary { display: none !important; }
+      .obs-full { display: block !important; color: #000 !important; }
+
+      /* Texto mascarado */
+      .priv { color: #aaa !important; }
+    }
   </style>
 </head>
 <body>
@@ -294,6 +358,7 @@
         <div class="actions-right">
           <div class="actions-btns">
             <button id="btnTheme" title="Alternar tema" aria-label="Alternar modo claro/escuro">☀</button>
+            <button id="btnPrint" title="Imprimir pedidos do dia">Imprimir</button>
             <button id="btnRefresh">Atualizar agora</button>
           </div>
           <p class="header-ts" id="lastUpdated">—</p>
@@ -315,6 +380,11 @@
         <div id="pedidos-day-stats" class="day-summary"></div>
         <select id="daySelectPedidos"></select>
       </div>
+    </div>
+
+    <div class="print-header" id="printHeader" style="display:none">
+      <div class="print-header-title">Pedidos · <span id="printDia"></span></div>
+      <div class="print-header-sub">Páscoa 2026</div>
     </div>
 
     <div id="pedidos-content"></div>
