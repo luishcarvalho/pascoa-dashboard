@@ -245,5 +245,12 @@
     "display": "Rua Guarani 90, Dores do Indaiá, MG",
     "query_used": "manual"
   },
-  "Entrega na entrada de Bom Despacho": null
+  "Entrega na entrada de Bom Despacho": null,
+  "Benedito Valadares 30": {
+    "lat": -19.4611483,
+    "lon": -45.6002755,
+    "display": "Rua Benedito Valadares, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "Benedito Valadares 30"
+  },
+  "Rua Dr Zacarias 34": null
 }
