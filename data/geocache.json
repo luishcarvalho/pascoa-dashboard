@@ -247,10 +247,15 @@
   },
   "Entrega na entrada de Bom Despacho": null,
   "Benedito Valadares 30": {
-    "lat": -19.4611483,
-    "lon": -45.6002755,
+    "lat": -19.4616369,
+    "lon": -45.6008494,
     "display": "Rua Benedito Valadares, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Benedito Valadares 30"
   },
-  "Rua Dr Zacarias 34": null
+  "Rua Dr Zacarias 34": {
+    "lat": -19.4741207,
+    "lon": -45.6095209,
+    "display": "Rua Dr Zacarias, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
+    "query_used": "manual"
+  },
 }
