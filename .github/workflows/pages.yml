@@ -70,8 +70,8 @@ jobs:
 
       - name: Commit geocache.json atualizado
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.name "Luís Henrique"
+          git config user.email "75873659+luishcarvalho@users.noreply.github.com"
           git add data/geocache.json
           if git diff --cached --quiet; then
             echo "geocache.json sem mudanças, nada a commitar."
