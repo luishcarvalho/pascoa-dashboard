@@ -18,7 +18,7 @@
     "query_used": "Rua Paulino de Souza 185"
   },
   "Frangol Rua Godofredo Araújo, 22": {
-    "lat": -19.4686140577059, 
+    "lat": -19.4686140577059,
     "lon": -45.60439396608372,
     "display": "Rua Godofredo Araújo, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Godofredo Araújo, 22"
@@ -30,43 +30,43 @@
     "query_used": "manual"
   },
   "Rua Pará 59": {
-    "lat": -19.459302711274514, 
+    "lat": -19.459302711274514,
     "lon": -45.60030865390595,
     "display": "Rua Pará, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Pará 59"
   },
   "Rua Abaeté 132": {
-    "lat": -19.45514067119101, 
+    "lat": -19.45514067119101,
     "lon": -45.586271555479094,
     "display": "Rua Abaeté, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Abaeté 132"
   },
   "Rua Irmã Inês 1086": {
-    "lat": -19.45825673752806, 
+    "lat": -19.45825673752806,
     "lon": -45.593743002176275,
     "display": "Rua Irmã Inês, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Irmã Inês 1086"
   },
   "Rua Tupis 149": {
-    "lat": -19.45500141759466, 
+    "lat": -19.45500141759466,
     "lon": -45.59039441134413,
     "display": "Rua Tupis, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Tupis 149"
   },
   "Rua Xavantes 641": {
-    "lat": -19.45475644022925, 
+    "lat": -19.45475644022925,
     "lon": -45.588296549850526,
     "display": "Rua Xavantes, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Xavantes 641"
   },
   "Rua João Paulo Ribeiro, 96": {
-    "lat": -19.47361785142707, 
+    "lat": -19.47361785142707,
     "lon": -45.607007606949885,
     "display": "Rua João Paulo Ribeiro, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua João Paulo Ribeiro, 96"
   },
   "Rua São José 655, perto da rodoviária": {
-    "lat": -19.468501402374947, 
+    "lat": -19.468501402374947,
     "lon": -45.603149604005836,
     "display": "Rua São José, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua São José 655"
@@ -78,7 +78,7 @@
     "query_used": "manual"
   },
   "Hugo de Souza 140": {
-    "lat": -19.472215945960972, 
+    "lat": -19.472215945960972,
     "lon": -45.59516097827079,
     "display": "Rua Hugo de Souza Araújo, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Hugo de Souza 140"
@@ -90,13 +90,13 @@
     "query_used": "manual"
   },
   "Rua Cornélio Caetano, 361": {
-    "lat": -19.471606486469987, 
+    "lat": -19.471606486469987,
     "lon": -45.60643857151193,
     "display": "Rua Cornélio Caetano, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Cornélio Caetano, 361"
   },
   "Rua Airton Sena 55": {
-    "lat": -19.474125760315896, 
+    "lat": -19.474125760315896,
     "lon": -45.5994693036552,
     "display": "Rua Aírton Sena, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "Rua Airton Sena 55"
@@ -244,5 +244,6 @@
     "lon": -45.5951105,
     "display": "Rua Guarani 90, Dores do Indaiá, MG",
     "query_used": "manual"
-  }
+  },
+  "Entrega na entrada de Bom Despacho": null
 }
