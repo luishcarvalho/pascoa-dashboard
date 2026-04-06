@@ -258,5 +258,23 @@
     "display": "Rua Dr Zacarias, Dores do Indaiá, Região Geográfica Imediata de Dores do Indaiá, Região Geográfica Intermediária de Divinópolis, Minas Gerais, 35610-000, Brasil",
     "query_used": "manual"
   },
-  "Tia Aparecida": null
+  "Tia Aparecida": null,
+  "Rua Sete de Setembro 161": {
+    "lat": -19.2263677,
+    "lon": -44.9932144,
+    "display": "Rua Sete de Setembro, Pompéu, Minas Gerais, Região Sudeste, 35640-000, Brasil, Região Geográfica Imediata de Dores do Indaiá",
+    "query_used": "Rua Sete de Setembro 161"
+  },
+  "Rua Tupinambás 201": {
+    "lat": -19.4552356,
+    "lon": -45.5926226,
+    "display": "Rua Tupinambás, Dores do Indaiá, Minas Gerais, 35610-000, Brasil, Região Geográfica Intermediária de Divinópolis",
+    "query_used": "Rua Tupinambás 201"
+  },
+  "Rua Olavo Bilac 205": {
+    "lat": -19.4621865,
+    "lon": -45.5927196,
+    "display": "Rua Olavo Bilac, Dores do Indaiá, Minas Gerais, 35610-000, Brasil, Região Geográfica Intermediária de Divinópolis",
+    "query_used": "Rua Olavo Bilac 205"
+  }
 }
